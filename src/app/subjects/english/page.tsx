@@ -9,8 +9,8 @@ import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2 } from 'lucide-react'
 const ENGLISH_MODULES = [
   { 
     id: 'grammar_basics', 
-    title: 'Grammar Essentials & Key Tenses', 
-    desc: 'Present Simple, Past Simple, Future, Subject-Verb Agreement, Prepositions ที่ชอบออกสอบ', 
+    title: 'Grammar Essentials, Tenses & SV Agreement', 
+    desc: '⚡ จับสัญญาณเวลา (Time Markers) เลือก Tense ถูก 100%, Subject-Verb Agreement, และ Preposition (IN/ON/AT)', 
     emoji: '📝', 
     lessons: 5, 
     difficulty: 'พื้นฐาน', 
@@ -18,37 +18,64 @@ const ENGLISH_MODULES = [
   },
   { 
     id: 'vocabulary', 
-    title: 'Vocabulary Power & Root Words', 
-    desc: 'เทคนิค Prefix/Suffix แกะความหมายศัพท์ใหม่, Synonyms/Antonyms ยอดฮิตในข้อสอบ ม.1', 
+    title: 'Vocabulary Power, Prefix-Suffix & Context Clues', 
+    desc: '⚡ ถอดรหัสรากศัพท์ 3 วิ (Prefix-Root-Suffix), เดาศัพท์จากบริบท (Context Clues), และ Synonyms ยอดฮิต', 
     emoji: '📚', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'พื้นฐาน', 
     badgeColor: 'bg-orange-100 text-orange-900 border-orange-200' 
   },
   { 
     id: 'reading', 
     title: 'Reading Comprehension (Skim & Scan)', 
-    desc: 'จับใจความ Main Idea, ตอบคำถามจากป้ายประกาศ ตารางเวลา และบทความสั้นโดยไม่ต้องแปลทุกคำ', 
+    desc: '⚡ เทคนิค 3S (Stop-Skim-Scan), ป้ายประกาศ (Notices), ตารางเวลา (Schedules) และการจับใจความ Main Idea', 
     emoji: '👁️', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'ปานกลาง', 
     badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
   },
   { 
     id: 'listening_speaking', 
-    title: 'Everyday Communication & Expressions', 
-    desc: 'สำนวนภาษาอังกฤษในชีวิตประจำวัน, บทสนทนาในโรงเรียน ซื้อของ ถามทาง และการตอบรับ-ปฏิเสธ', 
+    title: 'Everyday Communication & Polite Expressions', 
+    desc: '⚡ คู่สนทนามารยาทสากล (ขอบคุณ/ขอโทษ/แสดงความยินดี/ถามทาง) และ Would you mind...? (ตอบ Not at all)', 
     emoji: '🎙️', 
-    lessons: 3, 
+    lessons: 5, 
     difficulty: 'ปานกลาง', 
     badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
   },
   { 
     id: 'writing', 
     title: 'Error Identification & Sentence Structure', 
-    desc: 'จับผิดไวยากรณ์ (Error Detection), เรียงประโยค (Sentence Rearrangement) สไตล์ข้อสอบแข่งขัน', 
+    desc: '⚡ สแกน Error 3 ตำแหน่งหลัก (SV Agreement, Tense, Part of Speech) และกฎเหล็กห้ามใช้ Although คู่กับ but', 
     emoji: '✍️', 
-    lessons: 3, 
+    lessons: 5, 
+    difficulty: 'ท้าทาย', 
+    badgeColor: 'bg-red-100 text-red-900 border-red-200' 
+  },
+  { 
+    id: 'passive_modals', 
+    title: 'Active vs Passive Voice & Modal Verbs', 
+    desc: '⚡ ประโยคถูกกระทำ (is/am/are/was/were + V.3) และกริยาช่วย can, could, should, must + V.inf ไม่ผัน', 
+    emoji: '🔄', 
+    lessons: 5, 
+    difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'comparison_conjunctions', 
+    title: 'Comparison & Conjunctions (การเปรียบเทียบ & คำเชื่อม)', 
+    desc: '⚡ ขั้นกว่ามี than (-er/more), ขั้นสุดมี the (-est/the most), และคำเชื่อมบอกเหตุผล/ผลลัพธ์ (because vs so)', 
+    emoji: '⚖️', 
+    lessons: 5, 
+    difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'cloze_test', 
+    title: 'Cloze Test & Paragraph Completion', 
+    desc: '⚡ สแกนช่องว่าง 3 สเต็ป (หน้า-หลัง-ความหมาย), วิเคราะห์ Part of Speech เพื่อเติมคำในช่องว่างบทความอย่างแม่นยำ', 
+    emoji: '📑', 
+    lessons: 5, 
     difficulty: 'ท้าทาย', 
     badgeColor: 'bg-red-100 text-red-900 border-red-200' 
   },

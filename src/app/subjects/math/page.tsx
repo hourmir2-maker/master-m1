@@ -9,46 +9,73 @@ import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2 } from 'lucide-react'
 const MATH_MODULES = [
   { 
     id: 'numbers_basics', 
-    title: 'ตัวเลขและการดำเนินการ & ห.ร.ม./ค.ร.น.', 
-    desc: 'เทคนิคตัดช้อยส์, แยกตัวประกอบเร็ว, โจทย์ปัญหา ค.ร.น. ห.ร.ม. ประยุกต์', 
+    title: 'ตัวเลข การดำเนินการ & ห.ร.ม. / ค.ร.น.', 
+    desc: '⚡ สูตรลัดคูณ 11/25/99, ยกกำลังสองเลขลงท้าย 5, ตัดช้อยส์ ห.ร.ม. แบ่งของ & ค.ร.น. เจอกันครั้งหน้า', 
     emoji: '🔢', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'พื้นฐาน', 
     badgeColor: 'bg-orange-100 text-orange-900 border-orange-200' 
   },
   { 
     id: 'fractions_decimals', 
-    title: 'เศษส่วน ทศนิยม และร้อยละ', 
-    desc: 'สูตรคิดเลขไวเรื่องกำไร-ขาดทุน, ดอกเบี้ย, อัตราส่วนและร้อยละสะสม', 
+    title: 'เศษส่วน ทศนิยม & การคำนวณระคน', 
+    desc: '⚡ เทคนิคคูณไขว้เปรียบเทียบเศษส่วนใน 2 วินาที, เศษส่วนซ้อน, และโจทย์ตัดเชือกเหลือเศษส่วนต่อเนื่อง', 
     emoji: '½', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'พื้นฐาน', 
     badgeColor: 'bg-orange-100 text-orange-900 border-orange-200' 
   },
   { 
-    id: 'algebra_intro', 
-    title: 'พีชคณิตและสมการตัวแปรเดียว', 
-    desc: 'เทคนิค "ตราชั่งสมดุล", ย้ายข้างแก้สมการใน 10 วินาที, ตีโจทย์อายุและเงิน', 
-    emoji: '✏️', 
-    lessons: 3, 
-    difficulty: 'ปานกลาง', 
-    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
-  },
-  { 
-    id: 'geometry', 
-    title: 'เรขาคณิต พื้นที่ และปริมาตร', 
-    desc: 'สูตรลับเส้นขนาน, พับรูปตัดแปะหาพื้นที่แรเงา, ปริมาตรทรงกระบอกและปริซึม', 
-    emoji: '📐', 
+    id: 'percentages', 
+    title: 'ร้อยละ กำไร-ขาดทุน & ดอกเบี้ย', 
+    desc: '⚡ สูตรลัดตัวคูณรวดเดียว 1 บรรทัด, กำไรซ้อนลดราคา, บัญญัติไตรยางศ์ย้อนกลับหาทุนแท้จริง', 
+    emoji: '🏷️', 
     lessons: 5, 
     difficulty: 'ปานกลาง', 
     badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
   },
   { 
-    id: 'statistics', 
-    title: 'สถิติ แผนภูมิ และความน่าจะเป็น', 
-    desc: 'วิเคราะห์แผนภูมิวงกลม, คำนวณค่าเฉลี่ยถ่วงน้ำหนัก, หาความน่าจะเป็นลูกเต๋า/เหรียญ', 
-    emoji: '📊', 
-    lessons: 3, 
+    id: 'algebra_intro', 
+    title: 'พีชคณิต สมการเชิงเส้น & โจทย์ปัญหา', 
+    desc: '⚡ เทคนิคสมมติขาเป็ด-ขาหมู, สูตรลัดทำงานพร้อมกัน (A×B)/(A+B), และตารางอายุ 3 ยุค', 
+    emoji: '✏️', 
+    lessons: 5, 
+    difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'geometry', 
+    title: 'เรขาคณิต 2 มิติ เส้นขนาน & พื้นที่แรเงา', 
+    desc: '⚡ สูตรลัดพื้นที่ใบไม้ (4/7)a², ผลต่างกำลังสองพื้นที่วงแหวน, และมุมแย้งเส้นขนานรูปตัว Z/U', 
+    emoji: '📐', 
+    lessons: 5, 
+    difficulty: 'ท้าทาย', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'ratio_proportion', 
+    title: 'อัตราส่วนและมาตราส่วน (Ratio & Scale)', 
+    desc: '⚡ เทคนิคเชื่อมสะพานตัวกลาง A:B:C ด้วย ค.ร.น., การแบ่งเงินตามสัดส่วน, และคำนวณระยะทางจริงจากแผนที่', 
+    emoji: '⚖️', 
+    lessons: 5, 
+    difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'geometry_3d', 
+    title: 'รูปทรง 3 มิติ ปริมาตรและความจุ (3D Geometry)', 
+    desc: '⚡ เทคนิคการแทนที่น้ำหาก้อนหิน, ปริมาตรทรงสี่เหลี่ยม/ทรงกระบอก, รูปคลี่เรขาคณิต และแปลง cm³ เป็นลิตร', 
+    emoji: '📦', 
+    lessons: 5, 
+    difficulty: 'ท้าทาย', 
+    badgeColor: 'bg-red-100 text-red-900 border-red-200' 
+  },
+  { 
+    id: 'patterns_sequences', 
+    title: 'แบบรูปและความสัมพันธ์ (Patterns & Series)', 
+    desc: '⚡ สูตรลัดผลบวกเกาส์ 1 ถึง n, ผลบวกเลขคี่ n² / เลขคู่ n(n+1), และการหาพจน์ทั่วไปโจทย์แข่งขัน', 
+    emoji: '🧩', 
+    lessons: 5, 
     difficulty: 'ท้าทาย', 
     badgeColor: 'bg-red-100 text-red-900 border-red-200' 
   },

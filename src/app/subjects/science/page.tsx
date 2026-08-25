@@ -9,47 +9,74 @@ import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2 } from 'lucide-react'
 const SCIENCE_MODULES = [
   { 
     id: 'living_things', 
-    title: 'สิ่งมีชีวิต พืช สัตว์ และระบบนิเวศ', 
-    desc: 'โครงสร้างเซลล์พืช-สัตว์, การสังเคราะห์ด้วยแสง, ห่วงโซ่อาหาร และการปรับตัวของสิ่งมีชีวิต', 
+    title: 'สิ่งมีชีวิต เซลล์ พืช สัตว์ & ระบบนิเวศ', 
+    desc: '⚡ ออร์แกเนลล์เซลล์พืช vs สัตว์, การสังเคราะห์ด้วยแสง, กฎ 10% พีระมิดพลังงาน และภาวะความสัมพันธ์', 
     emoji: '🌱', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'พื้นฐาน', 
     badgeColor: 'bg-orange-100 text-orange-900 border-orange-200' 
   },
   { 
     id: 'matter_properties', 
-    title: 'สารบริสุทธิ์ สารผสม และการแยกสาร', 
-    desc: 'สถานะและการเปลี่ยนรูป, การกรอง ตกผลึก กลั่น, อินดิเคเตอร์ทดสอบกรด-เบส', 
+    title: 'สารบริสุทธิ์ สารผสม & เทคนิคการแยกสาร', 
+    desc: '⚡ กราฟจุดเดือดสารบริสุทธิ์ vs สารผสม, การกรอง ตกผลึก กลั่น โครมาโทกราฟี และการทดสอบกรด-เบส', 
     emoji: '⚗️', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'พื้นฐาน', 
     badgeColor: 'bg-orange-100 text-orange-900 border-orange-200' 
   },
   { 
     id: 'force_motion', 
-    title: 'แรง การเคลื่อนที่ และความดัน', 
-    desc: 'กฎการเคลื่อนที่, แรงโน้มถ่วง แรงเสียดทาน แรงพยุง, การคำนวณงานและโมเมนต์ของแรง', 
+    title: 'แรง การเคลื่อนที่ ความดัน & แรงลอยตัว', 
+    desc: '⚡ สัดส่วนวัตถุจม Dวัตถุ/Dน้ำ, สมดุลโมเมนต์คาน, ความดันของเหลวกับความลึก และแปลง km/h ↔ m/s', 
     emoji: '⚡', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'ปานกลาง', 
     badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
   },
   { 
     id: 'energy', 
-    title: 'พลังงาน ความร้อน แสง เสียง และไฟฟ้า', 
-    desc: 'การถ่ายโอนความร้อน, การหักเหของแสงและเลนส์, วงจรไฟฟ้าอนุกรม-ขนาน', 
+    title: 'พลังงาน ความร้อน แสง เลนส์ & ไฟฟ้า', 
+    desc: '⚡ การถ่ายโอนความร้อน 3 แบบ (นำ พา แผ่รังสี), วงจรไฟฟ้าบ้าน (ขนาน), และภาพกระจกนูน/เว้า เลนส์นูน/เว้า', 
     emoji: '💡', 
-    lessons: 4, 
+    lessons: 5, 
     difficulty: 'ปานกลาง', 
     badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
   },
   { 
     id: 'earth_space', 
-    title: 'โลก ธรณีวิทยา ดาราศาสตร์ และอวกาศ', 
-    desc: 'โครงสร้างโลก หิน ดิน แร่, ลมฟ้าอากาศ พายุ, ระบบสุริยะ และปรากฏการณ์ข้างขึ้น-ข้างแรม', 
+    title: 'โลก ดาราศาสตร์ บรรยากาศ & ภัยธรรมชาติ', 
+    desc: '⚡ น้ำเกิด-น้ำตาย (ขึ้น/แรม 15 ค่ำ vs 8 ค่ำ), สุริยุปราคา-จันทรุปราคา, ชั้นบรรยากาศ และลมบก-ลมทะเล', 
     emoji: '🌍', 
-    lessons: 3, 
+    lessons: 5, 
     difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-red-100 text-red-900 border-red-200' 
+  },
+  { 
+    id: 'human_body', 
+    title: 'ร่างกายมนุษย์และสุขภาพ (Human Body & Health)', 
+    desc: '⚡ แผนผังระบบย่อยอาหาร (เอนไซม์/อวัยวะ), หัวใจ 4 ห้องและการไหลเวียนเลือด, และวิตามินที่ขาดไม่ได้ (ADEK vs BC)', 
+    emoji: '🫀', 
+    lessons: 5, 
+    difficulty: 'ปานกลาง', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'chemical_changes', 
+    title: 'การเปลี่ยนแปลงทางกายภาพและเคมี (Reactions)', 
+    desc: '⚡ กายภาพ (ย้อนกลับได้) vs เคมี (ได้สารใหม่), การเกิดสนิมเหล็ก (น้ำ+ออกซิเจน), และปฏิกิริยากรด+เบส ได้เกลือ+น้ำ', 
+    emoji: '🧪', 
+    lessons: 5, 
+    difficulty: 'ท้าทาย', 
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-200' 
+  },
+  { 
+    id: 'scientific_inquiry', 
+    title: 'ทักษะกระบวนการและการทดลอง (Inquiry & Variables)', 
+    desc: '⚡ การระบุตัวแปรต้น-ตาม-ควบคุมอย่างแม่นยำ, การตั้งสมมติฐาน และการอ่านกราฟผลการทดลองสไตล์ สสวท./PISA', 
+    emoji: '🔬', 
+    lessons: 5, 
+    difficulty: 'ท้าทาย', 
     badgeColor: 'bg-red-100 text-red-900 border-red-200' 
   },
 ]

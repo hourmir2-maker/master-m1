@@ -13,21 +13,30 @@ import { Loader2, Brain, BookOpen, ChevronRight, Star, Sparkles, ArrowRight, Fla
 import { AiAnalysis } from '@/types'
 
 const MODULE_LABELS: Record<string, string> = {
-  numbers_basics: 'ตัวเลขและการดำเนินการ & ห.ร.ม./ค.ร.น.',
-  fractions_decimals: 'เศษส่วน ทศนิยม และร้อยละ',
-  algebra_intro: 'พีชคณิตและสมการเบื้องต้น',
-  geometry: 'เรขาคณิตและมุม',
-  statistics: 'สถิติและความน่าจะเป็น',
-  living_things: 'สิ่งมีชีวิตและเซลล์',
-  matter_properties: 'สารและสมบัติของสาร',
-  force_motion: 'แรงและการเคลื่อนที่',
-  energy: 'พลังงาน ความร้อน และไฟฟ้า',
-  earth_space: 'โลก ดาราศาสตร์ และอวกาศ',
-  grammar_basics: 'Grammar Essentials & Tenses',
+  numbers_basics: 'ตัวเลข การดำเนินการ & ห.ร.ม./ค.ร.น.',
+  fractions_decimals: 'เศษส่วน ทศนิยม & การคำนวณระคน',
+  percentages: 'ร้อยละ กำไร-ขาดทุน & ดอกเบี้ย',
+  algebra_intro: 'พีชคณิต สมการเชิงเส้น & โจทย์ปัญหา',
+  geometry: 'เรขาคณิต 2 มิติ เส้นขนาน & พื้นที่แรเงา',
+  ratio_proportion: 'อัตราส่วนและมาตราส่วน (Ratio & Scale)',
+  geometry_3d: 'รูปทรง 3 มิติ ปริมาตรและความจุ',
+  patterns_sequences: 'แบบรูปและความสัมพันธ์ (Patterns & Series)',
+  living_things: 'สิ่งมีชีวิต เซลล์ พืช สัตว์ & ระบบนิเวศ',
+  matter_properties: 'สารบริสุทธิ์ สารผสม & เทคนิคการแยกสาร',
+  force_motion: 'แรง การเคลื่อนที่ ความดัน & แรงลอยตัว',
+  energy: 'พลังงาน ความร้อน แสง เลนส์ & ไฟฟ้า',
+  earth_space: 'โลก ดาราศาสตร์ บรรยากาศ & ภัยธรรมชาติ',
+  human_body: 'ร่างกายมนุษย์และสุขภาพ (Human Body)',
+  chemical_changes: 'การเปลี่ยนแปลงทางกายภาพและเคมี',
+  scientific_inquiry: 'ทักษะกระบวนการและการทดลอง (Inquiry)',
+  grammar_basics: 'Grammar Essentials, Tenses & SV Agreement',
   vocabulary: 'Vocabulary Power & Root Words',
   reading: 'Reading Comprehension (Skim & Scan)',
-  listening_speaking: 'Listening & Conversation',
-  writing: 'Sentence & Paragraph Writing',
+  listening_speaking: 'Everyday Communication & Expressions',
+  writing: 'Error Identification & Sentence Structure',
+  passive_modals: 'Active vs Passive Voice & Modal Verbs',
+  comparison_conjunctions: 'Comparison & Conjunctions (การเปรียบเทียบ)',
+  cloze_test: 'Cloze Test & Paragraph Completion',
 }
 
 const PRIORITY_LABELS: Record<string, string> = { 
@@ -45,14 +54,14 @@ const LEVEL_LABELS: Record<string, { label: string; color: string }> = {
 const DEFAULT_ANALYSIS: AiAnalysis = {
   priority_subject: 'math',
   overall_level: 'intermediate',
-  analysis: 'ยินดีต้อนรับสู่หลักสูตร MASTER ม.1! ระบบได้จัดเตรียมเส้นทางการเรียนรู้ 3 วิชาหลัก พร้อมสูตรลับและเทคนิคเฉพาะบุคคล เพื่อให้คุณพร้อมที่สุดสำหรับทุกสนามสอบ',
-  math_modules: ['numbers_basics', 'fractions_decimals', 'algebra_intro', 'geometry', 'statistics'],
-  science_modules: ['living_things', 'matter_properties', 'force_motion', 'energy', 'earth_space'],
-  english_modules: ['grammar_basics', 'vocabulary', 'reading', 'listening_speaking', 'writing'],
+  analysis: 'ยินดีต้อนรับสู่หลักสูตร MASTER ม.1 (24 โมดูลเข้มข้น)! ระบบได้จัดเตรียมเส้นทางการเรียนรู้ 3 วิชาหลัก พร้อมสูตรลับและเทคนิคเฉพาะบุคคล เพื่อให้คุณพร้อมที่สุดสำหรับทุกสนามสอบ',
+  math_modules: ['numbers_basics', 'fractions_decimals', 'percentages', 'algebra_intro', 'geometry', 'ratio_proportion', 'geometry_3d', 'patterns_sequences'],
+  science_modules: ['living_things', 'matter_properties', 'force_motion', 'energy', 'earth_space', 'human_body', 'chemical_changes', 'scientific_inquiry'],
+  english_modules: ['grammar_basics', 'vocabulary', 'reading', 'listening_speaking', 'writing', 'passive_modals', 'comparison_conjunctions', 'cloze_test'],
   study_tips: [
-    'คณิตศาสตร์: ใช้สูตร 3-STEP ATTACK โดยเริ่มจากการวาดภาพหรือแปลงโจทย์เป็นตารางก่อนลงมือคิด',
-    'วิทยาศาสตร์: ใช้เทคนิค SCIENCE DETECTIVE เน้นแยกตัวแปรต้น ตัวแปรตาม และมองหาความสัมพันธ์เหตุ-ผล',
-    'ภาษาอังกฤษ: ใช้ 3S METHOD โดย Skim อ่านภาพรวม Scan หา Keyword และเช็คโครงสร้างประโยค SVOP'
+    'คณิตศาสตร์: ใช้สูตรลับตัวคูณรวดเดียว และเทคนิคสมมติขา/เชื่อมสะพานอัตราส่วนเพื่อประหยัดเวลาทำโจทย์',
+    'วิทยาศาสตร์: ใช้เทคนิคแยกตัวแปรต้น-ตาม-ควบคุม และวิเคราะห์ผลการทดลองสไตล์ สสวท.',
+    'ภาษาอังกฤษ: ใช้เทคนิค 3S METHOD โดย Skim ภาพรวม Scan หา Keyword และสแกน Error 3 ตำแหน่งหลัก'
   ],
   estimated_weeks: 8
 }
