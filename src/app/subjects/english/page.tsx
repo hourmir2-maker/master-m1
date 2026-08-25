@@ -97,7 +97,7 @@ export default function EnglishPage() {
         {/* Modules List */}
         <div className="space-y-4">
           {ENGLISH_MODULES.map((mod, i) => (
-            <Card key={mod.id} className="border border-orange-100 shadow-md hover:shadow-lg transition-all bg-white rounded-2xl overflow-hidden">
+            <Card key={mod.id} className="border border-orange-100 shadow-md hover:shadow-lg transition-all bg-white rounded-2xl overflow-hidden hover:border-orange-300">
               <CardContent className="p-5 sm:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="flex items-start gap-4 flex-1">
@@ -119,9 +119,11 @@ export default function EnglishPage() {
                     </div>
                   </div>
                   
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-md shadow-amber-500/20 flex-shrink-0">
-                    เริ่มเรียน <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
+                  <Link href={`/subjects/english/${mod.id}`} className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-md shadow-amber-500/20 flex-shrink-0">
+                      เริ่มเรียน <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
