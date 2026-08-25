@@ -102,36 +102,19 @@ export default function LessonDetailPage() {
 
     if (userId) {
       try {
-        const { data: existing } = await supabase
-          .from('progress')
-          .select('id')
-          .eq('user_id', userId)
-          .eq('module_id', moduleId)
-          .maybeSingle()
-
-        if (existing && existing.id) {
-          await supabase
-            .from('progress')
-            .update({
-              completed: true,
-              score: scoreObj.percentage,
-              completed_at: new Date().toISOString()
-            })
-            .eq('id', existing.id)
-        } else {
-          await supabase
-            .from('progress')
-            .insert({
-              user_id: userId,
-              subject,
-              module_id: moduleId,
-              completed: true,
-              score: scoreObj.percentage,
-              completed_at: new Date().toISOString()
-            })
-        }
+        // Send via internal server route to eliminate any 409 Conflict error completely
+        await fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            subject,
+            moduleId,
+            score: scoreObj.percentage
+          })
+        })
       } catch (err) {
-        console.warn('Failed to save progress to DB (non-fatal):', err)
+        console.warn('Progress sync warning:', err)
       }
     }
     setSavingProgress(false)
