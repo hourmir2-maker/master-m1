@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { LESSONS_DATA } from '@/lib/lessons-data'
 
 interface ChatMessage {
+  id?: string
   role: 'user' | 'assistant'
   content: string
 }
@@ -14,73 +16,112 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Messages are required' }, { status: 400 })
     }
 
-    const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey) {
-      return NextResponse.json({ 
-        reply: 'ครูพี่ยินดีช่วยเหลือครับ! ขณะนี้ระบบเชื่อมต่อ AI กำลังปรับปรุงชั่วคราว แต่หากมีข้อสงสัยเกี่ยวกับบทเรียนนี้ สามารถลองอ่านสรุปสูตรลับและเฉลยละเอียดในแต่ละข้อได้เลยนะคร้าบ 💡✨' 
-      })
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey)
+    const currentLesson = LESSONS_DATA[subject]?.[moduleId]
     const subjectName = subject === 'math' ? 'คณิตศาสตร์' : subject === 'science' ? 'วิทยาศาสตร์' : 'ภาษาอังกฤษ'
+
+    // Build rich context from lesson data
+    let lessonContextText = `วิชา: ${subjectName}\nหัวข้อ: ${currentLesson?.title || lessonTitle || moduleId}`
+    if (currentLesson?.secretFormula) {
+      lessonContextText += `\nสูตรลับประจำบท (${currentLesson.secretFormula.name}): ${currentLesson.secretFormula.concept}`
+      lessonContextText += `\nขั้นตอนเทคนิคคิดเร็ว:\n- ${currentLesson.secretFormula.steps.join('\n- ')}`
+    }
+    if (currentLesson?.summaryPoints) {
+      lessonContextText += `\nจุดสรุปสำคัญ:\n- ${currentLesson.summaryPoints.join('\n- ')}`
+    }
 
     const systemInstruction = `คุณคือ "ครูพี่ AI (MASTER ม.1 Tutor)" ติวเตอร์อัจฉริยะใจดีและเชี่ยวชาญการสอนเด็กนักเรียนชั้น ป.6 เตรียมสอบเข้า ม.1 โรงเรียนชั้นนำทั่วประเทศ
 
-บริบทปัจจุบันของนักเรียน:
-- วิชา: ${subjectName}
-- หน่วยการเรียนรู้: ${lessonTitle || moduleId || 'บทเรียนทั่วไป'}
+📚 คลังความรู้ของบทเรียนปัจจุบัน:
+${lessonContextText}
 
 หลักการตอบคำถามของคุณ:
-1. ใช้ภาษาไทยที่สุภาพ เป็นกันเอง อบอุ่น และให้กำลังใจนักเรียนเสมอ (เช่น "ครูพี่ขออธิบายอย่างนี้นะครับ...", "เก่งมากที่สงสัยจุดนี้!", "จำง่ายๆ เลยครับว่า...")
-2. อธิบายแบบย่อยง่าย เห็นภาพชัดเจน ทีละขั้นตอน ไม่ใช้ศัพท์วิชาการที่ยากเกินวัยเด็ก ป.6/ม.1
-3. เสริมด้วย "⚡ เทคนิคคิดลัด / วิธีจำง่ายๆ" เสมอ เมื่ออธิบายจบ
-4. หากนักเรียนขอตัวอย่าง ให้ตั้งโจทย์สั้นๆ 1 ข้อพร้อมแสดงวิธีทำให้ดูทันที
-5. ตอบกระชับ ไม่เยิ่นเย้อ ความยาวพอเหมาะกับการอ่านบนมือถือ`
+1. ตอบคำถามนักเรียนอย่างตรงประเด็น เข้าใจง่าย และให้กำลังใจเสมอ (เช่น "ครูพี่ขออธิบายอย่างนี้นะครับ...", "เก่งมากที่สงสัยจุดนี้!", "จำง่ายๆ เลยครับว่า...")
+2. หากนักเรียนขอให้อธิบายวิธีคิดเรื่องนี้แบบเข้าใจง่ายๆ ให้นำ "สูตรลับ/วิธีคิดเร็ว" ของบทนี้มาย่อยให้เห็นภาพชัดเจนเป็นข้อๆ 1, 2, 3
+3. เสริมด้วย "⚡ เทคนิคคิดลัด / จุดที่มักโดนหลอก" เสมอ
+4. หากนักเรียนขอตัวอย่างโจทย์ ให้ตั้งโจทย์ 1 ข้อพร้อมเฉลยวิธีทำทีละสเต็ป
+5. ตอบกระชับ น่าอ่าน ไม่ยาวจนเกินไป เหมาะกับเด็ก ป.6/ม.1`
 
-    try {
-      const model = genAI.getGenerativeModel({ 
-        model: 'gemini-1.5-flash',
-        systemInstruction
-      })
+    // Extract the latest user question
+    const userMessages = messages.filter((m: ChatMessage) => m.role === 'user')
+    const lastUserQuery = userMessages.length > 0 ? userMessages[userMessages.length - 1].content : 'ช่วยอธิบายสรุปบทเรียนนี้หน่อยครับ'
 
-      // Convert chat history format for Gemini
-      const chatHistory = messages.slice(0, -1).map((m: ChatMessage) => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.content }]
-      }))
+    const apiKey = process.env.GEMINI_API_KEY
 
-      const lastMessage = messages[messages.length - 1].content
-
-      const chat = model.startChat({
-        history: chatHistory
-      })
-
-      const result = await chat.sendMessage(lastMessage)
-      const reply = result.response.text() || 'ครูพี่พร้อมช่วยอธิบายเสมอครับ มีจุดไหนที่ยังสงสัยถามต่อได้เลยนะ!'
-
-      return NextResponse.json({ reply })
-    } catch (aiErr: any) {
-      console.warn('Gemini SDK error, falling back to direct REST:', aiErr?.message || aiErr)
-
-      // Fallback REST call
+    // Try Gemini API
+    if (apiKey && apiKey.length > 20) {
       try {
-        const lastMessage = messages[messages.length - 1].content
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${systemInstruction}\n\nคำถามจากนักเรียน: ${lastMessage}` }] }]
+        const genAI = new GoogleGenerativeAI(apiKey)
+        const model = genAI.getGenerativeModel({ 
+          model: 'gemini-1.5-flash',
+          systemInstruction
+        })
+
+        // Build valid alternating chat contents starting with 'user'
+        const validContents: any[] = []
+        for (const m of messages) {
+          if (m.role === 'assistant' && validContents.length === 0) {
+            continue // Skip initial greeting so history starts with user
+          }
+          validContents.push({
+            role: m.role === 'user' ? 'user' : 'model',
+            parts: [{ text: m.content }]
           })
+        }
+
+        if (validContents.length === 0 || validContents[validContents.length - 1].role !== 'user') {
+          validContents.push({
+            role: 'user',
+            parts: [{ text: lastUserQuery }]
+          })
+        }
+
+        const result = await model.generateContent({
+          contents: validContents,
         })
-        const data = await res.json()
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'ครูพี่พร้อมช่วยเสมอครับ มีจุดไหนสงสัยถามเพิ่มได้เลยนะ!'
-        return NextResponse.json({ reply })
-      } catch (restErr) {
-        return NextResponse.json({
-          reply: `ครูพี่ขอแนะนำสำหรับหัวข้อ "${lessonTitle || 'บทเรียนนี้'}": ให้นักเรียนจำหัวใจสำคัญและสูตรลัดประจำโมดูล แล้วลองทำแบบฝึกหัดทีละข้อ หากติดตรงไหนกดดูเฉลยละเอียดได้เลยนะคร้าบ สู้ๆ ครับ! 🎯🌟`
-        })
+
+        const replyText = result.response.text()
+        if (replyText && replyText.trim().length > 0) {
+          return NextResponse.json({ reply: replyText.trim() })
+        }
+      } catch (aiErr: any) {
+        console.warn('Gemini SDK error, attempting direct REST fetch:', aiErr?.message || aiErr)
+
+        // Try direct REST call
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [{ text: `${systemInstruction}\n\nคำถามของนักเรียน: "${lastUserQuery}"` }]
+                }
+              ]
+            })
+          })
+          const data = await res.json()
+          const restReply = data.candidates?.[0]?.content?.parts?.[0]?.text
+          if (restReply && restReply.trim().length > 0) {
+            return NextResponse.json({ reply: restReply.trim() })
+          }
+        } catch (restErr) {
+          console.warn('Direct REST fetch failed:', restErr)
+        }
       }
     }
+
+    // High-Quality Intelligent Contextual Fallback
+    if (currentLesson) {
+      const formula = currentLesson.secretFormula
+      const fallbackReply = `ครูพี่ยินดีอธิบายเรื่อง "${currentLesson.title}" ให้ฟังครับ! 💡✨\n\nหัวใจสำคัญของบทนี้คือ:\n👉 ${formula.concept}\n\n⚡ ขั้นตอนและเทคนิคคิดเร็ว:\n${formula.steps.map((s, idx) => `${idx + 1}. ${s}`).join('\n')}\n\n🌟 จำง่ายๆ: เน้นฝึกสังเกตคีย์เวิร์ดของโจทย์แล้วเลือกสูตรลัดมาใช้ จะช่วยประหยัดเวลาทำข้อสอบได้เยอะมากครับ! มีข้อไหนสงสัยพิมพ์ถามครูพี่ต่อได้เลยนะคร้าบ 🎯`
+      return NextResponse.json({ reply: fallbackReply })
+    }
+
+    return NextResponse.json({
+      reply: `ยินดีต้อนรับครับ! สำหรับบทเรียนนี้ ให้เน้นทำความเข้าใจหัวใจสำคัญของเรื่องและฝึกทำโจทย์แบบฝึกหัดทีละข้อ หากติดขัดตรงไหนพิมพ์บอกครูพี่ได้เลยนะคร้าบ! 🎯`
+    })
+
   } catch (error: any) {
     console.error('Chat tutor error:', error)
     return NextResponse.json({ 
