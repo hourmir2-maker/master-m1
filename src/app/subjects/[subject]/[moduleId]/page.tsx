@@ -95,16 +95,37 @@ export default function LessonDetailPage() {
 
     if (userId) {
       try {
-        await supabase.from('progress').upsert({
-          user_id: userId,
-          subject,
-          module_id: moduleId,
-          completed: true,
-          score: scoreObj.percentage,
-          completed_at: new Date().toISOString()
-        })
+        // Safe check-then-upsert to prevent 409 Conflict
+        const { data: existing } = await supabase
+          .from('progress')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('module_id', moduleId)
+          .maybeSingle()
+
+        if (existing && existing.id) {
+          await supabase
+            .from('progress')
+            .update({
+              completed: true,
+              score: scoreObj.percentage,
+              completed_at: new Date().toISOString()
+            })
+            .eq('id', existing.id)
+        } else {
+          await supabase
+            .from('progress')
+            .insert({
+              user_id: userId,
+              subject,
+              module_id: moduleId,
+              completed: true,
+              score: scoreObj.percentage,
+              completed_at: new Date().toISOString()
+            })
+        }
       } catch (err) {
-        console.warn('Failed to save progress to DB:', err)
+        console.warn('Failed to save progress to DB (non-fatal):', err)
       }
     }
     setSavingProgress(false)
