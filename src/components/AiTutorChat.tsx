@@ -122,12 +122,35 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
 
     stopSpeaking()
 
-    // 1. Clean & Format text with natural human pauses between sentences
+    // 1. Clean & Format text with natural human pauses and readable grammar phonetics
     let formattedText = text
       .replace(/[#*_`~💡⚡🎯✨👋🤖🏆🥇🥈🥉]/g, '')
       .replace(/\[.*?\]\(.*?\)/g, '')
       .replace(/【วิธีคิด】/g, 'วิธีคิดครับ, ')
       .replace(/【.*?】/g, ', ')
+      // English Grammar Phonetics for Crystal Clear Thai TTS
+      .replace(/\bV\.inf\b|\bV\.infinitive\b/gi, 'กริยาช่องเดิมไม่ผัน')
+      .replace(/\bV\.ing\b/gi, 'กริยาเติม ไอเอ็นจี')
+      .replace(/\bV\.1\b|\bV1\b/gi, 'กริยาช่องหนึ่ง')
+      .replace(/\bV\.2\b|\bV2\b/gi, 'กริยาช่องสอง')
+      .replace(/\bV\.3\b|\bV3\b/gi, 'กริยาช่องสาม')
+      .replace(/\bS\s*\+\s*/g, 'ประธาน บวก ')
+      .replace(/\bS\s*\(/g, 'ประธาน (')
+      .replace(/\bIf-Clause\b/gi, 'อิฟ คลอส')
+      .replace(/\bQuestion Tag\b/gi, 'เควสชัน แท็ก')
+      .replace(/\bQuestion Tags\b/gi, 'เควสชัน แท็กส์')
+      .replace(/\bPresent Simple\b/gi, 'เพรสเซนต์ ซิมเปิล')
+      .replace(/\bPresent Continuous\b/gi, 'เพรสเซนต์ คอนทินิวอัส')
+      .replace(/\bPast Simple\b/gi, 'พาสต์ ซิมเปิล')
+      .replace(/\bPast Continuous\b/gi, 'พาสต์ คอนทินิวอัส')
+      .replace(/\bFuture Simple\b/gi, 'ฟิวเจอร์ ซิมเปิล')
+      .replace(/\bis\/am\/are\b/gi, 'อิส แอม อาร์')
+      .replace(/\bwas\/were\b/gi, 'วอส เวิร์')
+      .replace(/√(\d+)/g, 'สแควรูท $1')
+      .replace(/√/g, 'สแควรูท ')
+      .replace(/ห\.ร\.ม\./g, 'หอรอมอ')
+      .replace(/ค\.ร\.น\./g, 'คอรอนอ')
+      // Pauses
       .replace(/ครับ/g, 'ครับ, ')
       .replace(/ค่ะ/g, 'ค่ะ, ')
       .replace(/นะคร้าบ/g, 'นะคร้าบ, ')
