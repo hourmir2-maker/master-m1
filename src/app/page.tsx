@@ -121,16 +121,16 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
-                emoji: '🔢', subject: 'คณิตศาสตร์', color: 'from-orange-500 via-amber-500 to-yellow-500',
-                secret: '3-STEP ATTACK', modules: ['ตัวเลขและการดำเนินการ & ห.ร.ม./ค.ร.น.', 'เศษส่วน ทศนิยม และร้อยละ', 'พีชคณิตและสมการตัวแปรเดียว', 'เรขาคณิต พื้นที่ และปริมาตร', 'สถิติ แผนภูมิ และความน่าจะเป็น']
+                emoji: '🔢', subject: 'คณิตศาสตร์ (8 โมดูล)', color: 'from-orange-500 via-amber-500 to-yellow-500',
+                secret: 'สูตรลัดติดจรวด', modules: ['ตัวเลข การดำเนินการ & ห.ร.ม./ค.ร.น.', 'เศษส่วน ทศนิยม & คำนวณระคน', 'ร้อยละ กำไร-ขาดทุน & ดอกเบี้ย', 'พีชคณิต สมการ & โจทย์อายุ/เงิน', 'เรขาคณิต 2 มิติ & พื้นที่แรเงา', 'อัตราส่วน & มาตราส่วน (Ratio)', 'รูปทรง 3 มิติ & ปริมาตรความจุ', 'สถิติ แผนภูมิวงกลม & ความน่าจะเป็น']
               },
               {
-                emoji: '🔬', subject: 'วิทยาศาสตร์', color: 'from-red-500 via-orange-500 to-amber-500',
-                secret: 'SCIENCE DETECTIVE', modules: ['เซลล์และระบบสิ่งมีชีวิต', 'สารบริสุทธิ์และสารผสม / กรด-เบส', 'แรง การเคลื่อนที่ และ F=ma', 'พลังงาน ความร้อน และไฟฟ้า', 'โลก ดาราศาสตร์ และปรากฏการณ์ธรรมชาติ']
+                emoji: '🔬', subject: 'วิทยาศาสตร์ (8 โมดูล)', color: 'from-red-500 via-orange-500 to-amber-500',
+                secret: 'ทักษะวิทย์สสวท.', modules: ['เซลล์ พืช สัตว์ พันธุศาสตร์ & นิเวศ', 'สารบริสุทธิ์ สารผสม & แยกสาร', 'แรง การเคลื่อนที่ ความดัน & ลอยตัว', 'พลังงาน ความร้อน แสง เลนส์ & ไฟฟ้า', 'โลก ดาราศาสตร์ & ภัยธรรมชาติ', 'ร่างกายมนุษย์ & สารอาหาร (Health)', 'การเปลี่ยนแปลงกายภาพ & เคมี', 'ทักษะกระบวนการ & การทดลอง']
               },
               {
-                emoji: '🗣️', subject: 'ภาษาอังกฤษ', color: 'from-amber-500 via-orange-500 to-red-500',
-                secret: '3S METHOD', modules: ['Grammar Essentials & Tenses', 'Vocabulary Power & Roots', 'Reading Comprehension (Skim/Scan)', 'Everyday Communication & Listening', 'Sentence & Paragraph Writing']
+                emoji: '🗣️', subject: 'ภาษาอังกฤษ (8 โมดูล)', color: 'from-amber-500 via-orange-500 to-red-500',
+                secret: 'เทคนิค 3S Reading', modules: ['Grammar, Tenses, If-Clause & Tags', 'Vocabulary Power & Root Words', 'Reading Comprehension (Skim/Scan)', 'Everyday Polite Communication', 'Error Identification & Structure', 'Active vs Passive & Modal Verbs', 'Comparison & Conjunctions', 'Cloze Test & Paragraph Completion']
               },
             ].map((s, i) => (
               <Card key={i} className="overflow-hidden border-orange-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white">
