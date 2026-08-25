@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { 
   MessageCircle, 
   X, 
@@ -15,7 +15,9 @@ import {
   BookOpen,
   RotateCcw,
   Volume2,
-  VolumeX
+  VolumeX,
+  Mic,
+  MicOff
 } from 'lucide-react'
 
 interface Message {
@@ -36,6 +38,8 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [speakingId, setSpeakingId] = useState<string | null>(null)
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<any>(null)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -46,6 +50,59 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   ])
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Speech Recognition (Voice Input)
+  const toggleListening = () => {
+    if (typeof window === 'undefined') return
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      alert('เบราว์เซอร์นี้ไม่รองรับการสั่งการด้วยเสียงโดยตรง แต่คุณสามารถกดไอคอนไมโครโฟนบนแป้นพิมพ์โทรศัพท์ได้ตามปกติครับ! 🎙️')
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+      return
+    }
+
+    try {
+      const recognition = new SpeechRecognition()
+      recognition.lang = subject === 'english' ? 'en-US' : 'th-TH'
+      recognition.continuous = false
+      recognition.interimResults = true
+
+      recognition.onstart = () => {
+        setIsListening(true)
+      }
+
+      recognition.onresult = (event: any) => {
+        let transcript = ''
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript
+        }
+        if (transcript) {
+          setInput(transcript)
+        }
+      }
+
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error:', event.error)
+        setIsListening(false)
+      }
+
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+
+      recognitionRef.current = recognition
+      recognition.start()
+    } catch (err) {
+      console.warn('Voice input error:', err)
+      setIsListening(false)
+    }
+  }
 
   const stopSpeaking = () => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -339,6 +396,19 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
 
             {/* Input Bar */}
             <div className="p-3 bg-white border-t border-orange-100 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleListening}
+                className={`p-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center ${
+                  isListening
+                    ? 'bg-red-500 text-white animate-pulse shadow-red-500/50 ring-2 ring-red-400'
+                    : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200'
+                }`}
+                title={isListening ? 'แตะเพื่อหยุดฟัง' : 'แตะเพื่อพูดคำถาม'}
+              >
+                {isListening ? <MicOff className="w-4 h-4 animate-bounce" /> : <Mic className="w-4 h-4" />}
+              </button>
+
               <input
                 type="text"
                 value={input}
@@ -349,9 +419,12 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
                     handleSendMessage()
                   }
                 }}
-                placeholder="พิมพ์ถามข้อสงสัยกับครูพี่ AI ได้เลย..."
-                className="flex-1 text-xs sm:text-sm bg-orange-50/50 border border-orange-200 focus:border-orange-500 focus:bg-white focus:outline-none rounded-xl px-3.5 py-2.5 text-slate-800 placeholder-slate-400 transition-all"
+                placeholder={isListening ? '🔴 กำลังฟังเสียงพูด... (พูดเสร็จแตะปุ่มไมค์อีกครั้ง)' : 'พิมพ์หรือกดปุ่มไมค์เพื่อพูดถาม...'}
+                className={`flex-1 text-xs sm:text-sm border focus:border-orange-500 focus:bg-white focus:outline-none rounded-xl px-3.5 py-2.5 text-slate-800 placeholder-slate-400 transition-all ${
+                  isListening ? 'bg-red-50/60 border-red-300 text-red-900 font-medium' : 'bg-orange-50/50 border-orange-200'
+                }`}
               />
+
               <Button
                 onClick={() => handleSendMessage()}
                 disabled={!input.trim() || loading}
