@@ -13,7 +13,9 @@ import {
   HelpCircle, 
   Lightbulb, 
   BookOpen,
-  RotateCcw
+  RotateCcw,
+  Volume2,
+  VolumeX
 } from 'lucide-react'
 
 interface Message {
@@ -33,6 +35,7 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [speakingId, setSpeakingId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -43,6 +46,55 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   ])
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const stopSpeaking = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+      setSpeakingId(null)
+    }
+  }
+
+  const speakText = (id: string, text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+
+    if (speakingId === id) {
+      stopSpeaking()
+      return
+    }
+
+    stopSpeaking()
+
+    // Clean text for speech (remove markdown symbols and hashtags)
+    const cleanedText = text
+      .replace(/[#*_`~💡⚡🎯✨👋🤖]/g, '')
+      .replace(/\[.*?\]\(.*?\)/g, '')
+      .trim()
+
+    const utterance = new SpeechSynthesisUtterance(cleanedText)
+    
+    // Check language
+    const hasThai = /[ก-๙]/.test(cleanedText)
+    utterance.lang = hasThai ? 'th-TH' : 'en-US'
+    utterance.rate = 1.0
+    utterance.pitch = 1.05
+
+    utterance.onend = () => {
+      setSpeakingId(null)
+    }
+
+    utterance.onerror = () => {
+      setSpeakingId(null)
+    }
+
+    setSpeakingId(id)
+    window.speechSynthesis.speak(utterance)
+  }
+
+  useEffect(() => {
+    return () => {
+      stopSpeaking()
+    }
+  }, [])
 
   useEffect(() => {
     if (isOpen) {
@@ -200,11 +252,31 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
                   >
                     {m.content}
                     <div
-                      className={`text-[9px] mt-1.5 text-right font-normal ${
-                        m.role === 'user' ? 'text-orange-200' : 'text-slate-400'
+                      className={`text-[10px] mt-2 pt-1 border-t flex items-center justify-between font-normal ${
+                        m.role === 'user' ? 'text-orange-200 border-white/20' : 'text-slate-400 border-orange-100'
                       }`}
                     >
-                      {m.time}
+                      {m.role === 'assistant' ? (
+                        <button
+                          onClick={() => speakText(m.id, m.content)}
+                          className="inline-flex items-center gap-1 text-[11px] text-orange-600 hover:text-orange-700 font-bold bg-orange-50 hover:bg-orange-100 px-2 py-0.5 rounded-full transition-all"
+                        >
+                          {speakingId === m.id ? (
+                            <>
+                              <VolumeX className="w-3 h-3 text-red-600" />
+                              <span className="text-red-600">หยุดเสียง</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-3 h-3" />
+                              <span>🔊 ฟังเสียงอ่าน</span>
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <span />
+                      )}
+                      <span>{m.time}</span>
                     </div>
                   </div>
 
