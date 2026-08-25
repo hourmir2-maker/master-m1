@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Loader2, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Loader2, CheckCircle, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 
 const SUBJECT_CONFIG = {
-  math:    { label: 'คณิตศาสตร์', emoji: '🔢', color: 'bg-blue-100 text-blue-800' },
-  science: { label: 'วิทยาศาสตร์', emoji: '🔬', color: 'bg-green-100 text-green-800' },
-  english: { label: 'ภาษาอังกฤษ',  emoji: '🗣️', color: 'bg-purple-100 text-purple-800' },
+  math:    { label: 'คณิตศาสตร์', emoji: '🔢', color: 'bg-orange-100 text-orange-800 border-orange-200' },
+  science: { label: 'วิทยาศาสตร์', emoji: '🔬', color: 'bg-red-100 text-red-800 border-red-200' },
+  english: { label: 'ภาษาอังกฤษ',  emoji: '🗣️', color: 'bg-amber-100 text-amber-900 border-amber-200' },
 }
 
 export default function PreTestPage() {
@@ -26,7 +26,7 @@ export default function PreTestPage() {
 
   const questions = PRE_TEST_QUESTIONS
   const currentQ = questions[currentIndex]
-  const progress = (currentIndex / questions.length) * 100
+  const progress = ((currentIndex + 1) / questions.length) * 100
   const answeredCount = Object.keys(answers).length
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function PreTestPage() {
   const handleAnswer = (answer: string) => {
     setAnswers(prev => ({ ...prev, [currentQ.id]: answer }))
     if (currentIndex < questions.length - 1) {
-      setTimeout(() => setCurrentIndex(i => i + 1), 400)
+      setTimeout(() => setCurrentIndex(i => i + 1), 350)
     }
   }
 
@@ -67,7 +67,7 @@ export default function PreTestPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, results }),
       })
-      if (!res.ok) throw new Error('Analysis failed')
+      if (!res.ok) throw new Error('AI Analysis failed')
       router.push('/learning-path')
     } catch (err) {
       console.error(err)
@@ -81,90 +81,125 @@ export default function PreTestPage() {
   const isAnswered = !!answers[currentQ.id]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-red-50 flex items-center justify-center p-4 py-8">
       <div className="w-full max-w-2xl">
         {/* Progress Header */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <div>
-              <h2 className="text-lg font-bold text-gray-700">🧪 แบบทดสอบก่อนเรียน</h2>
-              <p className="text-xs text-gray-400">ตอบ {answeredCount}/{questions.length} ข้อ</p>
+        <div className="mb-5 bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-orange-100 shadow-sm">
+          <div className="flex justify-between items-center mb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🧪</span>
+              <div>
+                <h2 className="text-base font-extrabold text-slate-800">แบบทดสอบก่อนเรียน (Pre-Test)</h2>
+                <p className="text-xs text-orange-900/60 font-medium">ตอบแล้ว {answeredCount} จาก {questions.length} ข้อ</p>
+              </div>
             </div>
-            <span className="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
-              {currentIndex + 1} / {questions.length}
+            <span className="text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-3 py-1 rounded-full shadow-sm">
+              ข้อที่ {currentIndex + 1} / {questions.length}
             </span>
           </div>
-          <Progress value={progress} className="h-2" />
-          {/* Subject indicator dots */}
-          <div className="flex gap-1 mt-2">
+          
+          <Progress value={progress} className="h-2.5 bg-orange-100 [&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-red-600" />
+          
+          {/* Quick Nav dots */}
+          <div className="flex gap-1 mt-3 overflow-x-auto pb-1">
             {questions.map((q, i) => (
-              <div key={i}
+              <button
+                key={i}
                 onClick={() => setCurrentIndex(i)}
-                className={`h-1.5 flex-1 rounded-full cursor-pointer transition-colors ${
-                  answers[q.id] ? 'bg-indigo-500' :
-                  i === currentIndex ? 'bg-indigo-300' : 'bg-gray-200'
+                className={`h-2 flex-1 min-w-[12px] rounded-full transition-all ${
+                  answers[q.id] 
+                    ? 'bg-orange-500' 
+                    : i === currentIndex 
+                    ? 'bg-red-400 ring-2 ring-orange-300' 
+                    : 'bg-orange-200/60'
                 }`}
+                title={`ข้อที่ ${i+1}`}
               />
             ))}
           </div>
         </div>
 
         {/* Question Card */}
-        <Card className="shadow-xl border-0">
-          <CardHeader className="pb-3">
+        <Card className="shadow-xl border-orange-100 bg-white/95 backdrop-blur-md overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 h-1.5 w-full" />
+          <CardHeader className="pb-3 pt-5">
             <div className="flex items-center gap-2 mb-3">
-              <Badge className={subjectConfig.color}>
+              <Badge className={`${subjectConfig.color} border font-bold text-xs`}>
                 {subjectConfig.emoji} {subjectConfig.label}
               </Badge>
-              <Badge variant="outline" className="text-xs capitalize">{currentQ.difficulty}</Badge>
+              <Badge variant="outline" className="text-xs border-orange-200 text-orange-700 bg-orange-50/50 capitalize font-medium">
+                ระดับ: {currentQ.difficulty === 'basic' ? 'พื้นฐาน' : currentQ.difficulty === 'intermediate' ? 'ปานกลาง' : 'ท้าทาย'}
+              </Badge>
             </div>
-            <CardTitle className="text-lg font-semibold leading-relaxed text-gray-800">
+            <CardTitle className="text-lg md:text-xl font-bold leading-relaxed text-slate-800">
               {currentQ.question}
             </CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-3 pb-6">
             {currentQ.options.map((option, i) => {
               const isSelected = answers[currentQ.id] === option
               const letter = String.fromCharCode(65 + i)
               return (
-                <button key={i} onClick={() => handleAnswer(option)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all font-medium flex items-center gap-3
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(option)}
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all font-medium flex items-center gap-3.5
                     ${isSelected
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100'
-                      : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/50 text-gray-700'}`}
+                      ? 'border-orange-500 bg-orange-50/90 text-orange-950 shadow-md shadow-orange-500/10'
+                      : 'border-orange-100 bg-white hover:border-orange-300 hover:bg-orange-50/40 text-slate-700'}`}
                 >
-                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0
-                    ${isSelected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black flex-shrink-0
+                    ${isSelected ? 'bg-gradient-to-tr from-orange-500 to-red-500 text-white shadow-sm' : 'bg-orange-100/70 text-orange-800'}`}>
                     {letter}
                   </span>
-                  <span className="flex-1">{option}</span>
-                  {isSelected && <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />}
+                  <span className="flex-1 text-sm md:text-base font-semibold">{option}</span>
+                  {isSelected && <CheckCircle className="w-5 h-5 text-orange-600 flex-shrink-0" />}
                 </button>
               )
             })}
 
-            {/* Navigation */}
-            <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setCurrentIndex(i => Math.max(0, i - 1))} disabled={currentIndex === 0}>
-                <ChevronLeft className="w-4 h-4 mr-1" /> ย้อนกลับ
+            {/* Navigation Buttons */}
+            <div className="flex gap-3 pt-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 border-orange-200 text-orange-800 hover:bg-orange-50" 
+                onClick={() => setCurrentIndex(i => Math.max(0, i - 1))} 
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" /> ข้อก่อนหน้า
               </Button>
+
               {!isLastQuestion ? (
-                <Button className="flex-1 bg-indigo-600 hover:bg-indigo-700" onClick={() => setCurrentIndex(i => i + 1)} disabled={!isAnswered}>
-                  ถัดไป <ChevronRight className="w-4 h-4 ml-1" />
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold" 
+                  onClick={() => setCurrentIndex(i => i + 1)} 
+                  disabled={!isAnswered}
+                >
+                  ข้อถัดไป <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               ) : (
-                <Button className="flex-1 bg-green-600 hover:bg-green-700" onClick={handleSubmit}
-                  disabled={submitting || answeredCount < questions.length}>
-                  {submitting
-                    ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> AI กำลังวิเคราะห์...</>
-                    : '✅ ส่งคำตอบ → ดูแผนการเรียน'}
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-600/20" 
+                  onClick={handleSubmit}
+                  disabled={submitting || answeredCount < questions.length}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gemini กำลังวิเคราะห์ผล...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-1" /> ส่งคำตอบ → ให้ AI สร้างแผนการเรียน
+                    </>
+                  )}
                 </Button>
               )}
             </div>
 
             {isLastQuestion && answeredCount < questions.length && (
-              <p className="text-center text-sm text-orange-600 bg-orange-50 p-2 rounded-lg">
-                ⚠️ ยังตอบไม่ครบ ({answeredCount}/{questions.length}) — กรุณาตอบทุกข้อก่อนส่ง
+              <p className="text-center text-xs text-orange-800 bg-orange-100/70 p-2.5 rounded-xl border border-orange-200 font-semibold mt-2">
+                ⚠️ คุณยังตอบไม่ครบ ({answeredCount}/{questions.length} ข้อ) — กรุณาย้อนกลับไปตอบข้อที่เว้นไว้ให้ครบก่อนส่ง
               </p>
             )}
           </CardContent>
