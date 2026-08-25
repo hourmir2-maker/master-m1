@@ -89,9 +89,6 @@ export async function analyzePreTestResults(results: PreTestResults): Promise<Ai
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const geminiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-
     const prompt = `คุณคือครูผู้เชี่ยวชาญด้านการศึกษาสำหรับนักเรียนเตรียมเข้า ม.1 ในประเทศไทย
 
 ผลการทดสอบก่อนเรียน (Pre-Test):
@@ -107,20 +104,36 @@ export async function analyzePreTestResults(results: PreTestResults): Promise<Ai
   "priority_subject": "math หรือ science หรือ english",
   "overall_level": "basic หรือ intermediate หรือ advanced",
   "analysis": "วิเคราะห์จุดอ่อนและจุดแข็งโดยสรุป 2-3 ประโยค เป็นภาษาไทยเชิงบวกให้กำลังใจ",
-  "math_modules": ["numbers_basics", "fractions_decimals", "algebra_intro", "geometry", "statistics"],
-  "science_modules": ["living_things", "matter_properties", "force_motion", "energy", "earth_space"],
-  "english_modules": ["grammar_basics", "vocabulary", "reading", "listening_speaking", "writing"],
+  "math_modules": ["numbers_basics", "fractions_decimals", "percentages", "algebra_intro", "geometry", "ratio_proportion", "geometry_3d", "statistics_probability"],
+  "science_modules": ["living_things", "matter_properties", "force_motion", "energy", "earth_space", "human_body", "chemical_changes", "scientific_inquiry"],
+  "english_modules": ["grammar_basics", "vocabulary", "reading", "listening_speaking", "writing", "passive_modals", "comparison_conjunctions", "cloze_test"],
   "study_tips": ["เคล็ดลับที่ 1 พร้อมเทคนิค", "เคล็ดลับที่ 2", "เคล็ดลับที่ 3"],
   "estimated_weeks": 8
 }
 
 ตอบเฉพาะ JSON string ล้วนๆ ไม่มี markdown หรือข้อความอื่น`
 
-    const result = await geminiModel.generateContent(prompt)
-    const text = result.response.text()
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) throw new Error('Invalid AI response JSON format')
-    return JSON.parse(jsonMatch[0]) as AiAnalysisResult
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: 'application/json' }
+        })
+      }
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+      if (text) {
+        const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim()
+        return JSON.parse(cleanJson) as AiAnalysisResult
+      }
+    }
+    return generateSmartFallbackAnalysis(results)
   } catch (error) {
     console.error('Gemini API call failed, switching to Smart Expert Fallback:', error)
     return generateSmartFallbackAnalysis(results)
