@@ -16,6 +16,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import ReportModal from '@/components/ReportModal'
+import AiTutorChat from '@/components/AiTutorChat'
 import Footer from '@/components/Footer'
 import { 
   ArrowLeft, 
@@ -674,6 +675,13 @@ export default function LessonDetailPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Floating AI Tutor Chatbot */}
+      <AiTutorChat 
+        subject={subject} 
+        moduleId={moduleId} 
+        lessonTitle={lesson.title} 
+      />
 
       <Footer />
     </div>
