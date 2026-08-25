@@ -52,9 +52,9 @@ export default function DashboardPage() {
     : 0
 
   const getBadge = (count: number) => {
-    if (count >= 12) return { label: '💎 DIAMOND (ระดับหัวกะทิ)', color: 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-sm' }
-    if (count >= 8)  return { label: '🥇 GOLD (พร้อมสอบ ม.1)',     color: 'bg-amber-500 text-white shadow-sm' }
-    if (count >= 4)  return { label: '🥈 SILVER (กำลังไต่ระดับ)',   color: 'bg-orange-500 text-white shadow-sm' }
+    if (count >= 20) return { label: '💎 DIAMOND (ระดับหัวกะทิ)', color: 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-sm' }
+    if (count >= 14) return { label: '🥇 GOLD (พร้อมสอบ ม.1)',     color: 'bg-amber-500 text-white shadow-sm' }
+    if (count >= 8)  return { label: '🥈 SILVER (กำลังไต่ระดับ)',   color: 'bg-orange-500 text-white shadow-sm' }
     return                  { label: '🥉 BRONZE (เริ่มต้นเรียนรู้)', color: 'bg-orange-100 text-orange-900 border border-orange-200' }
   }
   const badge = getBadge(totalCompleted)
@@ -105,10 +105,10 @@ export default function DashboardPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'บทเรียนที่ผ่านแล้ว', value: `${totalCompleted} / 15`, color: 'text-orange-600', bg: 'bg-white border-orange-100' },
+            { label: 'บทเรียนที่ผ่านแล้ว', value: `${totalCompleted} / 24`, color: 'text-orange-600', bg: 'bg-white border-orange-100' },
             { label: 'คะแนนเฉลี่ยรวม', value: `${avgScore}%`, color: 'text-red-600', bg: 'bg-white border-orange-100' },
             { label: 'สถานะ Badge ปัจจุบัน', value: <Badge className={`${badge.color} text-[11px] font-bold py-0.5`}>{badge.label}</Badge>, color: '', bg: 'bg-white border-orange-100' },
-            { label: 'บทเรียนคงเหลือ', value: Math.max(0, 15 - totalCompleted), color: 'text-amber-600', bg: 'bg-white border-orange-100' },
+            { label: 'บทเรียนคงเหลือ', value: Math.max(0, 24 - totalCompleted), color: 'text-amber-600', bg: 'bg-white border-orange-100' },
           ].map((stat, i) => (
             <Card key={i} className={`border shadow-sm ${stat.bg} rounded-2xl`}>
               <CardContent className="pt-5 pb-4 text-center">
@@ -132,7 +132,7 @@ export default function DashboardPage() {
               color: 'text-orange-600', 
               gradient: 'from-orange-500 to-amber-500',
               border: 'border-orange-100',
-              secret: '3-STEP ATTACK'
+              secret: '8 โมดูล + สูตรลัดติดจรวด'
             },
             { 
               label: 'วิทยาศาสตร์', 
@@ -142,7 +142,7 @@ export default function DashboardPage() {
               color: 'text-red-600', 
               gradient: 'from-red-500 to-orange-500',
               border: 'border-red-100',
-              secret: 'SCIENCE DETECTIVE'
+              secret: '8 โมดูล + ทักษะวิทย์สสวท.'
             },
             { 
               label: 'ภาษาอังกฤษ', 
@@ -152,7 +152,7 @@ export default function DashboardPage() {
               color: 'text-amber-600', 
               gradient: 'from-amber-500 to-orange-500',
               border: 'border-amber-100',
-              secret: '3S METHOD'
+              secret: '8 โมดูล + เทคนิค 3S Reading'
             },
           ].map(s => (
             <Card key={s.label} className={`border ${s.border} shadow-md bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all`}>
@@ -166,10 +166,10 @@ export default function DashboardPage() {
               </div>
               
               <CardContent className="pt-5 pb-6">
-                <Progress value={(s.count / 5) * 100} className="mb-2 h-2.5 bg-orange-100 [&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-red-500" />
+                <Progress value={(s.count / 8) * 100} className="mb-2 h-2.5 bg-orange-100 [&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-red-500" />
                 <div className="flex justify-between text-xs text-slate-500 font-semibold mb-5">
-                  <span>ความคืบหน้า: {s.count}/5 โมดูล</span>
-                  <span className="font-bold text-orange-700">{Math.round((s.count / 5) * 100)}%</span>
+                  <span>ความคืบหน้า: {s.count}/8 โมดูล</span>
+                  <span className="font-bold text-orange-700">{Math.round((s.count / 8) * 100)}%</span>
                 </div>
                 
                 <Link href={s.href}>
