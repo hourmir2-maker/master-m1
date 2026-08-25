@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { LESSONS_DATA, LessonData } from '@/lib/lessons-data'
+import { LESSONS_DATA, LessonData, PracticeQuestion } from '@/lib/lessons-data'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,9 @@ import {
   ChevronRight, 
   Sparkles,
   HelpCircle,
-  RotateCcw
+  RotateCcw,
+  Loader2,
+  RefreshCw
 } from 'lucide-react'
 
 const SUBJECT_CONFIG: Record<string, { label: string; gradient: string; text: string; bg: string }> = {
@@ -38,11 +40,13 @@ export default function LessonDetailPage() {
   const lesson: LessonData | undefined = LESSONS_DATA[subject]?.[moduleId]
 
   const [currentTab, setCurrentTab] = useState<'content' | 'quiz'>('content')
+  const [questions, setQuestions] = useState<PracticeQuestion[]>(lesson?.practiceQuestions || [])
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
   const [submittedQuiz, setSubmittedQuiz] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
   const [savingProgress, setSavingProgress] = useState(false)
-  const [completed, setCompleted] = useState(false)
+  const [generatingAI, setGeneratingAI] = useState(false)
+  const [aiSource, setAiSource] = useState<string>('คลังข้อสอบมาตรฐาน (Curated Bank)')
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -50,7 +54,10 @@ export default function LessonDetailPage() {
         setUserId(data.user.id)
       }
     })
-  }, [])
+    if (lesson) {
+      setQuestions(lesson.practiceQuestions)
+    }
+  }, [subject, moduleId])
 
   if (!lesson) {
     return (
@@ -78,13 +85,13 @@ export default function LessonDetailPage() {
 
   const calculateScore = () => {
     let correct = 0
-    lesson.practiceQuestions.forEach(q => {
+    questions.forEach(q => {
       if (selectedAnswers[q.id] === q.correctAnswer) correct++
     })
     return {
       correct,
-      total: lesson.practiceQuestions.length,
-      percentage: Math.round((correct / lesson.practiceQuestions.length) * 100)
+      total: questions.length,
+      percentage: Math.round((correct / (questions.length || 1)) * 100)
     }
   }
 
@@ -95,7 +102,6 @@ export default function LessonDetailPage() {
 
     if (userId) {
       try {
-        // Safe check-then-upsert to prevent 409 Conflict
         const { data: existing } = await supabase
           .from('progress')
           .select('id')
@@ -129,12 +135,32 @@ export default function LessonDetailPage() {
       }
     }
     setSavingProgress(false)
-    setCompleted(true)
   }
 
   const resetQuiz = () => {
     setSelectedAnswers({})
     setSubmittedQuiz(false)
+  }
+
+  const handleGenerateAIQuiz = async () => {
+    setGeneratingAI(true)
+    resetQuiz()
+    try {
+      const res = await fetch('/api/lessons/generate-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, moduleId })
+      })
+      const data = await res.json()
+      if (data.questions && data.questions.length > 0) {
+        setQuestions(data.questions)
+        setAiSource('ชุดโจทย์ใหม่สังเคราะห์โดย Gemini AI 🤖')
+      }
+    } catch (err) {
+      console.warn('AI Quiz generator error:', err)
+    } finally {
+      setGeneratingAI(false)
+    }
   }
 
   const scoreResult = calculateScore()
@@ -161,7 +187,7 @@ export default function LessonDetailPage() {
         {/* Banner */}
         <div className={`bg-gradient-to-r ${subjectInfo.gradient} rounded-3xl p-6 sm:p-8 text-white mb-6 shadow-xl shadow-orange-500/20`}>
           <div className="flex items-center gap-2 text-xs font-bold text-orange-100 uppercase tracking-wide mb-1">
-            <span>{lesson.emoji}</span> บทเรียนเข้มข้น ม.1
+            <span>{lesson.emoji}</span> บทเรียนเข้มข้น & โจทย์แข่งขัน ม.1
           </div>
           <h1 className="text-2xl sm:text-3xl font-black">{lesson.title}</h1>
           <p className="text-orange-100 text-sm mt-1 font-medium">{lesson.subtitle}</p>
@@ -187,7 +213,7 @@ export default function LessonDetailPage() {
                 : 'text-slate-600 hover:text-orange-800'
             }`}
           >
-            <HelpCircle className="w-4 h-4" /> แบบฝึกหัดท้าทาย ({lesson.practiceQuestions.length} ข้อ)
+            <HelpCircle className="w-4 h-4" /> แบบฝึกหัดท้าทาย ({questions.length} ข้อ)
           </button>
         </div>
 
@@ -226,7 +252,7 @@ export default function LessonDetailPage() {
             <Card className="border border-orange-100 shadow-md bg-white rounded-3xl">
               <CardHeader className="pb-2 pt-6 px-6">
                 <CardTitle className="text-slate-800 font-bold text-base sm:text-lg flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-orange-600" /> สรุปประเด็นที่มักออกข้อสอบ
+                  <Sparkles className="w-5 h-5 text-orange-600" /> สรุปประเด็นและจุดดักในข้อสอบ
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-6 pb-6">
@@ -248,7 +274,7 @@ export default function LessonDetailPage() {
                 onClick={() => setCurrentTab('quiz')}
                 className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-105"
               >
-                📝 ทดลองทำแบบฝึกหัดท้ายบท <ChevronRight className="w-5 h-5 ml-1.5" />
+                📝 ทดลองทำแบบฝึกหัด {questions.length} ข้อ <ChevronRight className="w-5 h-5 ml-1.5" />
               </Button>
             </div>
           </div>
@@ -257,15 +283,54 @@ export default function LessonDetailPage() {
         {/* Tab 2: Interactive Practice Quiz */}
         {currentTab === 'quiz' && (
           <div className="space-y-6">
-            {lesson.practiceQuestions.map((q, qIndex) => {
+            {/* Header with AI Generator Button */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-2xl border border-orange-100 shadow-sm">
+              <div>
+                <span className="text-xs font-bold text-orange-700 block">แหล่งที่มาของข้อสอบ:</span>
+                <span className="text-xs text-slate-500 font-medium">{aiSource}</span>
+              </div>
+              
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleGenerateAIQuiz}
+                disabled={generatingAI}
+                className="border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs shadow-sm"
+              >
+                {generatingAI ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Gemini กำลังออกโจทย์ชุดใหม่...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> 🤖 สุ่มโจทย์ใหม่ด้วย AI
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {questions.map((q, qIndex) => {
               const isSelected = selectedAnswers[q.id]
               const isCorrect = isSelected === q.correctAnswer
 
               return (
-                <Card key={q.id} className="border border-orange-100 shadow-md bg-white rounded-3xl overflow-hidden">
+                <Card key={q.id || qIndex} className="border border-orange-100 shadow-md bg-white rounded-3xl overflow-hidden">
                   <CardHeader className="bg-orange-50/60 pb-3 pt-4 px-6 border-b border-orange-100/60">
-                    <span className="text-xs font-bold text-orange-700">คำถามข้อที่ {qIndex + 1}</span>
-                    <CardTitle className="text-base sm:text-lg font-bold text-slate-800 mt-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-orange-700">คำถามข้อที่ {qIndex + 1} จาก {questions.length}</span>
+                      {submittedQuiz && (
+                        isCorrect ? (
+                          <Badge className="bg-green-100 text-green-800 border-green-200 font-bold text-xs">
+                            ✓ ถูกต้อง (+1 คะแนน)
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-red-100 text-red-800 border-red-200 font-bold text-xs">
+                            ✗ ยังไม่ถูกต้อง
+                          </Badge>
+                        )
+                      )}
+                    </div>
+                    <CardTitle className="text-base sm:text-lg font-bold text-slate-800 mt-1 whitespace-pre-line leading-relaxed">
                       {q.question}
                     </CardTitle>
                   </CardHeader>
@@ -281,7 +346,7 @@ export default function LessonDetailPage() {
                           if (opt === q.correctAnswer) {
                             optionStyle = 'border-green-500 bg-green-50 text-green-900 font-bold'
                           } else if (isThisChosen && !isCorrect) {
-                            optionStyle = 'border-red-500 bg-red-50 text-red-900'
+                            optionStyle = 'border-red-500 bg-red-50 text-red-900 font-semibold'
                           }
                         } else if (isThisChosen) {
                           optionStyle = 'border-orange-500 bg-orange-50 text-orange-950 font-semibold shadow-sm'
@@ -312,13 +377,20 @@ export default function LessonDetailPage() {
                       })}
                     </div>
 
-                    {/* Show Explanation when submitted */}
+                    {/* Show Detailed Explanation and Tips when submitted */}
                     {submittedQuiz && (
-                      <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-xs sm:text-sm">
-                        <p className="font-bold text-amber-950 flex items-center gap-1.5 mb-1">
-                          💡 เฉลยละเอียด & แนวคิด:
-                        </p>
-                        <p className="text-slate-700 leading-relaxed font-medium">{q.explanation}</p>
+                      <div className="mt-4 space-y-2">
+                        <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-xs sm:text-sm">
+                          <p className="font-bold text-amber-950 flex items-center gap-1.5 mb-1.5">
+                            💡 เฉลยละเอียด & วิธีคิดทีละขั้นตอน:
+                          </p>
+                          <p className="text-slate-700 leading-relaxed font-medium whitespace-pre-line">{q.explanation}</p>
+                        </div>
+                        {q.tip && (
+                          <div className="p-3 rounded-xl bg-orange-100/70 border border-orange-200 text-xs text-orange-900 font-semibold">
+                            {q.tip}
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
@@ -332,34 +404,41 @@ export default function LessonDetailPage() {
                 <Button
                   size="lg"
                   onClick={handleFinishLesson}
-                  disabled={Object.keys(selectedAnswers).length < lesson.practiceQuestions.length}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-10 py-6 rounded-2xl shadow-xl shadow-orange-500/25 transition-all"
+                  disabled={Object.keys(selectedAnswers).length < questions.length}
+                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-10 py-6 rounded-2xl shadow-xl shadow-orange-500/25 transition-all hover:scale-105"
                 >
-                  {savingProgress ? 'กำลังบันทึกคะแนน...' : '✅ ส่งคำตอบ & ตรวจแบบฝึกหัด'}
+                  {savingProgress ? 'กำลังบันทึกคะแนน...' : `✅ ส่งคำตอบ & ตรวจแบบฝึกหัด (${Object.keys(selectedAnswers).length}/${questions.length})`}
                 </Button>
-                {Object.keys(selectedAnswers).length < lesson.practiceQuestions.length && (
-                  <p className="text-xs text-slate-400 mt-2">กรุณาตอบคำถามให้ครบทุกข้อก่อนตรวจ</p>
+                {Object.keys(selectedAnswers).length < questions.length && (
+                  <p className="text-xs text-slate-400 mt-2 font-medium">กรุณาตอบคำถามให้ครบทุกข้อ ({Object.keys(selectedAnswers).length}/{questions.length} ข้อ) ก่อนส่งตรวจ</p>
                 )}
               </div>
             ) : (
-              <Card className="border-2 border-orange-300 shadow-xl bg-gradient-to-br from-white via-orange-50/50 to-amber-50 rounded-3xl p-6 text-center">
-                <div className="text-4xl mb-2">🎉</div>
-                <h3 className="text-xl font-black text-slate-800 mb-1">ยอดเยี่ยมมาก! คุณเรียนจบโมดูลนี้แล้ว</h3>
+              <Card className="border-2 border-orange-300 shadow-xl bg-gradient-to-br from-white via-orange-50/50 to-amber-50 rounded-3xl p-6 sm:p-8 text-center">
+                <div className="text-5xl mb-2">🏆</div>
+                <h3 className="text-2xl font-black text-slate-800 mb-1">สรุปผลการทำแบบฝึกหัด</h3>
                 <p className="text-sm text-slate-600 mb-4">
-                  คะแนนแบบฝึกหัด: <span className="font-bold text-orange-600 text-lg">{scoreResult.correct} / {scoreResult.total}</span> ({scoreResult.percentage}%)
+                  ทำได้ถูกต้อง: <span className="font-black text-orange-600 text-xl">{scoreResult.correct} จาก {scoreResult.total} ข้อ</span> ({scoreResult.percentage}%)
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button
                     variant="outline"
                     onClick={resetQuiz}
-                    className="border-orange-200 text-orange-800 hover:bg-orange-50 font-semibold"
+                    className="border-orange-200 text-orange-800 hover:bg-orange-50 font-bold"
                   >
-                    <RotateCcw className="w-4 h-4 mr-1.5" /> ลองทำใหม่อีกครั้ง
+                    <RotateCcw className="w-4 h-4 mr-1.5" /> ลองทำข้อสอบชุดนี้ซ้ำ
+                  </Button>
+                  <Button
+                    onClick={handleGenerateAIQuiz}
+                    disabled={generatingAI}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-md shadow-orange-500/20"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-1.5" /> สุ่มโจทย์ชุดใหม่ด้วย AI
                   </Button>
                   <Link href={`/subjects/${subject}`}>
                     <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md shadow-orange-500/20">
-                      <Trophy className="w-4 h-4 mr-1.5" /> สำเร็จโมดูลนี้แล้ว กลับสู่หน้ารายวิชา
+                      <Trophy className="w-4 h-4 mr-1.5" /> กลับสู่หน้ารายวิชา
                     </Button>
                   </Link>
                 </div>
