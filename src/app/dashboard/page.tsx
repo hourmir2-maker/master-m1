@@ -18,14 +18,19 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const load = async () => {
-      const { data: authData } = await supabase.auth.getUser()
-      if (!authData.user) { router.push('/login'); return }
+      try {
+        const { data: authData } = await supabase.auth.getUser()
+        if (!authData.user) { router.push('/login'); return }
 
-      const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).single()
-      setUser(profile || { full_name: authData.user.user_metadata?.full_name || 'นักเรียน' })
+        // Use maybeSingle to prevent 406 Not Acceptable error
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).maybeSingle()
+        setUser(profile || { full_name: authData.user.user_metadata?.full_name || 'นักเรียน', school_target: authData.user.user_metadata?.school_target || 'โรงเรียนในฝัน' })
 
-      const { data: prog } = await supabase.from('progress').select('*').eq('user_id', authData.user.id)
-      setProgressData(prog || [])
+        const { data: prog } = await supabase.from('progress').select('*').eq('user_id', authData.user.id)
+        setProgressData(prog || [])
+      } catch (err) {
+        console.warn('Dashboard load warning:', err)
+      }
     }
     load()
   }, [])
@@ -69,7 +74,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-slate-700 text-xs sm:text-sm font-semibold hidden sm:inline-block">
-              👋 สวัสดี, <span className="text-orange-600 font-bold">{user?.full_name}</span>
+              👋 สวัสดี, <span className="text-orange-600 font-bold">{user?.full_name || 'นักเรียน'}</span>
             </span>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-red-600 hover:bg-red-50">
               <LogOut className="w-4 h-4 mr-1.5" /> ออกจากระบบ

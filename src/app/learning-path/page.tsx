@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Loader2, Brain, BookOpen, ChevronRight, Star, Sparkles, ArrowRight } from 'lucide-react'
+import { Loader2, Brain, BookOpen, ChevronRight, Star, Sparkles, ArrowRight, FlaskConical } from 'lucide-react'
 import { AiAnalysis } from '@/types'
 
 const MODULE_LABELS: Record<string, string> = {
@@ -41,32 +41,71 @@ const LEVEL_LABELS: Record<string, { label: string; color: string }> = {
   advanced:     { label: 'ระดับสูง (ติวเข้มห้องพิเศษ/กิฟต์เต็ด)', color: 'bg-red-100 text-red-900 border-red-200' },
 }
 
+const DEFAULT_ANALYSIS: AiAnalysis = {
+  priority_subject: 'math',
+  overall_level: 'intermediate',
+  analysis: 'ยินดีต้อนรับสู่หลักสูตร MASTER ม.1! ระบบได้จัดเตรียมเส้นทางการเรียนรู้ 3 วิชาหลัก พร้อมสูตรลับและเทคนิคเฉพาะบุคคล เพื่อให้คุณพร้อมที่สุดสำหรับทุกสนามสอบ',
+  math_modules: ['numbers_basics', 'fractions_decimals', 'algebra_intro', 'geometry', 'statistics'],
+  science_modules: ['living_things', 'matter_properties', 'force_motion', 'energy', 'earth_space'],
+  english_modules: ['grammar_basics', 'vocabulary', 'reading', 'listening_speaking', 'writing'],
+  study_tips: [
+    'คณิตศาสตร์: ใช้สูตร 3-STEP ATTACK โดยเริ่มจากการวาดภาพหรือแปลงโจทย์เป็นตารางก่อนลงมือคิด',
+    'วิทยาศาสตร์: ใช้เทคนิค SCIENCE DETECTIVE เน้นแยกตัวแปรต้น ตัวแปรตาม และมองหาความสัมพันธ์เหตุ-ผล',
+    'ภาษาอังกฤษ: ใช้ 3S METHOD โดย Skim อ่านภาพรวม Scan หา Keyword และเช็คโครงสร้างประโยค SVOP'
+  ],
+  estimated_weeks: 8
+}
+
 export default function LearningPathPage() {
   const router = useRouter()
   const supabase = createClient()
   const [path, setPath] = useState<{ math_modules: string[]; science_modules: string[]; english_modules: string[]; analysis: AiAnalysis } | null>(null)
   const [loading, setLoading] = useState(true)
   const [userName, setUserName] = useState('')
+  const [hasPreTest, setHasPreTest] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      const { data: authData } = await supabase.auth.getUser()
-      if (!authData.user) { router.push('/login'); return }
+      try {
+        const { data: authData } = await supabase.auth.getUser()
+        if (!authData.user) { router.push('/login'); return }
 
-      const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', authData.user.id).single()
-      setUserName(profile?.full_name || 'นักเรียน')
+        // Use maybeSingle to prevent 406 Not Acceptable error
+        const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', authData.user.id).maybeSingle()
+        setUserName(profile?.full_name || authData.user.user_metadata?.full_name || 'นักเรียน')
 
-      const { data: pathData } = await supabase.from('learning_paths').select('*').eq('user_id', authData.user.id).single()
-      if (pathData) {
-        const analysis = (typeof pathData.ai_analysis === 'string' ? JSON.parse(pathData.ai_analysis) : pathData.ai_analysis) as AiAnalysis
-        setPath({ 
-          math_modules: pathData.math_modules || [], 
-          science_modules: pathData.science_modules || [], 
-          english_modules: pathData.english_modules || [], 
-          analysis 
+        const { data: pathData } = await supabase.from('learning_paths').select('*').eq('user_id', authData.user.id).maybeSingle()
+        
+        if (pathData) {
+          const analysis = (typeof pathData.ai_analysis === 'string' ? JSON.parse(pathData.ai_analysis) : pathData.ai_analysis) as AiAnalysis
+          setPath({ 
+            math_modules: pathData.math_modules || DEFAULT_ANALYSIS.math_modules, 
+            science_modules: pathData.science_modules || DEFAULT_ANALYSIS.science_modules, 
+            english_modules: pathData.english_modules || DEFAULT_ANALYSIS.english_modules, 
+            analysis: analysis || DEFAULT_ANALYSIS 
+          })
+          setHasPreTest(true)
+        } else {
+          // If no pre-test yet, provide default path
+          setPath({
+            math_modules: DEFAULT_ANALYSIS.math_modules,
+            science_modules: DEFAULT_ANALYSIS.science_modules,
+            english_modules: DEFAULT_ANALYSIS.english_modules,
+            analysis: DEFAULT_ANALYSIS
+          })
+          setHasPreTest(false)
+        }
+      } catch (err) {
+        console.warn('Learning path load warning:', err)
+        setPath({
+          math_modules: DEFAULT_ANALYSIS.math_modules,
+          science_modules: DEFAULT_ANALYSIS.science_modules,
+          english_modules: DEFAULT_ANALYSIS.english_modules,
+          analysis: DEFAULT_ANALYSIS
         })
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     load()
   }, [])
@@ -75,8 +114,8 @@ export default function LearningPathPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-amber-50 to-red-50">
       <div className="text-center bg-white/80 p-8 rounded-3xl border border-orange-100 shadow-xl backdrop-blur-md">
         <Loader2 className="w-12 h-12 animate-spin text-orange-600 mx-auto mb-4" />
-        <p className="text-slate-800 font-bold text-lg">Gemini AI กำลังสังเคราะห์แผนการเรียน...</p>
-        <p className="text-slate-500 text-sm mt-1">กำลังจัดสรรเนื้อหาและสูตรลับให้ตรงกับระดับของคุณ</p>
+        <p className="text-slate-800 font-bold text-lg">กำลังโหลดแผนการเรียนรู้...</p>
+        <p className="text-slate-500 text-sm mt-1">เตรียมความพร้อมสู่ความสำเร็จ</p>
       </div>
     </div>
   )
@@ -86,7 +125,7 @@ export default function LearningPathPage() {
       key: 'math', 
       label: 'คณิตศาสตร์', 
       emoji: '🔢', 
-      modules: path?.math_modules || [], 
+      modules: path?.math_modules || DEFAULT_ANALYSIS.math_modules, 
       href: '/subjects/math', 
       color: 'border-orange-200 bg-orange-50/50', 
       btnColor: 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600',
@@ -96,7 +135,7 @@ export default function LearningPathPage() {
       key: 'science', 
       label: 'วิทยาศาสตร์', 
       emoji: '🔬', 
-      modules: path?.science_modules || [], 
+      modules: path?.science_modules || DEFAULT_ANALYSIS.science_modules, 
       href: '/subjects/science', 
       color: 'border-red-200 bg-red-50/50', 
       btnColor: 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600',
@@ -106,7 +145,7 @@ export default function LearningPathPage() {
       key: 'english', 
       label: 'ภาษาอังกฤษ', 
       emoji: '🗣️', 
-      modules: path?.english_modules || [], 
+      modules: path?.english_modules || DEFAULT_ANALYSIS.english_modules, 
       href: '/subjects/english', 
       color: 'border-amber-200 bg-amber-50/50', 
       btnColor: 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600',
@@ -114,8 +153,8 @@ export default function LearningPathPage() {
     },
   ]
 
-  const analysis = path?.analysis
-  const levelInfo = analysis ? LEVEL_LABELS[analysis.overall_level] : null
+  const analysis = path?.analysis || DEFAULT_ANALYSIS
+  const levelInfo = LEVEL_LABELS[analysis.overall_level] || LEVEL_LABELS.intermediate
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-red-50 p-4 pb-16">
@@ -128,58 +167,68 @@ export default function LearningPathPage() {
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">
             แผนเตรียมตัวสอบเข้า ม.1 ของ {userName} 🎯
           </h1>
-          <p className="text-slate-600 text-sm">วิเคราะห์โดย Gemini AI เพื่ออุดจุดอ่อนและเสริมจุดแข็งให้พร้อมที่สุด</p>
+          <p className="text-slate-600 text-sm">วิเคราะห์และออกแบบเพื่ออุดจุดอ่อนและเสริมจุดแข็งให้พร้อมที่สุด</p>
+          
+          {!hasPreTest && (
+            <div className="mt-4 bg-orange-100/90 border border-orange-200 rounded-2xl p-4 max-w-lg mx-auto flex items-center justify-between gap-3 text-left">
+              <div>
+                <p className="text-xs font-bold text-orange-950">💡 ยังไม่ได้ทำแบบทดสอบวัดระดับ (Pre-Test)?</p>
+                <p className="text-[11px] text-orange-800">ทำแบบทดสอบ 30 ข้อ เพื่อให้ AI ปรับแผนให้แม่นยำยิ่งขึ้น</p>
+              </div>
+              <Link href="/pre-test">
+                <Button size="sm" className="bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold text-xs flex-shrink-0 shadow-sm">
+                  <FlaskConical className="w-3.5 h-3.5 mr-1" /> ทำ Pre-Test
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* AI Analysis Card */}
-        {analysis && (
-          <Card className="mb-8 border-orange-100 shadow-xl bg-white/95 backdrop-blur-md overflow-hidden">
-            <div className="bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 p-1" />
-            <CardHeader className="pb-3 pt-5">
-              <CardTitle className="flex items-center gap-2.5 text-slate-900 text-lg sm:text-xl font-black">
-                <div className="bg-gradient-to-tr from-orange-500 to-red-500 text-white p-2 rounded-xl shadow-md shadow-orange-500/20">
-                  <Brain className="w-5 h-5" />
-                </div>
-                บทวิเคราะห์และข้อแนะนำจาก AI
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 pb-6">
-              <p className="text-slate-700 leading-relaxed text-sm sm:text-base font-medium bg-orange-50/60 p-4 rounded-2xl border border-orange-100">
-                {analysis.analysis}
-              </p>
-              
-              <div className="flex flex-wrap gap-2.5 pt-1">
-                <Badge className="bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold px-3 py-1 text-xs shadow-sm">
-                  ⚡ วิชาที่ต้องเร่งพัฒนา: {PRIORITY_LABELS[analysis.priority_subject] || analysis.priority_subject}
-                </Badge>
-                {levelInfo && (
-                  <Badge className={`${levelInfo.color} border font-bold px-3 py-1 text-xs`}>
-                    {levelInfo.label}
-                  </Badge>
-                )}
-                <Badge variant="outline" className="border-orange-200 text-orange-900 bg-orange-50 font-semibold px-3 py-1 text-xs">
-                  ⏱️ ระยะเวลาแนะนำ: {analysis.estimated_weeks || 10} สัปดาห์
-                </Badge>
+        <Card className="mb-8 border-orange-100 shadow-xl bg-white/95 backdrop-blur-md overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 p-1" />
+          <CardHeader className="pb-3 pt-5">
+            <CardTitle className="flex items-center gap-2.5 text-slate-900 text-lg sm:text-xl font-black">
+              <div className="bg-gradient-to-tr from-orange-500 to-red-500 text-white p-2 rounded-xl shadow-md shadow-orange-500/20">
+                <Brain className="w-5 h-5" />
               </div>
+              บทวิเคราะห์และข้อแนะนำจาก AI
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 pb-6">
+            <p className="text-slate-700 leading-relaxed text-sm sm:text-base font-medium bg-orange-50/60 p-4 rounded-2xl border border-orange-100">
+              {analysis.analysis}
+            </p>
+            
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              <Badge className="bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold px-3 py-1 text-xs shadow-sm">
+                ⚡ วิชาที่ต้องเร่งพัฒนา: {PRIORITY_LABELS[analysis.priority_subject] || analysis.priority_subject}
+              </Badge>
+              <Badge className={`${levelInfo.color} border font-bold px-3 py-1 text-xs`}>
+                {levelInfo.label}
+              </Badge>
+              <Badge variant="outline" className="border-orange-200 text-orange-900 bg-orange-50 font-semibold px-3 py-1 text-xs">
+                ⏱️ ระยะเวลาแนะนำ: {analysis.estimated_weeks || 8} สัปดาห์
+              </Badge>
+            </div>
 
-              {analysis.study_tips && analysis.study_tips.length > 0 && (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200/80 mt-4">
-                  <p className="font-bold text-amber-950 text-sm mb-3 flex items-center gap-1.5">
-                    <Star className="w-4 h-4 text-orange-600 fill-orange-500" /> กลยุทธ์และสูตรลับการอ่านหนังสือสำหรับคุณ:
-                  </p>
-                  <ul className="space-y-2">
-                    {analysis.study_tips.map((tip: string, i: number) => (
-                      <li key={i} className="text-xs sm:text-sm text-slate-700 flex items-start gap-2 font-medium">
-                        <span className="text-orange-500 font-bold">•</span>
-                        <span>{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+            {analysis.study_tips && analysis.study_tips.length > 0 && (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200/80 mt-4">
+                <p className="font-bold text-amber-950 text-sm mb-3 flex items-center gap-1.5">
+                  <Star className="w-4 h-4 text-orange-600 fill-orange-500" /> กลยุทธ์และสูตรลับการอ่านหนังสือสำหรับคุณ:
+                </p>
+                <ul className="space-y-2">
+                  {analysis.study_tips.map((tip: string, i: number) => (
+                    <li key={i} className="text-xs sm:text-sm text-slate-700 flex items-start gap-2 font-medium">
+                      <span className="text-orange-500 font-bold">•</span>
+                      <span>{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Subject Cards */}
         <div className="space-y-4 mb-8">
@@ -196,15 +245,11 @@ export default function LearningPathPage() {
                       <span className="text-2xl">{s.emoji}</span> {s.label}
                     </h3>
                     <div className="flex flex-wrap gap-1.5 mb-3">
-                      {s.modules.length > 0 ? (
-                        s.modules.map((m: string) => (
-                          <Badge key={m} variant="outline" className={`${s.badgeColor} text-xs font-semibold`}>
-                            {MODULE_LABELS[m] || m}
-                          </Badge>
-                        ))
-                      ) : (
-                        <span className="text-xs text-slate-400">ครบทุกโมดูลมาตรฐาน</span>
-                      )}
+                      {s.modules.map((m: string) => (
+                        <Badge key={m} variant="outline" className={`${s.badgeColor} text-xs font-semibold`}>
+                          {MODULE_LABELS[m] || m}
+                        </Badge>
+                      ))}
                     </div>
                     <div>
                       <Progress value={((s.modules.length || 5) / 5) * 100} className="h-1.5 bg-orange-100 [&>div]:bg-orange-500" />
