@@ -32,35 +32,22 @@ export async function POST(req: NextRequest) {
       .map((m: ChatMessage) => `${m.role === 'user' ? 'นักเรียน' : 'ครูพี่ AI'}: ${m.content}`)
       .join('\n')
 
-    // Build rich context from lesson data
-    let lessonContextText = `วิชา: ${subjectName}\nหน่วยการเรียนรู้: ${currentLesson?.title || lessonTitle || moduleId}`
-    if (currentLesson?.secretFormula) {
-      lessonContextText += `\nสูตรลับประจำบท (${currentLesson.secretFormula.name}): ${currentLesson.secretFormula.concept}`
-      lessonContextText += `\nเทคนิคคิดเร็ว:\n- ${currentLesson.secretFormula.steps.join('\n- ')}`
-    }
-    if (currentLesson?.summaryPoints) {
-      lessonContextText += `\nจุดสรุปสำคัญ:\n- ${currentLesson.summaryPoints.join('\n- ')}`
-    }
-
-    const systemPrompt = `คุณคือ "ครูพี่ AI (MASTER ม.1 Tutor)" ติวเตอร์ผู้เชี่ยวชาญการสอนเด็กนักเรียน ป.6 เตรียมสอบเข้า ม.1 โรงเรียนชื่อดังทั่วประเทศ
+    const systemInstruction = `คุณคือ "ครูพี่ AI (MASTER ม.1 Tutor)" ติวเตอร์ผู้เชี่ยวชาญการสอนเด็กนักเรียน ป.6 เตรียมสอบเข้า ม.1 โรงเรียนชื่อดังทั่วประเทศ
 
 📚 คลังความรู้มาตรฐานหลักสูตร สพฐ. & ทฤษฎีสากล (Official Knowledge Base):
 ${curriculumContext}
 
 บทเรียนปัจจุบัน:
-${lessonContextText}
+วิชา: ${subjectName} | หน่วยการเรียนรู้: ${currentLesson?.title || lessonTitle || moduleId}
 
-ประวัติการสนทนาล่าสุด:
-${recentHistory}
+กติกาสำคัญในการตอบ:
+1. ทุกคำตอบต้องเป็น "คำอธิบายที่สมบูรณ์และชัดเจนในตัวเอง" (Complete Standalone Explanation) มีหัวข้อ ความหมาย ขั้นตอน ตัวอย่าง และจุดเน้นข้อสอบ
+2. ห้ามตอบตัดทอนประโยค หรือตอบเริ่มกลางประโยคเด็ดขาด
+3. อธิบายแบบย่อยง่าย ภาษาอบอุ่น เหมาะกับเด็ก ป.6 เตรียมสอบเข้า ม.1
+4. หากเป็นภาษาอังกฤษ: แปลคำย่อ (V.1 = กริยาช่อง 1, S = ประธาน) เสมอ`
 
-คำถามล่าสุดของนักเรียน: "${lastUserQuery}"
-
-คำสั่งสำคัญสำหรับการตอบ (Strict Grounding):
-1. ตอบคำถามที่นักเรียนถามล่าสุด ("${lastUserQuery}") ให้ตรงประเด็นและเจาะลึก โดยอ้างอิงจากหลักสูตรและทฤษฎีในคลังความรู้ข้างต้น 100%
-2. อธิบายแบบย่อยง่าย สำหรับเด็ก ป.6 ทีละสเต็ป พร้อมยกตัวอย่างประโยค/โจทย์ 1-2 ข้อให้เห็นภาพชัดเจน
-3. หากเป็นภาษาอังกฤษ: แปลคำย่อ (เช่น V.1 = กริยาช่อง 1, S = ประธาน) และอธิบายกฎจำง่ายๆ
-4. เสริมด้วยเทคนิคคิดเร็ว หรือจุดลวงที่ข้อสอบคัดเลือกชอบหลอกเสมอ
-5. ปิดท้ายด้วยคำพูดให้กำลังใจอบอุ่น 1 บรรทัด`
+    const userPrompt = `คำถามของนักเรียน: "${lastUserQuery}"
+กรุณาอธิบายเรื่องนี้ให้นักเรียนเข้าใจอย่างละเอียด เห็นภาพชัดเจน มีขั้นตอน ตัวอย่าง และจุดที่ข้อสอบชอบหลอกครับ`
 
     const apiKey = process.env.GEMINI_API_KEY
 
@@ -74,12 +61,16 @@ ${recentHistory}
             body: JSON.stringify({
               contents: [
                 {
-                  parts: [{ text: systemPrompt }]
+                  role: 'user',
+                  parts: [{ text: userPrompt }]
                 }
               ],
+              systemInstruction: {
+                parts: [{ text: systemInstruction }]
+              },
               generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 1000
+                maxOutputTokens: 1500
               }
             })
           }
