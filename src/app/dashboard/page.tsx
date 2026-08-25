@@ -27,8 +27,49 @@ export default function DashboardPage() {
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).maybeSingle()
         setUser(profile || { full_name: authData.user.user_metadata?.full_name || 'นักเรียน', school_target: authData.user.user_metadata?.school_target || 'โรงเรียนในฝัน' })
 
+        // Fetch Supabase cloud progress
         const { data: prog } = await supabase.from('progress').select('*').eq('user_id', authData.user.id)
-        setProgressData(prog || [])
+        const cloudProgress = prog || []
+
+        // Fetch LocalStorage offline progress
+        let localProgress: Array<{ subject: string; moduleId?: string; module_id?: string; completed: boolean; score?: number }> = []
+        try {
+          const stored = localStorage.getItem('master_m1_progress')
+          if (stored) {
+            localProgress = JSON.parse(stored).map((item: any) => ({
+              subject: item.subject,
+              module_id: item.moduleId || item.module_id,
+              completed: item.completed,
+              score: item.score
+            }))
+          }
+        } catch (lsErr) {
+          console.warn('LocalStorage load warning:', lsErr)
+        }
+
+        // Merge deduplicating by subject + module_id (prefer highest score)
+        const mergedMap = new Map<string, { subject: string; module_id: string; completed: boolean; score?: number }>()
+        
+        cloudProgress.forEach(p => {
+          const key = `${p.subject}_${p.module_id}`
+          mergedMap.set(key, { subject: p.subject, module_id: p.module_id, completed: p.completed, score: p.score })
+        })
+
+        localProgress.forEach(p => {
+          const key = `${p.subject}_${p.module_id}`
+          if (mergedMap.has(key)) {
+            const existing = mergedMap.get(key)!
+            mergedMap.set(key, {
+              ...existing,
+              completed: existing.completed || p.completed,
+              score: Math.max(existing.score || 0, p.score || 0)
+            })
+          } else {
+            mergedMap.set(key, { subject: p.subject, module_id: p.module_id || '', completed: p.completed, score: p.score })
+          }
+        })
+
+        setProgressData(Array.from(mergedMap.values()))
       } catch (err) {
         console.warn('Dashboard load warning:', err)
       }

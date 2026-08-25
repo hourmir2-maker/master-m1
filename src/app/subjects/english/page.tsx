@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -82,6 +83,26 @@ const ENGLISH_MODULES = [
 ]
 
 export default function EnglishPage() {
+  const [completedModules, setCompletedModules] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('master_m1_progress')
+      if (stored) {
+        const list = JSON.parse(stored)
+        const map: Record<string, number> = {}
+        list.forEach((item: any) => {
+          if (item.subject === 'english' && item.completed) {
+            map[item.moduleId || item.module_id] = item.score || 100
+          }
+        })
+        setCompletedModules(map)
+      }
+    } catch (e) {
+      console.warn('Error reading progress:', e)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-red-50 p-4 pb-16">
       <div className="max-w-3xl mx-auto">
@@ -96,7 +117,7 @@ export default function EnglishPage() {
           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 sm:p-8 text-white mb-6 shadow-xl shadow-amber-500/20">
             <div className="text-5xl mb-2">🗣️</div>
             <h1 className="text-2xl sm:text-3xl font-black">ภาษาอังกฤษเตรียมสอบเข้า ม.1</h1>
-            <p className="text-orange-100 text-sm mt-1 font-medium">5 โมดูลเข้มข้น • 19 บทเรียนพร้อมเทคนิควิเคราะห์โครงสร้างประโยค</p>
+            <p className="text-orange-100 text-sm mt-1 font-medium">8 โมดูลเข้มข้น • 40 ข้อสอบพร้อมเทคนิค 3S Reading & Grammar</p>
           </div>
 
           {/* Secret Technique Box */}
@@ -124,38 +145,48 @@ export default function EnglishPage() {
 
         {/* Modules List */}
         <div className="space-y-4">
-          {ENGLISH_MODULES.map((mod, i) => (
-            <Card key={mod.id} className="border border-orange-100 shadow-md hover:shadow-lg transition-all bg-white rounded-2xl overflow-hidden hover:border-orange-300">
-              <CardContent className="p-5 sm:p-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
-                      {mod.emoji}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                        <span className="text-xs font-bold text-amber-700">โมดูลที่ {i+1}</span>
-                        <h3 className="font-bold text-base sm:text-lg text-slate-800">{mod.title}</h3>
-                        <Badge variant="outline" className={`${mod.badgeColor} text-[11px] font-bold`}>
-                          {mod.difficulty}
-                        </Badge>
+          {ENGLISH_MODULES.map((mod, i) => {
+            const isPassed = completedModules[mod.id] !== undefined
+            const score = completedModules[mod.id]
+
+            return (
+              <Card key={mod.id} className={`border ${isPassed ? 'border-green-300 bg-green-50/20' : 'border-orange-100 bg-white'} shadow-md hover:shadow-lg transition-all rounded-2xl overflow-hidden hover:border-orange-300`}>
+                <CardContent className="p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className={`w-12 h-12 rounded-2xl ${isPassed ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'} flex items-center justify-center text-2xl flex-shrink-0 shadow-sm`}>
+                        {isPassed ? '✅' : mod.emoji}
                       </div>
-                      <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">{mod.desc}</p>
-                      <p className="text-[11px] text-amber-800 font-bold mt-2 flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" /> {mod.lessons} บทเรียนย่อย • ครอบคลุมทั้ง Grammar, Vocab และ Reading
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span className="text-xs font-bold text-amber-700">โมดูลที่ {i+1}</span>
+                          <h3 className="font-bold text-base sm:text-lg text-slate-800">{mod.title}</h3>
+                          <Badge variant="outline" className={`${mod.badgeColor} text-[11px] font-bold`}>
+                            {mod.difficulty}
+                          </Badge>
+                          {isPassed && (
+                            <Badge className="bg-green-600 text-white text-[11px] font-bold py-0.5 shadow-sm">
+                              ✓ ผ่านแล้ว ({score}%)
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">{mod.desc}</p>
+                        <p className="text-[11px] text-amber-800 font-bold mt-2 flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" /> {mod.lessons} บทเรียนย่อย • ครอบคลุมทั้ง Grammar, Vocab และ Reading
+                        </p>
+                      </div>
                     </div>
+                    
+                    <Link href={`/subjects/english/${mod.id}`} className="w-full sm:w-auto">
+                      <Button className={`w-full sm:w-auto ${isPassed ? 'bg-green-600 hover:bg-green-700' : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'} text-white font-bold shadow-md shadow-amber-500/20 flex-shrink-0`}>
+                        {isPassed ? 'ทบทวน / ทำซ้ำ' : 'เริ่มเรียน'} <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </Link>
                   </div>
-                  
-                  <Link href={`/subjects/english/${mod.id}`} className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-md shadow-amber-500/20 flex-shrink-0">
-                      เริ่มเรียน <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       </div>
       <Footer />

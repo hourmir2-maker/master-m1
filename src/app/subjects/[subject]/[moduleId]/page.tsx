@@ -135,23 +135,53 @@ export default function LessonDetailPage() {
     const scoreObj = calculateScore()
     setSavingProgress(true)
 
-    if (userId) {
-      try {
+    // 1. Always save to LocalStorage for instant and reliable offline/client persistence
+    try {
+      const stored = localStorage.getItem('master_m1_progress')
+      const progressList: Array<{ subject: string; moduleId: string; score: number; completed: boolean; completed_at: string }> = stored ? JSON.parse(stored) : []
+      const existingIdx = progressList.findIndex(p => p.subject === subject && p.moduleId === moduleId)
+      const newItem = {
+        subject,
+        moduleId,
+        score: scoreObj.percentage,
+        completed: true,
+        completed_at: new Date().toISOString()
+      }
+      if (existingIdx >= 0) {
+        progressList[existingIdx] = {
+          ...progressList[existingIdx],
+          score: Math.max(progressList[existingIdx].score || 0, scoreObj.percentage),
+          completed: true
+        }
+      } else {
+        progressList.push(newItem)
+      }
+      localStorage.setItem('master_m1_progress', JSON.stringify(progressList))
+    } catch (lsErr) {
+      console.warn('LocalStorage save error:', lsErr)
+    }
+
+    // 2. Sync with Supabase Database
+    try {
+      const { data: authData } = await supabase.auth.getUser()
+      const currentUserId = authData?.user?.id || userId
+      if (currentUserId) {
         await fetch('/api/progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId,
+            userId: currentUserId,
             subject,
             moduleId,
             score: scoreObj.percentage
           })
         })
-      } catch (err) {
-        console.warn('Progress sync warning:', err)
       }
+    } catch (err) {
+      console.warn('Progress sync warning:', err)
+    } finally {
+      setSavingProgress(false)
     }
-    setSavingProgress(false)
   }
 
   const resetQuiz = () => {
