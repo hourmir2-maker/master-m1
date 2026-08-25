@@ -20,7 +20,7 @@ const MODULE_LABELS: Record<string, string> = {
   geometry: 'เรขาคณิต 2 มิติ เส้นขนาน & พื้นที่แรเงา',
   ratio_proportion: 'อัตราส่วนและมาตราส่วน (Ratio & Scale)',
   geometry_3d: 'รูปทรง 3 มิติ ปริมาตรและความจุ',
-  patterns_sequences: 'แบบรูปและความสัมพันธ์ (Patterns & Series)',
+  statistics_probability: 'สถิติ แผนภูมิวงกลม ค่าเฉลี่ย & ความน่าจะเป็น',
   living_things: 'สิ่งมีชีวิต เซลล์ พืช สัตว์ & ระบบนิเวศ',
   matter_properties: 'สารบริสุทธิ์ สารผสม & เทคนิคการแยกสาร',
   force_motion: 'แรง การเคลื่อนที่ ความดัน & แรงลอยตัว',
@@ -55,7 +55,7 @@ const DEFAULT_ANALYSIS: AiAnalysis = {
   priority_subject: 'math',
   overall_level: 'intermediate',
   analysis: 'ยินดีต้อนรับสู่หลักสูตร MASTER ม.1 (24 โมดูลเข้มข้น)! ระบบได้จัดเตรียมเส้นทางการเรียนรู้ 3 วิชาหลัก พร้อมสูตรลับและเทคนิคเฉพาะบุคคล เพื่อให้คุณพร้อมที่สุดสำหรับทุกสนามสอบ',
-  math_modules: ['numbers_basics', 'fractions_decimals', 'percentages', 'algebra_intro', 'geometry', 'ratio_proportion', 'geometry_3d', 'patterns_sequences'],
+  math_modules: ['numbers_basics', 'fractions_decimals', 'percentages', 'algebra_intro', 'geometry', 'ratio_proportion', 'geometry_3d', 'statistics_probability'],
   science_modules: ['living_things', 'matter_properties', 'force_motion', 'energy', 'earth_space', 'human_body', 'chemical_changes', 'scientific_inquiry'],
   english_modules: ['grammar_basics', 'vocabulary', 'reading', 'listening_speaking', 'writing', 'passive_modals', 'comparison_conjunctions', 'cloze_test'],
   study_tips: [

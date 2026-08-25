@@ -71,10 +71,10 @@ const MATH_MODULES = [
     badgeColor: 'bg-red-100 text-red-900 border-red-200' 
   },
   { 
-    id: 'patterns_sequences', 
-    title: 'แบบรูปและความสัมพันธ์ (Patterns & Series)', 
-    desc: '⚡ สูตรลัดผลบวกเกาส์ 1 ถึง n, ผลบวกเลขคี่ n² / เลขคู่ n(n+1), และการหาพจน์ทั่วไปโจทย์แข่งขัน', 
-    emoji: '🧩', 
+    id: 'statistics_probability', 
+    title: 'สถิติ แผนภูมิวงกลม ค่าเฉลี่ย & ความน่าจะเป็น', 
+    desc: '⚡ สูตรลัดแปลง % เป็นองศา (×3.6°), หาค่าเฉลี่ยเลขคณิตเมื่อมีคนเพิ่ม, ความน่าจะเป็น P(E)=n(E)/n(S) และอนุกรมเกาส์', 
+    emoji: '📊', 
     lessons: 5, 
     difficulty: 'ท้าทาย', 
     badgeColor: 'bg-red-100 text-red-900 border-red-200' 
