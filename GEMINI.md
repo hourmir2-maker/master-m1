@@ -33,3 +33,8 @@
   ```bash
   npx vercel --prod --yes --scope hourmir2-3686s-projects
   ```
+
+---
+
+## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
+- ดูรายละเอียดฟีเจอร์ Gamification, Mock Exam, Printable PDF, Audio TTS, และระบบส่งผลให้ผู้ปกครอง ได้ที่ [ROADMAP.md](./ROADMAP.md)
