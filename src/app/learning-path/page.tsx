@@ -262,8 +262,8 @@ export default function LearningPathPage() {
                       ))}
                     </div>
                     <div>
-                      <Progress value={((s.modules.length || 5) / 5) * 100} className="h-1.5 bg-orange-100 [&>div]:bg-orange-500" />
-                      <p className="text-[11px] text-slate-400 mt-1 font-medium">{s.modules.length || 5} โมดูลแนะนำ</p>
+                      <Progress value={((s.modules.length || 8) / 8) * 100} className="h-1.5 bg-orange-100 [&>div]:bg-orange-500" />
+                      <p className="text-[11px] text-slate-400 mt-1 font-medium">{s.modules.length || 8} โมดูลแนะนำ (สัปดาห์ละ 1 โมดูล)</p>
                     </div>
                   </div>
                   
