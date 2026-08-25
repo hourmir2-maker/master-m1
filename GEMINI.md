@@ -34,6 +34,23 @@
   npx vercel --prod --yes --scope hourmir2-3686s-projects
   ```
 
+### Rule 6 — Quiz Submission UX & Instant Feedback Invariant
+- **ห้าม** ปิดการทำงาน (Disable) ปุ่มส่งคำตอบโดยไม่แสดงข้อความเตือนเด็ดขาด
+- เมื่อผู้ใช้กดส่งคำตอบขณะที่ยังตอบไม่ครบ ต้องแสดง **Warning Banner** ระบุข้อที่ยังไม่ได้ทำทันที (เช่น `⚠️ ยังไม่ได้ตอบข้อ 2, 4`)
+- เมื่อส่งตรวจสำเร็จ ต้องแสดง **Score Result Dialog Popup** กลางหน้าจอเพื่อสรุปผลคะแนนอย่างชัดเจนทันที พร้อมปุ่มดูเฉลยละเอียดและลองทำใหม่
+
+### Rule 7 — 24-Module Full Curriculum Synchronization
+- โครงสร้างระบบหลักสูตรกำหนดไว้ที่ **24 โมดูล (วิชาละ 8 โมดูล)**
+- ทุกส่วนการคำนวณในหน้า Dashboard (`src/app/dashboard/page.tsx`), Landing Page (`src/app/page.tsx`), และ Learning Path (`src/app/learning-path/page.tsx`) ต้องอ้างอิงฐาน 24 โมดูลและ 8 โมดูลต่อวิชาเสมอ (เช่น `Math.max(0, 24 - totalCompleted)`)
+
+### Rule 8 — High-Yield Speed Math & Shortcuts Standard
+- บทเรียนและข้อสอบต้องมีสูตรลัดประจำเรื่องเสมอ:
+  1. การถอดรูทเร็วใน 3 วินาที (ตัด 2 ตัวท้าย ส่องหลักหน่วย & เทียบเลขลงท้าย 5)
+  2. ยกกำลังสองเลขลงท้าย 5: $85^2 \rightarrow (8\times 9)25 = 7,225$
+  3. คูณ 11 แบบแยกหัวท้าย
+  4. พื้นที่ใบไม้แรเงาในสี่เหลี่ยมจัตุรัส: $\frac{4}{7}a^2$
+  5. แปลงเปอร์เซ็นต์เป็นมุมองศาบนแผนภูมิวงกลม: $\text{มุม} = \% \times 3.6^\circ$
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
