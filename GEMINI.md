@@ -61,6 +61,17 @@
 - ต้องคำนวณและแสดงปุ่ม `[ ➡️ ไปต่อโมดูลถัดไป: {ชื่อโมดูล} ]` เสมอ เพื่อความลื่นไหลในการเรียนรู้
 - หน้ารายวิชาต้องแสดงตรา `✓ ผ่านแล้ว (xx%)` สีเขียวบนโมดูลที่ทำคะแนนผ่านเกณฑ์แล้ว และเปลี่ยนปุ่มเป็น `[ ทบทวน / ทำซ้ำ ]`
 
+### Rule 11 — Thai OBEC Curriculum Knowledge Base & Gemini 3.6 Flash Invariant
+- **Model Endpoint**: ต้องใช้ `gemini-3.6-flash` สำหรับ API Routes ทุกตัว (`/api/chat-tutor`, `/api/lessons/generate-quiz`, `/api/pre-test/analyze`) เพื่อป้องกันข้อผิดพลาด 404 Model Deprecated
+- **Grounding Architecture**: ทุกคำถามในแชทบอทครูพี่ AI ต้องดึงข้อมูลจาก `src/lib/curriculum-knowledge-base.ts` (รหัสตัวชี้วัด สพฐ., ทฤษฎี สสวท., สูตรลัด, จุดลวงข้อสอบ 10 ปี) เข้าไปเป็น System Grounding เสมอ
+- **Complete Standalone Answer Standard**: คำตอบของครูพี่ AI ต้องมีโครงสร้างสมบูรณ์ในตัวเองเสมอ: 1) ความหมาย 2) ขั้นตอนวิธีทำ 3) ตัวอย่างจริงในชีวิตประจำวัน 4) จุดเน้นข้อสอบ/จุดที่มักโดนหลอก
+
+### Rule 12 — Voice TTS Phonetics & Microsoft Niwat Engine Standard
+- **Voice Preference**: ใน `src/components/AiTutorChat.tsx` ต้องจัดลำดับให้เสียง `Microsoft Niwat` (`Niwat` / `นิวัฒน์`) เป็นตัวเลือกอันดับ 1 เสมอ ตามด้วยเสียงธรรมชาติอื่นๆ (`Premwadee`, `Google ภาษาไทย`, `Kanya`)
+- **Speech Speed**: ความเร็วเสียงเริ่มต้นกำหนดไว้ที่ `0.75x - 0.78x` พร้อมปุ่ม Toggle ปรับความเร็ว `[ 🔊 0.75x / 0.85x / 1.0x ]` บนหัวแชท
+- **Grammar Phonetics Preprocessor**: ระบบสังเคราะห์เสียงต้องแปลงตัวย่อภาษาอังกฤษและสัญลักษณ์ทางวิทยาศาสตร์/คณิตศาสตร์ให้อ่านเป็นภาษาไทยที่ชัดเจนเสมอ เช่น:
+  - `V.1` ➔ *"กริยาช่องหนึ่ง"*, `V.inf` ➔ *"กริยาช่องเดิมไม่ผัน"*, `S +` ➔ *"ประธาน บวก"*, `If-Clause` ➔ *"อิฟ คลอส"*, `√` ➔ *"สแควรูท"*, `ห.ร.ม.` ➔ *"หอรอมอ"*
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
