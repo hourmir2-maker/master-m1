@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { LESSONS_DATA } from '@/lib/lessons-data'
+import { searchCurriculumKnowledge } from '@/lib/curriculum-knowledge-base'
 
 interface ChatMessage {
   id?: string
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
     const userMessages = messages.filter((m: ChatMessage) => m.role === 'user')
     const lastUserQuery = userMessages.length > 0 ? userMessages[userMessages.length - 1].content.trim() : 'ช่วยอธิบายสรุปบทเรียนนี้หน่อยครับ'
 
+    // Retrieve official Thai curriculum & exam knowledge base
+    const curriculumContext = searchCurriculumKnowledge(lastUserQuery, subject, moduleId)
+
     // Build chat history context (last 3 interactions)
     const recentHistory = messages
       .slice(-5)
@@ -40,7 +44,10 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt = `คุณคือ "ครูพี่ AI (MASTER ม.1 Tutor)" ติวเตอร์ผู้เชี่ยวชาญการสอนเด็กนักเรียน ป.6 เตรียมสอบเข้า ม.1 โรงเรียนชื่อดังทั่วประเทศ
 
-บริบทวิชาปัจจุบัน:
+📚 คลังความรู้มาตรฐานหลักสูตร สพฐ. & ทฤษฎีสากล (Official Knowledge Base):
+${curriculumContext}
+
+บทเรียนปัจจุบัน:
 ${lessonContextText}
 
 ประวัติการสนทนาล่าสุด:
@@ -48,12 +55,12 @@ ${recentHistory}
 
 คำถามล่าสุดของนักเรียน: "${lastUserQuery}"
 
-คำสั่งสำคัญสำหรับการตอบ:
-1. ตอบคำถามที่นักเรียนถามล่าสุด ("${lastUserQuery}") ให้ตรงประเด็นและเจาะลึกเรื่องที่ถามโดยเฉพาะ
-2. ห้ามตอบข้อความทักทายซ้ำซาก หรือตอบแค่สรุปภาพรวมเดิมๆ เด็ดขาด! หากนักเรียนถามเรื่องย่อย เช่น "Present Simple คืออะไร" หรือ "ทำไมต้องตอบ 43" ให้อธิบายเจาะลึกเฉพาะเรื่องนั้นทันที
-3. อธิบายแบบย่อยง่าย สำหรับเด็ก ป.6 ทีละสเต็ป พร้อมยกตัวอย่างประโยค/โจทย์ 1-2 ข้อให้เห็นภาพชัดเจน
-4. หากเป็นภาษาอังกฤษ: แปลคำย่อ (เช่น V.1 = กริยาช่อง 1, S = ประธาน) และอธิบายกฎจำง่ายๆ
-5. ปิดท้ายด้วยเทคนิคคิดลัด หรือกำลังใจสั้นๆ 1 บรรทัด`
+คำสั่งสำคัญสำหรับการตอบ (Strict Grounding):
+1. ตอบคำถามที่นักเรียนถามล่าสุด ("${lastUserQuery}") ให้ตรงประเด็นและเจาะลึก โดยอ้างอิงจากหลักสูตรและทฤษฎีในคลังความรู้ข้างต้น 100%
+2. อธิบายแบบย่อยง่าย สำหรับเด็ก ป.6 ทีละสเต็ป พร้อมยกตัวอย่างประโยค/โจทย์ 1-2 ข้อให้เห็นภาพชัดเจน
+3. หากเป็นภาษาอังกฤษ: แปลคำย่อ (เช่น V.1 = กริยาช่อง 1, S = ประธาน) และอธิบายกฎจำง่ายๆ
+4. เสริมด้วยเทคนิคคิดเร็ว หรือจุดลวงที่ข้อสอบคัดเลือกชอบหลอกเสมอ
+5. ปิดท้ายด้วยคำพูดให้กำลังใจอบอุ่น 1 บรรทัด`
 
     const apiKey = process.env.GEMINI_API_KEY
 
