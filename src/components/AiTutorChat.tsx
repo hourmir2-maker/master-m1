@@ -38,6 +38,7 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [speakingId, setSpeakingId] = useState<string | null>(null)
+  const [speechSpeed, setSpeechSpeed] = useState<number>(0.78) // 0.78 = slow, calm, natural tutor voice
   const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef<any>(null)
   const [messages, setMessages] = useState<Message[]>([
@@ -121,15 +122,18 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
 
     stopSpeaking()
 
-    // 1. Clean & Format text for natural pacing and human-like pauses
+    // 1. Clean & Format text with natural human pauses between sentences
     let formattedText = text
       .replace(/[#*_`~💡⚡🎯✨👋🤖🏆🥇🥈🥉]/g, '')
       .replace(/\[.*?\]\(.*?\)/g, '')
       .replace(/【วิธีคิด】/g, 'วิธีคิดครับ, ')
       .replace(/【.*?】/g, ', ')
+      .replace(/ครับ/g, 'ครับ, ')
+      .replace(/ค่ะ/g, 'ค่ะ, ')
+      .replace(/นะคร้าบ/g, 'นะคร้าบ, ')
       .replace(/\n\s*•/g, ', และ ')
       .replace(/\n\s*-\s*/g, ', ')
-      .replace(/\n\s*\d+\.\s*/g, ', ข้อที่ ')
+      .replace(/\n\s*(\d+)\.\s*/g, ', ขั้นตอนที่ $1, ')
       .replace(/\n+/g, ', ')
       .replace(/→/g, ' จะได้ ')
       .replace(/:/g, ' คือ ')
@@ -142,11 +146,11 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
     const hasThai = /[ก-๙]/.test(formattedText)
     utterance.lang = hasThai ? 'th-TH' : 'en-US'
     
-    // Set relaxed, clear, and friendly tutor pace
-    utterance.rate = hasThai ? 0.88 : 0.92 // 0.88 for Thai makes it sound clear, warm, and natural
-    utterance.pitch = 1.0 // Natural human pitch
+    // Set calm, gentle tutor speed
+    utterance.rate = speechSpeed // Use user-selected or default calm speed (0.78)
+    utterance.pitch = 1.0
 
-    // Try to pick high-quality voices available on user's system
+    // Try to pick high-quality natural voices available on user's system
     const voices = window.speechSynthesis.getVoices()
     if (voices && voices.length > 0) {
       if (hasThai) {
@@ -275,28 +279,43 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
         <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 flex items-end sm:items-auto justify-center sm:justify-end">
           <Card className="w-full sm:w-[420px] h-[90vh] sm:h-[580px] max-h-[90vh] flex flex-col bg-white border-2 border-orange-200 shadow-2xl rounded-t-3xl sm:rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
             {/* Header */}
-            <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 p-4 text-white flex justify-between items-center shadow-md">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
+            <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 p-3.5 text-white flex justify-between items-center shadow-md">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg shadow-inner">
                   🤖
                 </div>
                 <div>
-                  <h3 className="font-black text-sm sm:text-base flex items-center gap-1.5">
-                    ครูพี่ AI (MASTER ม.1) <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                  <h3 className="font-black text-sm flex items-center gap-1.5 leading-tight">
+                    ครูพี่ AI (MASTER ม.1) <Sparkles className="w-3 h-3 text-yellow-300" />
                   </h3>
-                  <p className="text-[11px] text-orange-100 flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-green-300 animate-pulse"></span>
-                    พร้อมติวเรื่อง: <span className="font-bold underline truncate max-w-[150px]">{lessonTitle}</span>
+                  <p className="text-[10px] text-orange-100 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse"></span>
+                    พร้อมติว: <span className="font-bold underline truncate max-w-[120px]">{lessonTitle}</span>
                   </p>
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                {/* Voice Speed Toggle */}
+                <button
+                  onClick={() => {
+                    const nextSpeed = speechSpeed === 0.75 ? 0.85 : speechSpeed === 0.85 ? 1.0 : 0.75
+                    setSpeechSpeed(nextSpeed)
+                    stopSpeaking()
+                  }}
+                  className="px-2 py-1 rounded-full bg-white/20 hover:bg-white/30 text-[10px] font-black flex items-center gap-1 transition-all border border-white/30"
+                  title="คลิกเพื่อเปลี่ยนความเร็วเสียงพูด"
+                >
+                  <span>🔊 {speechSpeed === 0.75 ? '0.75x (ช้า)' : speechSpeed === 0.85 ? '0.85x' : '1.0x (ปกติ)'}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Quick Prompts */}
