@@ -51,6 +51,12 @@ export default function LessonDetailPage() {
 
   const lesson: LessonData | undefined = LESSONS_DATA[subject]?.[moduleId]
 
+  // Calculate Next Module
+  const subjectModuleKeys = Object.keys(LESSONS_DATA[subject] || {})
+  const currentIndex = subjectModuleKeys.indexOf(moduleId)
+  const nextModuleId = currentIndex >= 0 && currentIndex < subjectModuleKeys.length - 1 ? subjectModuleKeys[currentIndex + 1] : null
+  const nextModuleData = nextModuleId ? LESSONS_DATA[subject]?.[nextModuleId] : null
+
   const [currentTab, setCurrentTab] = useState<'content' | 'quiz'>('content')
   const [questions, setQuestions] = useState<PracticeQuestion[]>(lesson?.practiceQuestions || [])
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
@@ -528,31 +534,79 @@ export default function LessonDetailPage() {
                 )}
               </div>
             ) : (
-              <Card className="border-2 border-orange-300 shadow-xl bg-gradient-to-br from-white via-orange-50/50 to-amber-50 rounded-3xl p-6 sm:p-8 text-center">
-                <div className="text-5xl mb-2">🏆</div>
-                <h3 className="text-2xl font-black text-slate-800 mb-1">สรุปผลการทำแบบฝึกหัด</h3>
-                <p className="text-sm text-slate-600 mb-4">
-                  ทำได้ถูกต้อง: <span className="font-black text-orange-600 text-xl">{scoreResult.correct} จาก {scoreResult.total} ข้อ</span> ({scoreResult.percentage}%)
+              <Card className="border-2 border-orange-300 shadow-2xl bg-gradient-to-br from-white via-orange-50/40 to-amber-50 rounded-3xl p-6 sm:p-8 text-center">
+                <div className="text-6xl mb-3 animate-bounce">
+                  {scoreResult.percentage >= 80 ? '🌟 🏆 🌟' : scoreResult.percentage >= 60 ? '👍 🎯' : '💪 📚'}
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full mb-3 text-xs font-black shadow-sm tracking-wide uppercase ${scoreResult.percentage >= 60 ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
+                  {scoreResult.percentage >= 60 ? '✅ ผ่านเกณฑ์บทเรียนแล้ว (บันทึกสำเร็จ)' : '⚠️ ยังไม่ผ่านเกณฑ์ (ต้องได้ 60% ขึ้นไป)'}
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">
+                  {scoreResult.percentage === 100
+                    ? 'ยอดเยี่ยมมาก! คะแนนเต็ม 100%'
+                    : scoreResult.percentage >= 80
+                    ? 'เก่งมาก! ผ่านเกณฑ์ระดับยอดเยี่ยม'
+                    : scoreResult.percentage >= 60
+                    ? 'ทำได้ดี! ผ่านเกณฑ์มาตรฐาน'
+                    : 'พยายามอีกนิด! ทบทวนแล้วลุยใหม่'}
+                </h3>
+
+                <p className="text-sm text-slate-600 mb-4 font-medium">
+                  คุณทำแบบฝึกหัดได้: <span className="font-black text-orange-600 text-2xl">{scoreResult.correct} จาก {scoreResult.total} ข้อ</span>{' '}
+                  <span className="text-slate-500 font-bold">({scoreResult.percentage}%)</span>
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="max-w-md mx-auto p-4 rounded-2xl bg-white/80 border border-orange-200 text-xs text-slate-700 leading-relaxed font-medium mb-6 shadow-sm">
+                  {scoreResult.percentage >= 60
+                    ? '🎉 ระบบได้บันทึกความก้าวหน้านี้ลงใน Dashboard และปลดล็อกสถิติของบทเรียนนี้เรียบร้อยแล้วครับ สามารถไปต่อบทถัดไปได้เลย!'
+                    : '💡 ลองดูเฉลยละเอียดและเทคนิคคิดลัดด้านบน เพื่อทำความเข้าใจแล้วกด "ลองทำซ้ำ" เพื่อเก็บคะแนนให้ผ่านเกณฑ์นะ!'}
+                </div>
+
+                <div className="flex flex-wrap gap-3 justify-center max-w-xl mx-auto">
+                  {nextModuleId && nextModuleData && (
+                    <Link href={`/subjects/${subject}/${nextModuleId}`} className="w-full">
+                      <Button
+                        size="lg"
+                        className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-6 rounded-2xl shadow-lg shadow-orange-500/25 text-sm sm:text-base"
+                      >
+                        ➡️ ไปต่อโมดูลถัดไป: {nextModuleData.title} <ChevronRight className="w-5 h-5 ml-1" />
+                      </Button>
+                    </Link>
+                  )}
+
+                  <Link href="/dashboard" className="flex-1 min-w-[160px]">
+                    <Button
+                      variant="outline"
+                      className="w-full border-orange-200 text-orange-800 hover:bg-orange-100 font-bold text-xs sm:text-sm py-5 rounded-xl shadow-sm"
+                    >
+                      <Trophy className="w-4 h-4 mr-1.5 text-orange-600" /> ดู Dashboard
+                    </Button>
+                  </Link>
+
                   <Button
                     variant="outline"
                     onClick={resetQuiz}
-                    className="border-orange-200 text-orange-800 hover:bg-orange-50 font-bold"
+                    className="flex-1 min-w-[160px] border-orange-200 text-orange-800 hover:bg-orange-100 font-bold text-xs sm:text-sm py-5 rounded-xl shadow-sm"
                   >
-                    <RotateCcw className="w-4 h-4 mr-1.5" /> ลองทำข้อสอบชุดนี้ซ้ำ
+                    <RotateCcw className="w-4 h-4 mr-1.5 text-orange-600" /> ลองทำซ้ำอีกครั้ง
                   </Button>
+
                   <Button
                     onClick={handleGenerateAIQuiz}
                     disabled={generatingAI}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-md shadow-orange-500/20"
+                    className="flex-1 min-w-[160px] bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm py-5 rounded-xl shadow-sm"
                   >
-                    <RefreshCw className="w-4 h-4 mr-1.5" /> สุ่มโจทย์ชุดใหม่ด้วย AI
+                    <RefreshCw className="w-4 h-4 mr-1.5" /> สุ่มโจทย์ใหม่ด้วย AI
                   </Button>
-                  <Link href={`/subjects/${subject}`}>
-                    <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md shadow-orange-500/20">
-                      <Trophy className="w-4 h-4 mr-1.5" /> กลับสู่หน้ารายวิชา
+
+                  <Link href={`/subjects/${subject}`} className="flex-1 min-w-[160px]">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-slate-600 hover:text-orange-600 hover:bg-orange-50 font-bold text-xs sm:text-sm py-5 rounded-xl"
+                    >
+                      ← หน้ารวมวิชา{subjectInfo.label}
                     </Button>
                   </Link>
                 </div>
