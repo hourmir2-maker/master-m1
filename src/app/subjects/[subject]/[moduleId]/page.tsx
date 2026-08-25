@@ -8,6 +8,13 @@ import { LESSONS_DATA, LessonData, PracticeQuestion } from '@/lib/lessons-data'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
 import ReportModal from '@/components/ReportModal'
 import Footer from '@/components/Footer'
 import { 
@@ -23,7 +30,9 @@ import {
   RotateCcw,
   Loader2,
   RefreshCw,
-  Flag
+  Flag,
+  AlertCircle,
+  Award
 } from 'lucide-react'
 
 const SUBJECT_CONFIG: Record<string, { label: string; gradient: string; text: string; bg: string }> = {
@@ -46,6 +55,8 @@ export default function LessonDetailPage() {
   const [questions, setQuestions] = useState<PracticeQuestion[]>(lesson?.practiceQuestions || [])
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
   const [submittedQuiz, setSubmittedQuiz] = useState(false)
+  const [showScoreModal, setShowScoreModal] = useState(false)
+  const [validationWarning, setValidationWarning] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [savingProgress, setSavingProgress] = useState(false)
   const [generatingAI, setGeneratingAI] = useState(false)
@@ -89,6 +100,7 @@ export default function LessonDetailPage() {
   const handleSelectOption = (questionId: string, option: string) => {
     if (submittedQuiz) return
     setSelectedAnswers(prev => ({ ...prev, [questionId]: option }))
+    setValidationWarning(null)
   }
 
   const calculateScore = () => {
@@ -104,7 +116,22 @@ export default function LessonDetailPage() {
   }
 
   const handleFinishLesson = async () => {
+    // Check if all questions are answered
+    const unansweredIndices: number[] = []
+    questions.forEach((q, idx) => {
+      if (!selectedAnswers[q.id]) {
+        unansweredIndices.push(idx + 1)
+      }
+    })
+
+    if (unansweredIndices.length > 0) {
+      setValidationWarning(`⚠️ คุณยังไม่ได้ตอบข้อ ${unansweredIndices.join(', ')} (ตอบแล้ว ${Object.keys(selectedAnswers).length}/${questions.length} ข้อ) กรุณาเลือกคำตอบให้ครบก่อนส่งตรวจครับ`)
+      return
+    }
+
+    setValidationWarning(null)
     setSubmittedQuiz(true)
+    setShowScoreModal(true)
     const scoreObj = calculateScore()
     setSavingProgress(true)
 
@@ -130,6 +157,8 @@ export default function LessonDetailPage() {
   const resetQuiz = () => {
     setSelectedAnswers({})
     setSubmittedQuiz(false)
+    setShowScoreModal(false)
+    setValidationWarning(null)
   }
 
   const handleGenerateAIQuiz = async () => {
@@ -442,16 +471,30 @@ export default function LessonDetailPage() {
             {/* Submit / Result Section */}
             {!submittedQuiz ? (
               <div className="text-center pt-2">
+                {validationWarning && (
+                  <div className="mb-4 p-4 rounded-2xl bg-red-50 border-2 border-red-200 text-red-900 text-sm font-semibold flex items-center justify-center gap-2 max-w-lg mx-auto animate-pulse">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <span>{validationWarning}</span>
+                  </div>
+                )}
+
                 <Button
                   size="lg"
                   onClick={handleFinishLesson}
-                  disabled={Object.keys(selectedAnswers).length < questions.length}
                   className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-10 py-6 rounded-2xl shadow-xl shadow-orange-500/25 transition-all hover:scale-105"
                 >
-                  {savingProgress ? 'กำลังบันทึกคะแนน...' : `✅ ส่งคำตอบ & ตรวจแบบฝึกหัด (${Object.keys(selectedAnswers).length}/${questions.length})`}
+                  {savingProgress ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" /> กำลังบันทึกคะแนน...
+                    </span>
+                  ) : (
+                    `✅ ส่งคำตอบ & ตรวจแบบฝึกหัด (${Object.keys(selectedAnswers).length}/${questions.length})`
+                  )}
                 </Button>
                 {Object.keys(selectedAnswers).length < questions.length && (
-                  <p className="text-xs text-slate-400 mt-2 font-medium">กรุณาตอบคำถามให้ครบทุกข้อ ({Object.keys(selectedAnswers).length}/{questions.length} ข้อ) ก่อนส่งตรวจ</p>
+                  <p className="text-xs text-slate-500 mt-2 font-medium">
+                    ตอบแล้ว {Object.keys(selectedAnswers).length} จาก {questions.length} ข้อ (กดปุ่มเพื่อตรวจหรือดูข้อที่ยังไม่ได้ทำ)
+                  </p>
                 )}
               </div>
             ) : (
@@ -488,6 +531,66 @@ export default function LessonDetailPage() {
           </div>
         )}
       </main>
+
+      {/* Score Result Popup Dialog */}
+      <Dialog open={showScoreModal} onOpenChange={setShowScoreModal}>
+        <DialogContent className="sm:max-w-md bg-white border-2 border-orange-200 rounded-3xl p-6 sm:p-8 text-center shadow-2xl">
+          <DialogHeader className="text-center">
+            <div className="text-6xl mb-2 animate-bounce">
+              {scoreResult.percentage >= 80 ? '🌟 🏆 🌟' : scoreResult.percentage >= 60 ? '👍 🎯' : '💪 📚'}
+            </div>
+            <DialogTitle className="text-2xl font-black text-slate-900 text-center">
+              {scoreResult.percentage === 100
+                ? 'ยอดเยี่ยมมาก! คะแนนเต็ม 100%'
+                : scoreResult.percentage >= 80
+                ? 'เก่งมาก! ผ่านเกณฑ์ระดับยอดเยี่ยม'
+                : scoreResult.percentage >= 60
+                ? 'ทำได้ดี! ผ่านเกณฑ์พื้นฐาน'
+                : 'พยายามอีกนิด! ทบทวนแล้วลุยใหม่'}
+            </DialogTitle>
+            <DialogDescription className="text-slate-600 text-center pt-2">
+              คุณทำแบบฝึกหัดบทนี้ได้{' '}
+              <span className="text-orange-600 font-black text-xl">
+                {scoreResult.correct} / {scoreResult.total}
+              </span>{' '}
+              ข้อ ({scoreResult.percentage}%)
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-4 p-4 rounded-2xl bg-orange-50 border border-orange-100 text-xs text-orange-950 font-medium leading-relaxed">
+            {scoreResult.percentage >= 80
+              ? '🎉 ความรู้ของคุณแน่นมาก พร้อมลุยข้อสอบบทต่อไปหรือสุ่มโจทย์ท้าทายเพิ่มได้เลย!'
+              : '💡 ลองดูเฉลยละเอียดและเทคนิคคิดลัดด้านล่าง เพื่ออุดจุดที่พลาดแล้วลองทำใหม่อีกครั้งนะ!'}
+          </div>
+
+          <div className="flex flex-col gap-2.5 mt-2">
+            <Button
+              onClick={() => setShowScoreModal(false)}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-5 rounded-xl shadow-md shadow-orange-500/20"
+            >
+              🔍 ปิดหน้าต่าง & ดูเฉลยละเอียดทีละข้อ
+            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={resetQuiz}
+                className="flex-1 border-orange-200 text-orange-800 hover:bg-orange-50 font-semibold text-xs"
+              >
+                <RotateCcw className="w-3.5 h-3.5 mr-1" /> ทำซ้ำ
+              </Button>
+              <Link href={`/subjects/${subject}`} className="flex-1">
+                <Button
+                  variant="outline"
+                  className="w-full border-orange-200 text-orange-800 hover:bg-orange-50 font-semibold text-xs"
+                >
+                  <Trophy className="w-3.5 h-3.5 mr-1" /> หน้ารายวิชา
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   )
