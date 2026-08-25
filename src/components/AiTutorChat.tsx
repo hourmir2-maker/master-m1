@@ -64,19 +64,53 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
 
     stopSpeaking()
 
-    // Clean text for speech (remove markdown symbols and hashtags)
-    const cleanedText = text
-      .replace(/[#*_`~💡⚡🎯✨👋🤖]/g, '')
+    // 1. Clean & Format text for natural pacing and human-like pauses
+    let formattedText = text
+      .replace(/[#*_`~💡⚡🎯✨👋🤖🏆🥇🥈🥉]/g, '')
       .replace(/\[.*?\]\(.*?\)/g, '')
+      .replace(/【วิธีคิด】/g, 'วิธีคิดครับ, ')
+      .replace(/【.*?】/g, ', ')
+      .replace(/\n\s*•/g, ', และ ')
+      .replace(/\n\s*-\s*/g, ', ')
+      .replace(/\n\s*\d+\.\s*/g, ', ข้อที่ ')
+      .replace(/\n+/g, ', ')
+      .replace(/→/g, ' จะได้ ')
+      .replace(/:/g, ' คือ ')
+      .replace(/\s{2,}/g, ' ')
       .trim()
 
-    const utterance = new SpeechSynthesisUtterance(cleanedText)
+    const utterance = new SpeechSynthesisUtterance(formattedText)
     
-    // Check language
-    const hasThai = /[ก-๙]/.test(cleanedText)
+    // 2. Select language and find best natural sounding voice
+    const hasThai = /[ก-๙]/.test(formattedText)
     utterance.lang = hasThai ? 'th-TH' : 'en-US'
-    utterance.rate = 1.0
-    utterance.pitch = 1.05
+    
+    // Set relaxed, clear, and friendly tutor pace
+    utterance.rate = hasThai ? 0.88 : 0.92 // 0.88 for Thai makes it sound clear, warm, and natural
+    utterance.pitch = 1.0 // Natural human pitch
+
+    // Try to pick high-quality voices available on user's system
+    const voices = window.speechSynthesis.getVoices()
+    if (voices && voices.length > 0) {
+      if (hasThai) {
+        const bestThaiVoice = voices.find(v => 
+          (v.lang === 'th-TH' || v.lang === 'th_TH') && 
+          (v.name.includes('Google') || v.name.includes('Premwadee') || v.name.includes('Niwat') || v.name.includes('Kanya') || v.name.includes('Natural'))
+        ) || voices.find(v => v.lang.startsWith('th'))
+
+        if (bestThaiVoice) {
+          utterance.voice = bestThaiVoice
+        }
+      } else {
+        const bestEnVoice = voices.find(v => 
+          v.lang.startsWith('en') && 
+          (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Jenny'))
+        )
+        if (bestEnVoice) {
+          utterance.voice = bestEnVoice
+        }
+      }
+    }
 
     utterance.onend = () => {
       setSpeakingId(null)
