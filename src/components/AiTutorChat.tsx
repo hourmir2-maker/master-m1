@@ -173,17 +173,25 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
     utterance.rate = speechSpeed // Use user-selected or default calm speed (0.78)
     utterance.pitch = 1.0
 
-    // Try to pick high-quality natural voices available on user's system
+    // Try to pick Microsoft Niwat (Top Priority) or high-quality natural voices available on user's system
     const voices = window.speechSynthesis.getVoices()
     if (voices && voices.length > 0) {
       if (hasThai) {
-        const bestThaiVoice = voices.find(v => 
-          (v.lang === 'th-TH' || v.lang === 'th_TH') && 
-          (v.name.includes('Google') || v.name.includes('Premwadee') || v.name.includes('Niwat') || v.name.includes('Kanya') || v.name.includes('Natural'))
+        // 1. Search for Microsoft Niwat (Natural male tutor voice)
+        const niwatVoice = voices.find(v => 
+          (v.lang.startsWith('th') || v.lang === 'th-TH' || v.lang === 'th_TH') && 
+          (v.name.toLowerCase().includes('niwat') || v.name.includes('นิวัฒน์'))
+        )
+
+        // 2. Search for other premium natural voices (Premwadee, Google, Natural, Kanya, Narisa)
+        const otherNaturalVoice = voices.find(v => 
+          (v.lang.startsWith('th') || v.lang === 'th-TH' || v.lang === 'th_TH') && 
+          (v.name.includes('Premwadee') || v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Kanya') || v.name.includes('Narisa'))
         ) || voices.find(v => v.lang.startsWith('th'))
 
-        if (bestThaiVoice) {
-          utterance.voice = bestThaiVoice
+        const selectedVoice = niwatVoice || otherNaturalVoice
+        if (selectedVoice) {
+          utterance.voice = selectedVoice
         }
       } else {
         const bestEnVoice = voices.find(v => 
