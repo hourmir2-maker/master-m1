@@ -8,6 +8,7 @@ import { LESSONS_DATA, LessonData, PracticeQuestion } from '@/lib/lessons-data'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import ReportModal from '@/components/ReportModal'
 import { 
   ArrowLeft, 
   Lightbulb, 
@@ -20,7 +21,8 @@ import {
   HelpCircle,
   RotateCcw,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Flag
 } from 'lucide-react'
 
 const SUBJECT_CONFIG: Record<string, { label: string; gradient: string; text: string; bg: string }> = {
@@ -47,6 +49,11 @@ export default function LessonDetailPage() {
   const [savingProgress, setSavingProgress] = useState(false)
   const [generatingAI, setGeneratingAI] = useState(false)
   const [aiSource, setAiSource] = useState<string>('คลังข้อสอบมาตรฐาน (Curated Bank)')
+
+  // Report Modal State
+  const [isReportOpen, setIsReportOpen] = useState(false)
+  const [reportQuestionId, setReportQuestionId] = useState<string | undefined>(undefined)
+  const [reportContextTitle, setReportContextTitle] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -102,7 +109,6 @@ export default function LessonDetailPage() {
 
     if (userId) {
       try {
-        // Send via internal server route to eliminate any 409 Conflict error completely
         await fetch('/api/progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -137,7 +143,7 @@ export default function LessonDetailPage() {
       const data = await res.json()
       if (data.questions && data.questions.length > 0) {
         setQuestions(data.questions)
-        setAiSource('ชุดโจทย์ใหม่สังเคราะห์โดย Gemini AI 🤖')
+        setAiSource(data.generatedBy || 'ชุดโจทย์สุ่มใหม่ 🤖')
       }
     } catch (err) {
       console.warn('AI Quiz generator error:', err)
@@ -146,12 +152,29 @@ export default function LessonDetailPage() {
     }
   }
 
+  const openReport = (questionId?: string, title?: string) => {
+    setReportQuestionId(questionId)
+    setReportContextTitle(title || `${lesson.title} (${subjectInfo.label})`)
+    setIsReportOpen(true)
+  }
+
   const scoreResult = calculateScore()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50/60 via-amber-50/40 to-red-50/50 pb-20">
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        subject={subject}
+        moduleId={moduleId}
+        questionId={reportQuestionId}
+        contextTitle={reportContextTitle}
+        userId={userId}
+      />
+
       {/* Top Bar */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-orange-100 sticky top-0 z-50 shadow-sm">
+      <header className="bg-white/90 backdrop-blur-md border-b border-orange-100 sticky top-0 z-40 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
           <Link href={`/subjects/${subject}`}>
             <Button variant="ghost" size="sm" className="text-orange-800 hover:bg-orange-100 font-semibold text-xs">
@@ -162,6 +185,14 @@ export default function LessonDetailPage() {
             <Badge className="bg-orange-100 text-orange-900 border border-orange-200 font-bold text-xs">
               {subjectInfo.label}
             </Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openReport(undefined, `บทเรียน: ${lesson.title}`)}
+              className="text-slate-500 hover:text-red-600 hover:bg-red-50 border-slate-200 text-xs font-semibold h-7 px-2"
+            >
+              <Flag className="w-3.5 h-3.5 mr-1 text-red-500" /> แจ้งจุดผิด
+            </Button>
           </div>
         </div>
       </header>
@@ -251,13 +282,21 @@ export default function LessonDetailPage() {
             </Card>
 
             {/* Action to Practice */}
-            <div className="text-center pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
               <Button
                 size="lg"
                 onClick={() => setCurrentTab('quiz')}
-                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-105"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-105"
               >
-                📝 ทดลองทำแบบฝึกหัด {questions.length} ข้อ <ChevronRight className="w-5 h-5 ml-1.5" />
+                📝 ทำแบบฝึกหัด {questions.length} ข้อ <ChevronRight className="w-5 h-5 ml-1.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => openReport(undefined, `เนื้อหา: ${lesson.title}`)}
+                className="text-slate-500 hover:text-red-600 text-xs font-semibold"
+              >
+                <Flag className="w-3.5 h-3.5 mr-1 text-red-500" /> แจ้งข้อผิดพลาดในบทเรียนนี้
               </Button>
             </div>
           </div>
@@ -282,7 +321,7 @@ export default function LessonDetailPage() {
               >
                 {generatingAI ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Gemini กำลังออกโจทย์ชุดใหม่...
+                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> กำลังสุ่มข้อสอบชุดใหม่...
                   </>
                 ) : (
                   <>
@@ -301,17 +340,27 @@ export default function LessonDetailPage() {
                   <CardHeader className="bg-orange-50/60 pb-3 pt-4 px-6 border-b border-orange-100/60">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-orange-700">คำถามข้อที่ {qIndex + 1} จาก {questions.length}</span>
-                      {submittedQuiz && (
-                        isCorrect ? (
-                          <Badge className="bg-green-100 text-green-800 border-green-200 font-bold text-xs">
-                            ✓ ถูกต้อง (+1 คะแนน)
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-red-100 text-red-800 border-red-200 font-bold text-xs">
-                            ✗ ยังไม่ถูกต้อง
-                          </Badge>
-                        )
-                      )}
+                      <div className="flex items-center gap-2">
+                        {submittedQuiz && (
+                          isCorrect ? (
+                            <Badge className="bg-green-100 text-green-800 border-green-200 font-bold text-xs">
+                              ✓ ถูกต้อง (+1 คะแนน)
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-red-100 text-red-800 border-red-200 font-bold text-xs">
+                              ✗ ยังไม่ถูกต้อง
+                            </Badge>
+                          )
+                        )}
+                        <button
+                          onClick={() => openReport(q.id, `ข้อ ${qIndex + 1}: ${q.question.slice(0, 35)}...`)}
+                          className="text-slate-400 hover:text-red-500 text-xs flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
+                          title="รายงานข้อผิดพลาดของข้อนี้"
+                        >
+                          <Flag className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline text-[11px] font-semibold">แจ้งจุดผิด</span>
+                        </button>
+                      </div>
                     </div>
                     <CardTitle className="text-base sm:text-lg font-bold text-slate-800 mt-1 whitespace-pre-line leading-relaxed">
                       {q.question}
@@ -364,9 +413,17 @@ export default function LessonDetailPage() {
                     {submittedQuiz && (
                       <div className="mt-4 space-y-2">
                         <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 text-xs sm:text-sm">
-                          <p className="font-bold text-amber-950 flex items-center gap-1.5 mb-1.5">
-                            💡 เฉลยละเอียด & วิธีคิดทีละขั้นตอน:
-                          </p>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <p className="font-bold text-amber-950 flex items-center gap-1.5">
+                              💡 เฉลยละเอียด & วิธีคิดทีละขั้นตอน:
+                            </p>
+                            <button
+                              onClick={() => openReport(q.id, `เฉลยข้อ ${qIndex + 1}: ${q.question.slice(0, 30)}...`)}
+                              className="text-[11px] text-amber-900/80 hover:text-red-600 font-semibold flex items-center gap-1"
+                            >
+                              <Flag className="w-3 h-3" /> เฉลยไม่ถูกต้อง?
+                            </button>
+                          </div>
                           <p className="text-slate-700 leading-relaxed font-medium whitespace-pre-line">{q.explanation}</p>
                         </div>
                         {q.tip && (

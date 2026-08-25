@@ -58,30 +58,39 @@ CREATE TABLE IF NOT EXISTS public.questions (
   subject TEXT NOT NULL,
   module_id TEXT,
   lesson_id UUID,
-  question_text TEXT NOT NULL,
-  question_type TEXT DEFAULT 'multiple_choice',
-  options JSONB,
+  question TEXT NOT NULL,
+  options JSONB NOT NULL,
   correct_answer TEXT NOT NULL,
   explanation TEXT,
-  difficulty TEXT DEFAULT 'basic',
-  is_pretest BOOLEAN DEFAULT FALSE,
-  tags TEXT[] DEFAULT '{}'
+  difficulty TEXT DEFAULT 'medium',
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS public.progress (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID NOT NULL,
+  subject TEXT NOT NULL,
+  module_id TEXT,
   lesson_id UUID,
+  completed BOOLEAN DEFAULT FALSE,
+  score INTEGER DEFAULT 0,
+  time_spent INTEGER DEFAULT 0,
+  completed_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.error_reports (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID,
   subject TEXT NOT NULL,
   module_id TEXT NOT NULL,
-  completed BOOLEAN DEFAULT TRUE,
-  score INTEGER,
-  time_spent INTEGER,
-  completed_at TIMESTAMPTZ DEFAULT NOW(),
+  question_id TEXT,
+  report_type TEXT NOT NULL,
+  description TEXT,
+  status TEXT DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Automatic User Profile Trigger (Creates profile when auth.users signs up)
+-- 3. Automatic User Profile Trigger
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -114,6 +123,7 @@ ALTER TABLE public.learning_paths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.error_reports ENABLE ROW LEVEL SECURITY;
 
 -- 5. Drop old policies to avoid duplicates
 DROP POLICY IF EXISTS "Public access to profiles" ON public.profiles;
@@ -122,6 +132,7 @@ DROP POLICY IF EXISTS "Public access to learning_paths" ON public.learning_paths
 DROP POLICY IF EXISTS "Public access to progress" ON public.progress;
 DROP POLICY IF EXISTS "Public access to lessons" ON public.lessons;
 DROP POLICY IF EXISTS "Public access to questions" ON public.questions;
+DROP POLICY IF EXISTS "Public access to error_reports" ON public.error_reports;
 
 -- 6. Create Open Permissive RLS Policies
 CREATE POLICY "Public access to profiles" ON public.profiles FOR ALL USING (true) WITH CHECK (true);
@@ -130,6 +141,7 @@ CREATE POLICY "Public access to learning_paths" ON public.learning_paths FOR ALL
 CREATE POLICY "Public access to progress" ON public.progress FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public access to lessons" ON public.lessons FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public access to questions" ON public.questions FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public access to error_reports" ON public.error_reports FOR ALL USING (true) WITH CHECK (true);
 
 -- 7. Grant Permissions to all roles
 GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
