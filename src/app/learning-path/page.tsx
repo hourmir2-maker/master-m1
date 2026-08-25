@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import Footer from '@/components/Footer'
 import { Loader2, Brain, BookOpen, ChevronRight, Star, Sparkles, ArrowRight, FlaskConical } from 'lucide-react'
 import { AiAnalysis } from '@/types'
 
@@ -268,7 +269,7 @@ export default function LearningPathPage() {
           ))}
         </div>
 
-        <div className="text-center pt-2">
+        <div className="text-center pt-2 pb-8">
           <Link href="/dashboard">
             <Button size="lg" variant="outline" className="px-8 border-2 border-orange-300 text-orange-800 hover:bg-orange-100/60 font-bold shadow-sm">
               ไปยังหน้าหลัก Dashboard <ArrowRight className="w-4 h-4 ml-2" />
@@ -276,6 +277,7 @@ export default function LearningPathPage() {
           </Link>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import Footer from '@/components/Footer'
 import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2 } from 'lucide-react'
 
 const SCIENCE_MODULES = [
@@ -130,6 +131,7 @@ export default function SciencePage() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

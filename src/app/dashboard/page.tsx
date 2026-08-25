@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
+import Footer from '@/components/Footer'
 import { BookOpen, Target, LogOut, FlaskConical, MessageCircle, Sparkles, ChevronRight, Award } from 'lucide-react'
 
 export default function DashboardPage() {
@@ -217,6 +218,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </main>
+      <Footer />
     </div>
   )
 }

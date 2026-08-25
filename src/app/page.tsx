@@ -193,8 +193,11 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="bg-white border-t border-orange-100 py-8 text-center text-slate-400 text-xs sm:text-sm">
-        <p>© 2026 MASTER ม.1 — เตรียมพร้อม พิชิตทุกข้อสอบ | สงวนลิขสิทธิ์</p>
+      <footer className="bg-white border-t border-orange-100 py-8 text-center text-slate-500 text-xs sm:text-sm">
+        <p className="font-semibold text-slate-700">© 2026 MASTER ม.1 — เตรียมพร้อม พิชิตทุกข้อสอบ | สงวนลิขสิทธิ์</p>
+        <p className="text-xs text-slate-500 mt-1">
+          พัฒนาโดย <span className="font-bold text-orange-600">Phairot Makkaew</span> ร่วมกับ <span className="font-bold text-amber-600">Gemini AI</span>
+        </p>
       </footer>
     </div>
   )
