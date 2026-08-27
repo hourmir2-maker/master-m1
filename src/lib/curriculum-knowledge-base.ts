@@ -615,6 +615,233 @@ export const CURRICULUM_KNOWLEDGE_BASE: Record<string, Record<string, Curriculum
   }
 }
 
+// ==========================================
+// 🚀 M.1 ADVANCED CURRICULUM KNOWLEDGE BASE
+// ==========================================
+export const M1_CURRICULUM_KNOWLEDGE: Record<string, Record<string, CurriculumTopicKnowledge>> = {
+  math: {
+    m1_integers: {
+      subject: 'math',
+      moduleId: 'm1_integers',
+      title: 'จำนวนเต็มและการดำเนินการ (Integers Mastery)',
+      obecIndicator: 'ค 1.1 ม.1/1 (เข้าใจจำนวนตรรกยะและความสัมพันธ์ของจำนวนตรรกยะ และใช้สมบัติของจำนวนตรรกยะในการแก้ปัญหา)',
+      academicDefinition: 'จำนวนเต็มประกอบด้วย จำนวนเต็มบวก จำนวนเต็มศูนย์ และจำนวนเต็มลบ บนเส้นจำนวน ค่าจะเพิ่มขึ้นเมื่อไปทางขวา และลดลงเมื่อไปทางซ้าย',
+      coreFormulasAndTheorems: [
+        'กฎการคูณ/หาร: เครื่องหมายเหมือนกันได้บวก (+) เครื่องหมายต่างกันได้ลบ (-)',
+        'สมบัติการแจกแจง: a(b + c) = ab + ac',
+        'ค่าสัมบูรณ์ |a|: ระยะห่างจากศูนย์ มีค่า ≥ 0 เสมอ'
+      ],
+      speedHacks: [
+        'เทคนิคลบซ้อนลบ: ลบเจอลบกลายเป็นบวก เช่น 5 - (-3) = 5 + 3 = 8',
+        'การบวกเลขลบ: คิดเป็น "เป็นหนี้เพิ่ม" เช่น (-4) + (-6) = เป็นหนี้ 10 = -10'
+      ],
+      commonTrapAlerts: [
+        '(-3)² = 9 แต่ -3² = -(3×3) = -9 (ระวังเรื่องวงเล็บ!)',
+        '0 ไม่ใช่จำนวนเต็มบวก และไม่ใช่จำนวนเต็มลบ'
+      ],
+      giftedExamNotes: [
+        'โจทย์ประยุกต์อุณหภูมิเปลี่ยนแปลง, ลิฟต์ขึ้น-ลงใต้ดิน, และระดับน้ำทะเล'
+      ]
+    },
+    m1_exponents: {
+      subject: 'math',
+      moduleId: 'm1_exponents',
+      title: 'เลขยกกำลังและสัญกรณ์วิทยาศาสตร์ (Exponents)',
+      obecIndicator: 'ค 1.1 ม.1/2 (เข้าใจและใช้สมบัติของเลขยกกำลังที่มีเลขชี้กำลังเป็นจำนวนเต็มบวกในการแก้ปัญหา)',
+      academicDefinition: 'aⁿ คือ ผลคูณของ a ซ้ำกัน n ตัว โดยเรียก a ว่าฐาน และเรียก n ว่าเลขชี้กำลัง',
+      coreFormulasAndTheorems: [
+        'aᵐ × aⁿ = aᵐ⁺ⁿ',
+        'aᵐ ÷ aⁿ = aᵐ⁻ⁿ (เมื่อ a ≠ 0)',
+        '(aᵐ)ⁿ = aᵐⁿ และ (ab)ⁿ = aⁿbⁿ',
+        'a⁰ = 1 (เมื่อ a ≠ 0) และ a⁻ⁿ = 1/aⁿ'
+      ],
+      speedHacks: [
+        'สัญกรณ์วิทย์ A × 10ⁿ: เลื่อนจุดไปซ้าย n เป็นบวก, เลื่อนจุดไปขวา n เป็นลบ',
+        'เปรียบเทียบเลขยกกำลังฐานต่างกัน: ทำฐานให้เท่ากัน หรือทำเลขชี้กำลังให้เท่ากัน (หา ห.ร.ม. ของกำลัง)'
+      ],
+      commonTrapAlerts: [
+        '(a + b)ⁿ ≠ aⁿ + bⁿ (ห้ามกระจายเลขยกกำลังข้ามเครื่องหมายบวกลบ)',
+        '0⁰ ไม่นิยามทางคณิตศาสตร์'
+      ],
+      giftedExamNotes: [
+        'โจทย์หาเลขโดดหลักหน่วยของเลขยกกำลังสูงๆ (เช่น 7²⁰²⁶ ลงท้ายด้วยเลขอะไร ➔ หาคาบการวนซ้ำ mod 4)'
+      ]
+    },
+    m1_linear_equations: {
+      subject: 'math',
+      moduleId: 'm1_linear_equations',
+      title: 'สมการเชิงเส้นตัวแปรเดียว & โจทย์ปัญหา ม.1',
+      obecIndicator: 'ค 1.3 ม.1/1 (เข้าใจและใช้สมบัติของการเท่ากันและสมบัติของจำนวน เพื่อวิเคราะห์และแก้ปัญหาโดยใช้สมการเชิงเส้นตัวแปรเดียว)',
+      academicDefinition: 'สมการเชิงเส้นตัวแปรเดียว คือ สมการที่อยู่ในรูป ax + b = 0 เมื่อ a, b เป็นค่าคงตัว และ a ≠ 0',
+      coreFormulasAndTheorems: [
+        'สมบัติการเท่ากัน: บวก ลบ คูณ หาร ด้วยจำนวนที่เท่ากันทั้งสองข้างของสมการ',
+        'การกำจัดตัวส่วน: คูณด้วย ค.ร.น. ของตัวส่วนตลอดสมการ'
+      ],
+      speedHacks: [
+        'ย้ายข้าง 3 สเต็ป: รวมตัวแปรไว้ซ้าย รวมตัวเลขไว้ขวา ย้ายสัมประสิทธิ์ไปหาร',
+        'โจทย์อายุ: สร้างตาราง อดีต-ปัจจุบัน-อนาคต ให้ผลต่างอายุของคนสองคนคงที่เสมอ'
+      ],
+      commonTrapAlerts: [
+        'เมื่อมีเครื่องหมายลบหน้าวงเล็บ ต้องกระจายลบเข้าไปเปลี่ยนเครื่องหมายทุกพจน์ข้างใน เช่น -(2x - 3) = -2x + 3',
+        'ลืมตรวจคำตอบโดยแทนค่ากลับลงในโจทย์'
+      ],
+      giftedExamNotes: [
+        'โจทย์อัตราเร็ว ระยะทาง เวลา (s = vt) สำหรับรถวิ่งสวนกัน / ตามกัน / ข้ามสะพาน'
+      ]
+    },
+    m1_ratios_proportions: {
+      subject: 'math',
+      moduleId: 'm1_ratios_proportions',
+      title: 'อัตราส่วน สัดส่วน และร้อยละ ม.1',
+      obecIndicator: 'ค 1.1 ม.1/3 (เข้าใจและประยุกต์ใช้อัตราส่วน สัดส่วน และร้อยละ ในการแก้ปัญหาคณิตศาสตร์และปัญหาในชีวิตจริง)',
+      academicDefinition: 'สัดส่วน คือ ประโยคที่แสดงการเท่ากันของอัตราส่วนสองอัตราส่วน',
+      coreFormulasAndTheorems: [
+        'สัดส่วนตรง: a/b = c/d ➔ ad = bc (คูณไขว้เท่ากัน)',
+        'สัดส่วนผกผัน: a₁b₁ = a₂b₂ (ผลคูณคงที่)'
+      ],
+      speedHacks: [
+        'โจทย์คนทำงาน: คน₁ × วัน₁ × ชั่วโมง₁ = คน₂ × วัน₂ × ชั่วโมง₂',
+        'อัตราส่วนต่อเนื่อง: เชื่อมตัวแปรกลางด้วย ค.ร.น.'
+      ],
+      commonTrapAlerts: [
+        'สับสนระหว่างสัดส่วนตรงกับสัดส่วนผกผัน (ต้องวิเคราะห์ว่าเมื่อปริมาณหนึ่งเพิ่ม อีกปริมาณเพิ่มหรือลด)',
+        'การคิด % ลดราคาซ้อนกัน (เช่น ลด 20% แล้วลดเพิ่มอีก 10% ไม่เท่ากับลด 30% แต่ลดจริง 28%)'
+      ],
+      giftedExamNotes: [
+        'โจทย์ผสมสารละลาย: ปริมาณเนื้อสาร = ความเข้มข้น (%) × ปริมาตรสารละลาย'
+      ]
+    }
+  },
+  science: {
+    m1_microscope_cells: {
+      subject: 'science',
+      moduleId: 'm1_microscope_cells',
+      title: 'กล้องจุลทรรศน์ & เซลล์พืชสัตว์เชิงลึก',
+      obecIndicator: 'ว 1.2 ม.1/1 - ม.1/4 (เปรียบเทียบรูปร่างลักษณะและโครงสร้างของเซลล์พืชและเซลล์สัตว์ และใช้กล้องจุลทรรศน์ใช้แสงศึกษาเซลล์)',
+      academicDefinition: 'กล้องจุลทรรศน์ใช้แสงเชิงประกอบใช้ระบบเลนส์ 2 ชุด เพื่อขยายภาพของวัตถุขนาดเล็กที่ตาเปล่ามองไม่เห็น',
+      coreFormulasAndTheorems: [
+        'กำลังขยายรวม = กำลังขยายเลนส์ใกล้ตา × กำลังขยายเลนส์ใกล้วัตถุ',
+        'ไมโทคอนเดรีย = แหล่งหายใจระดับเซลล์ สร้าง ATP',
+        'คลอโรพลาสต์ = แหล่งสังเคราะห์ด้วยแสง มีคลอโรฟิลล์'
+      ],
+      speedHacks: [
+        'ภาพที่เห็นในกล้อง: หมุน 180° เสมอ (หัวกลับและกลับซ้ายขวา)',
+        'เลื่อนสไลด์: ภาพอยู่ทางไหน ให้เลื่อนสไลด์ไปทางนั้นเพื่อให้ภาพกลับมาตรงกลาง'
+      ],
+      commonTrapAlerts: [
+        'การปรับภาพกำลังขยายสูง: ห้ามใช้ปุ่มปรับภาพหยาบเด็ดขาด (ใช้เฉพาะปุ่มปรับภาพละเอียดเพื่อป้องกันสไลด์แตก)',
+        'เซลล์พืชมีทั้งผนังเซลล์และเยื่อหุ้มเซลล์ ส่วนเซลล์สัตว์มีเฉพาะเยื่อหุ้มเซลล์'
+      ],
+      giftedExamNotes: [
+        'การย้อมสีเซลล์: เซลล์เยื่อบุข้างแก้มย้อมด้วย เมทิลีนบลู (Methylene Blue), เซลล์ว่านกาบหอยย้อมด้วย ไอโอดีน'
+      ]
+    },
+    m1_thermal_physics: {
+      subject: 'science',
+      moduleId: 'm1_thermal_physics',
+      title: 'ความร้อนและการเปลี่ยนแปลงของสาร (Q = mcΔt & Q = mL)',
+      obecIndicator: 'ว 2.3 ม.1/1 - ม.1/5 (วิเคราะห์ แปลความหมายข้อมูล และคำนวณปริมาณความร้อนที่ทำให้สารเปลี่ยนอุณหภูมิและเปลี่ยนสถานะ)',
+      academicDefinition: 'ความร้อนเป็นพลังงานรูปหนึ่งที่ถ่ายโอนจากระบบที่มีอุณหภูมิสูงไปยังระบบที่มีอุณหภูมิต่ำกว่า',
+      coreFormulasAndTheorems: [
+        'เปลี่ยนอุณหภูมิ: Q = mcΔt (m=มวล, c=ความจุความร้อนจำเพาะ, Δt=ผลต่างอุณหภูมิ)',
+        'เปลี่ยนสถานะ: Q = mL (L=ความร้อนแฝงจำเพาะ)',
+        'สมดุลความร้อน: Qสูญเสีย = Qได้รับ'
+      ],
+      speedHacks: [
+        'ค่าคงที่สำคัญของน้ำ: cน้ำ = 1 cal/g·°C, Lหลอมเหลว = 80 cal/g, Lกลายเป็นไอ = 540 cal/g',
+        'อุณหภูมิผสมของน้ำมวลเท่ากัน: tผสม = (t₁ + t₂) / 2'
+      ],
+      commonTrapAlerts: [
+        'ขณะสารเปลี่ยนสถานะ อุณหภูมิจะ "คงที่เสมอ" (ใช้ Q=mL ไม่ใช่ Q=mcΔt)',
+        'การแปลงหน่วยอุณหภูมิ: C/5 = (F-32)/9 = (K-273)/5'
+      ],
+      giftedExamNotes: [
+        'โจทย์น้ำแข็ง 0°C ผสมกับน้ำร้อน 100°C ➔ ต้องเช็คก่อนว่าน้ำแข็งละลายหมดหรือไม่'
+      ]
+    }
+  },
+  english: {
+    m1_past_tenses: {
+      subject: 'english',
+      moduleId: 'm1_past_tenses',
+      title: 'Past Simple vs Past Continuous',
+      obecIndicator: 'ต 1.1 ม.1/1 - ม.1/4, ต 1.2 ม.1/1 (ใช้ภาษา น้ำเสียง และกิริยาท่าทางเหมาะกับบุคคลและโอกาสตามมารยาทสังคมและวัฒนธรรมของเจ้าของภาษา)',
+      academicDefinition: 'Past Simple ใช้กับเหตุการณ์ที่เกิดขึ้นและจบลงแล้วในอดีต ส่วน Past Continuous ใช้กับเหตุการณ์ที่กำลังดำเนินอยู่ในอดีต',
+      coreFormulasAndTheorems: [
+        'Past Simple: S + V.2',
+        'Past Continuous: S + was/were + V.ing',
+        'While / As + Past Cont, Past Simple',
+        'When + Past Simple, Past Cont'
+      ],
+      speedHacks: [
+        'ท่องจำ: "กำลังเกิดใช้ was/were + V.ing | เข้ามาแทรกใช้ V.2"',
+        'Stative verbs (know, love, understand) ไม่ใช้รูป -ing'
+      ],
+      commonTrapAlerts: [
+        'I / He / She / It / คนเดียว ใช้ was | You / We / They / หลายคน ใช้ were',
+        'หลัง Did ในประโยคคำถาม/ปฏิเสธ กริยาต้องกลับเป็นช่อง 1 ไม่ผัน (Did + S + V.inf)'
+      ],
+      giftedExamNotes: [
+        'เหตุการณ์สองอย่างกำลังเกิดขึ้นพร้อมกันในอดีต ใช้ Past Cont ทั้งคู่เชื่อมด้วย While เช่น While Mom was cooking, Dad was washing the car.'
+      ]
+    },
+    m1_present_perfect: {
+      subject: 'english',
+      moduleId: 'm1_present_perfect',
+      title: 'Present Perfect Tense (Experience & Result)',
+      obecIndicator: 'ต 1.1 ม.1/3, ต 1.3 ม.1/1 (สนทนาแลกเปลี่ยนข้อมูลเกี่ยวกับตนเอง กิจกรรม และสถานการณ์ต่างๆ ในชีวิตประจำวัน)',
+      academicDefinition: 'Present Perfect ใช้เชื่อมโยงเหตุการณ์ในอดีตที่ส่งผลกระทบต่อเนื่องมาถึงปัจจุบัน หรือบอกประสบการณ์ชีวิต',
+      coreFormulasAndTheorems: [
+        'Structure: Subject + have/has + V.3',
+        'Since + จุดเริ่มต้นของเวลา (since 2015, since 9 o\'clock)',
+        'For + ระยะเวลา (for 3 days, for 10 years)'
+      ],
+      speedHacks: [
+        'Already, Just, Ever, Never ➔ อยู่ตรงกลาง (have/has + [word] + V.3)',
+        'Yet ➔ อยู่ท้ายประโยคปฏิเสธและคำถาม'
+      ],
+      commonTrapAlerts: [
+        'Have been to (เคยไปและกลับมาแล้ว) vs Have gone to (ไปแล้วยังไม่กลับมา)',
+        'ห้ามใช้คำระบุเวลาอดีตเจาะจง (yesterday, last night, 2 years ago) ร่วมกับ Present Perfect'
+      ],
+      giftedExamNotes: [
+        'Present Perfect Continuous (have/has + been + V.ing) เน้นการกระทำที่ทำต่อเนื่องไม่หยุดตั้งแต่ในอดีตจนถึงตอนนี้'
+      ]
+    },
+    m1_daily_vocab_collocations: {
+      subject: 'english',
+      moduleId: 'm1_daily_vocab_collocations',
+      title: 'คำศัพท์ชีวิตประจำวัน & กลุ่มคำใช้บ่อย (Daily Life & Collocations)',
+      obecIndicator: 'ต 1.1 ม.1/2, ต 1.2 ม.1/1 - ม.1/4 (ใช้ภาษา น้ำเสียง และกิริยาท่าทางเหมาะกับบุคคลและโอกาสตามมารยาทสังคม)',
+      academicDefinition: 'Collocation คือ กลุ่มคำที่เจ้าของภาษานิยมใช้คู่กันเป็นธรรมชาติ เช่น make the bed, do homework รวมถึงกริยาวลี (Phrasal Verbs) ในชีวิตประจำวัน',
+      coreFormulasAndTheorems: [
+        'DO: กิจกรรม/หน้าที่/งาน ➔ do homework, do housework, do the dishes, do business',
+        'MAKE: สร้างสรรค์/ผลิตสิ่งใหม่ ➔ make a cake, make a decision, make a mistake, make money',
+        'Daily Phrasal Verbs: wake up, get up, put off (เลื่อนเวลา), look after (ดูแล), give up (ยอมแพ้)'
+      ],
+      speedHacks: [
+        'จำคู่คำทำข้อสอบ: make the bed (เก็บที่นอน) ≠ do the bed',
+        'บอกทาง: go straight (ตรงไป), turn left/right (เลี้ยว), next to (ถัดจาก), opposite (ตรงข้าม)'
+      ],
+      commonTrapAlerts: [
+        'สับสนระหว่าง make vs do (เช่น make homework ❌ ➔ do homework ✔️)',
+        'คำถามราคา How much does it cost? vs How much is it?'
+      ],
+      giftedExamNotes: [
+        'Idioms ในชีวิตประจำวัน: Piece of cake (ง่ายมาก), Hit the books (อ่านหนังสือหนัก), Under the weather (รู้สึกไม่สบาย)'
+      ]
+    }
+  }
+}
+
+// Auto-merge M.1 curriculum knowledge
+if (M1_CURRICULUM_KNOWLEDGE) {
+  if (M1_CURRICULUM_KNOWLEDGE.math) Object.assign(CURRICULUM_KNOWLEDGE_BASE.math, M1_CURRICULUM_KNOWLEDGE.math)
+  if (M1_CURRICULUM_KNOWLEDGE.science) Object.assign(CURRICULUM_KNOWLEDGE_BASE.science, M1_CURRICULUM_KNOWLEDGE.science)
+  if (M1_CURRICULUM_KNOWLEDGE.english) Object.assign(CURRICULUM_KNOWLEDGE_BASE.english, M1_CURRICULUM_KNOWLEDGE.english)
+}
+
+
 /**
  * Helper function เพื่อค้นหาความรู้จากคลังหลักสูตรที่ตรงกับคำถามของนักเรียน
  */

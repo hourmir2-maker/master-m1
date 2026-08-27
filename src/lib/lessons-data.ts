@@ -1636,3 +1636,11 @@ export const LESSONS_DATA: Record<string, Record<string, LessonData>> = {
     }
   }
 }
+
+import { M1_ADVANCED_LESSONS_DATA } from './m1-advanced-lessons-data'
+
+if (M1_ADVANCED_LESSONS_DATA) {
+  if (M1_ADVANCED_LESSONS_DATA.math) Object.assign(LESSONS_DATA.math, M1_ADVANCED_LESSONS_DATA.math)
+  if (M1_ADVANCED_LESSONS_DATA.science) Object.assign(LESSONS_DATA.science, M1_ADVANCED_LESSONS_DATA.science)
+  if (M1_ADVANCED_LESSONS_DATA.english) Object.assign(LESSONS_DATA.english, M1_ADVANCED_LESSONS_DATA.english)
+}

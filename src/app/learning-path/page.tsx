@@ -240,6 +240,29 @@ export default function LearningPathPage() {
           </CardContent>
         </Card>
 
+        {/* O-NET 2570 Exam Mastery Hub Card */}
+        <div className="mb-8 p-5 sm:p-6 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 text-white rounded-3xl shadow-xl shadow-orange-600/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0">
+              🎯
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-base sm:text-lg font-black">สนามสอบจำลอง O-NET 2570 เสมือนจริง</h3>
+                <Badge className="bg-amber-300 text-orange-950 font-black text-[10px]">4 วิชา สทศ.</Badge>
+              </div>
+              <p className="text-orange-100 text-xs sm:text-sm leading-relaxed max-w-xl">
+                ตรงตามผังสร้างข้อสอบ ป.6 ปี 2570 ครบทั้งคณิต วิทย์ ไทย อังกฤษ พร้อมกระดาษฝนตัวเลขและระบบจับเวลาจริง
+              </p>
+            </div>
+          </div>
+          <Link href="/onet-exam" className="w-full sm:w-auto shrink-0">
+            <Button size="lg" className="bg-white text-orange-900 hover:bg-orange-50 font-black text-xs sm:text-sm px-6 rounded-2xl shadow-lg w-full">
+              เข้าห้องสอบ O-NET →
+            </Button>
+          </Link>
+        </div>
+
         {/* Subject Cards */}
         <div className="space-y-4 mb-8">
           <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">

@@ -17,8 +17,10 @@ import {
   Volume2,
   VolumeX,
   Mic,
-  MicOff
+  MicOff,
+  PhoneCall
 } from 'lucide-react'
+import VoiceCallModal from '@/components/VoiceCallModal'
 
 interface Message {
   id: string
@@ -35,6 +37,7 @@ interface AiTutorChatProps {
 
 export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basics', lessonTitle = 'บทเรียนทั่วไป' }: AiTutorChatProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [showVoiceCall, setShowVoiceCall] = useState(false)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [speakingId, setSpeakingId] = useState<string | null>(null)
@@ -327,6 +330,19 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
               </div>
 
               <div className="flex items-center gap-1.5">
+                {/* Voice Call Mode Trigger */}
+                <button
+                  onClick={() => {
+                    stopSpeaking()
+                    setShowVoiceCall(true)
+                  }}
+                  className="px-2.5 py-1 rounded-full bg-emerald-500 hover:bg-emerald-600 text-[10px] font-black flex items-center gap-1 transition-all shadow-sm shadow-emerald-900/30 text-white"
+                  title="เปิดโหมดโทรคุยสดด้วยเสียงกับครูพี่ AI"
+                >
+                  <PhoneCall className="w-3 h-3" />
+                  <span>โทรคุยสด</span>
+                </button>
+
                 {/* Voice Speed Toggle */}
                 <button
                   onClick={() => {
@@ -337,7 +353,7 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
                   className="px-2 py-1 rounded-full bg-white/20 hover:bg-white/30 text-[10px] font-black flex items-center gap-1 transition-all border border-white/30"
                   title="คลิกเพื่อเปลี่ยนความเร็วเสียงพูด"
                 >
-                  <span>🔊 {speechSpeed === 0.75 ? '0.75x (ช้า)' : speechSpeed === 0.85 ? '0.85x' : '1.0x (ปกติ)'}</span>
+                  <span>🔊 {speechSpeed === 0.75 ? '0.75x' : speechSpeed === 0.85 ? '0.85x' : '1.0x'}</span>
                 </button>
 
                 <button
@@ -487,6 +503,15 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
           </Card>
         </div>
       )}
+
+      {/* Realtime Live Voice Call Modal */}
+      <VoiceCallModal
+        isOpen={showVoiceCall}
+        onClose={() => setShowVoiceCall(false)}
+        subject={subject}
+        moduleId={moduleId}
+        lessonTitle={lessonTitle}
+      />
     </>
   )
 }

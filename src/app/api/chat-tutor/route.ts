@@ -41,13 +41,14 @@ ${curriculumContext}
 วิชา: ${subjectName} | หน่วยการเรียนรู้: ${currentLesson?.title || lessonTitle || moduleId}
 
 กติกาสำคัญในการตอบ:
-1. ทุกคำตอบต้องเป็น "คำอธิบายที่สมบูรณ์และชัดเจนในตัวเอง" (Complete Standalone Explanation) มีหัวข้อ ความหมาย ขั้นตอน ตัวอย่าง และจุดเน้นข้อสอบ
-2. ห้ามตอบตัดทอนประโยค หรือตอบเริ่มกลางประโยคเด็ดขาด
-3. อธิบายแบบย่อยง่าย ภาษาอบอุ่น เหมาะกับเด็ก ป.6 เตรียมสอบเข้า ม.1
-4. หากเป็นภาษาอังกฤษ: แปลคำย่อ (V.1 = กริยาช่อง 1, S = ประธาน) เสมอ`
+1. ทุกคำตอบต้องเป็น "คำอธิบายที่สมบูรณ์และจบในตัวเอง 100%" (Complete Standalone Explanation) มีหัวข้อ ความหมาย กฎการใช้ ตัวอย่าง และจุดที่ข้อสอบชอบหลอก
+2. ห้ามตอบตัดทอนประโยค ห้ามตอบค้าง หรือตัดจบกลางประโยคเด็ดขาด
+3. อธิบายแบบย่อยง่าย ภาษาอบอุ่น สนุกสนาน เหมาะกับเด็ก ป.6 เตรียมสอบเข้า ม.1
+4. หากเป็นภาษาอังกฤษ: แปลคำย่อเสมอ (เช่น V.1 = กริยาช่อง 1, S = ประธาน, Vowel Sound = เสียงสระ)
+5. สรุปเนื้อหาให้กระชับ ชัดเจน และจบประเด็นสมบูรณ์เสมอ`
 
     const userPrompt = `คำถามของนักเรียน: "${lastUserQuery}"
-กรุณาอธิบายเรื่องนี้ให้นักเรียนเข้าใจอย่างละเอียด เห็นภาพชัดเจน มีขั้นตอน ตัวอย่าง และจุดที่ข้อสอบชอบหลอกครับ`
+กรุณาอธิบายเรื่องนี้ให้นักเรียนเข้าใจอย่างละเอียด เห็นภาพชัดเจน มีขั้นตอน ตัวอย่าง และจุดที่ข้อสอบชอบหลอก โดยตอบให้จบครบถ้วนสมบูรณ์ครับ`
 
     const apiKey = process.env.GEMINI_API_KEY
 
@@ -70,7 +71,7 @@ ${curriculumContext}
               },
               generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 1500
+                maxOutputTokens: 4096
               }
             })
           }
@@ -78,7 +79,8 @@ ${curriculumContext}
 
         if (response.ok) {
           const data = await response.json()
-          const aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+          const candidate = data?.candidates?.[0]
+          const aiReply = candidate?.content?.parts?.[0]?.text
           if (aiReply && aiReply.trim().length > 0) {
             return NextResponse.json({ reply: aiReply.trim() })
           }
@@ -86,8 +88,8 @@ ${curriculumContext}
           const errData = await response.text()
           console.warn('Gemini REST API returned error status:', response.status, errData)
         }
-      } catch (fetchErr: any) {
-        console.warn('Gemini fetch error:', fetchErr?.message || fetchErr)
+      } catch (fetchErr: unknown) {
+        console.warn('Gemini fetch error:', fetchErr)
       }
     }
 
@@ -95,6 +97,12 @@ ${curriculumContext}
     if (lastUserQuery.includes('Present Simple') || lastUserQuery.includes('V.1')) {
       return NextResponse.json({
         reply: `💡 Present Simple Tense (V.1) คือ ไวยากรณ์บอก "ความจริงทั่วไป" หรือ "สิ่งที่ทำเป็นประจำ" ครับ!\n\n📌 โครงสร้างสำคัญ:\n1. ประธานเอกพจน์ (คนเดียว: He, She, It, สมชาย) ➔ กริยาเติม s หรือ es เช่น "He plays football."\n2. ประธานพหูพจน์ (หลายคน: I, You, We, They) ➔ กริยาช่อง 1 รูปเดิม ไม่ต้องเติมอะไร เช่น "They play football."\n\n⚡ คีย์เวิร์ดสังเกต: always (เสมอ), usually (ปกติ), every day (ทุกวัน)\n\n📝 ตัวอย่างใน If-Clause Type 1: "If it rains (ฝนตก-จริง), I will stay home." (กริยา rain จึงเติม s ครับ!) 🎯`
+      })
+    }
+
+    if (lastUserQuery.toLowerCase().includes('an') || lastUserQuery.includes('a/an') || lastUserQuery.includes('article')) {
+      return NextResponse.json({
+        reply: `🎯 **หลักการใช้ "an" และ "a" ฉบับพิชิตข้อสอบเข้า ม.1**\n\nทั้ง **a** และ **an** เป็นคำนำหน้านาม (Indefinite Article) แปลว่า "หนึ่งอัน / หนึ่งคน / หนึ่งตัว" ใช้กับคำนามเอกพจน์นับได้ทั่วไปครับ\n\n---\n\n### 📌 กฎทองการเลือกใช้:\n1. **ใช้ "an"** ➔ นำหน้าคำที่ขึ้นต้นด้วย **"เสียงสระ" (Vowel Sound: อะ, อา, อิ, อี, อุ, อู, เอ, โอ)**\n   • an apple (แอปเปิ้ล)\n   • an egg (ไข่ไก่)\n   • an umbrella (ร่ม — เสียง อัม)\n\n2. **ใช้ "a"** ➔ นำหน้าคำที่ขึ้นต้นด้วย **"เสียงพยัญชนะ" (Consonant Sound)**\n   • a book (หนังสือ)\n   • a cat (แมว)\n\n---\n\n### ⚠️ จุดลวงข้อสอบเข้า ม.1 ที่เด็กมักโดนหลอก 100%! (ดูที่ "เสียงอ่าน" ไม่ใช่ตัวสะกด):\n\n❌ **กับดักที่ 1 (ตัว H แต่ออกเสียงสระ):**\n• **an hour** (1 ชั่วโมง) — เพราะตัว h ไม่ออกเสียง อ่านว่า "อาว-เวอะ" (เสียง อ.) จึงต้องใช้ **an**!\n• **an honest boy** (เด็กที่ซื่อสัตย์) — อ่านว่า "ออน-นิสต์" จึงต้องใช้ **an**!\n\n❌ **กับดักที่ 2 (ตัว U/E แต่ออกเสียงพยัญชนะ ย):**\n• **a university** (มหาวิทยาลัย) — ออกเสียงว่า "ยู-นิเวอร์ซิตี้" (เสียง ย. เป็นพยัญชนะ) จึงต้องใช้ **a**!\n• **a European country** (ประเทศในยุโรป) — ออกเสียงว่า "ยู-โรเปียน" จึงใช้ **a**!\n• **a one-way ticket** (ตั๋วเที่ยวเดียว) — one ออกเสียงว่า "วัน" (เสียง ว. พยัญชนะ) จึงใช้ **a**!\n\n💡 **สรุปสูตรลัด:** ท่องจำไว้เลยว่า *"ดูที่เสียงอ่าน ถ้าขึ้นต้นด้วยเสียง อ. ให้ใช้ an เสมอ!"* 🎯✨`
       })
     }
 

@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import ReportModal from '@/components/ReportModal'
 import AiTutorChat from '@/components/AiTutorChat'
+import AudioLessonPlayer from '@/components/AudioLessonPlayer'
 import Footer from '@/components/Footer'
 import { 
   ArrowLeft, 
@@ -301,6 +302,9 @@ export default function LessonDetailPage() {
         {/* Tab 1: Content & Secret Formula */}
         {currentTab === 'content' && (
           <div className="space-y-6">
+            {/* Audio Lesson Masterclass Player */}
+            <AudioLessonPlayer subject={subject} moduleId={moduleId} />
+
             {/* Secret Formula Box */}
             <Card className="border-2 border-orange-300 shadow-lg bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-white rounded-3xl overflow-hidden">
               <div className="bg-gradient-to-r from-orange-500 to-red-500 p-1" />

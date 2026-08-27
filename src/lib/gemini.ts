@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-
 interface SubjectResult {
   score: number
   total: number

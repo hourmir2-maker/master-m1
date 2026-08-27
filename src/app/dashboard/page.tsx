@@ -9,15 +9,41 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
-import { BookOpen, Target, LogOut, FlaskConical, MessageCircle, Sparkles, ChevronRight, Award } from 'lucide-react'
+import AchievementsModal from '@/components/AchievementsModal'
+import { updateDailyStreak, GamificationState, getGamificationState } from '@/lib/gamification'
+import { 
+  BookOpen, 
+  Target, 
+  LogOut, 
+  FlaskConical, 
+  MessageCircle, 
+  Sparkles, 
+  ChevronRight, 
+  Award,
+  Timer,
+  Layers,
+  Printer,
+  Flame,
+  Zap,
+  Trophy,
+  PhoneCall
+} from 'lucide-react'
+import VoiceCallModal from '@/components/VoiceCallModal'
 
 export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
   const [user, setUser] = useState<{ full_name: string; school_target?: string } | null>(null)
   const [progressData, setProgressData] = useState<{ subject: string; completed: boolean; score?: number }[]>([])
+  const [gameState, setGameState] = useState<GamificationState>(getGamificationState())
+  const [showAchievements, setShowAchievements] = useState(false)
+  const [showVoiceCall, setShowVoiceCall] = useState(false)
 
   useEffect(() => {
+    // Update daily streak on load
+    const updatedGame = updateDailyStreak()
+    setGameState(updatedGame)
+
     const load = async () => {
       try {
         const { data: authData } = await supabase.auth.getUser()
@@ -101,7 +127,7 @@ export default function DashboardPage() {
   const badge = getBadge(totalCompleted)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50/60 via-amber-50/40 to-red-50/50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50/60 via-amber-50/40 to-red-50/50 flex flex-col">
       {/* Navbar */}
       <header className="bg-white/90 backdrop-blur-md border-b border-orange-100 sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -115,6 +141,16 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {/* Daily Streak Counter */}
+            <div 
+              onClick={() => setShowAchievements(true)}
+              className="flex items-center gap-1.5 bg-orange-100/80 hover:bg-orange-200 text-orange-900 px-3 py-1 rounded-full text-xs font-bold border border-orange-200 cursor-pointer transition-all shadow-2xs"
+              title="ดูเหรียญรางวัลและสถิติ"
+            >
+              <Flame className="w-4 h-4 text-orange-600 animate-pulse" />
+              <span>{gameState.currentStreak} วัน</span>
+            </div>
+
             <span className="text-slate-700 text-xs sm:text-sm font-semibold hidden sm:inline-block">
               👋 สวัสดี, <span className="text-orange-600 font-bold">{user?.full_name || 'นักเรียน'}</span>
             </span>
@@ -125,7 +161,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8 flex-1">
+        {/* Welcome Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2">
@@ -136,11 +173,20 @@ export default function DashboardPage() {
             </p>
           </div>
           
-          <Link href="/learning-path">
-            <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md shadow-orange-500/25">
-              <Sparkles className="w-4 h-4 mr-1.5" /> ดูแผนการเรียน AI
+          <div className="flex flex-wrap gap-2.5">
+            <Button
+              onClick={() => setShowAchievements(true)}
+              variant="outline"
+              className="border-amber-300 bg-amber-50/70 hover:bg-amber-100 text-amber-900 font-bold shadow-xs text-xs"
+            >
+              <Trophy className="w-4 h-4 mr-1.5 text-amber-600" /> หอเกียรติยศ ({gameState.unlockedBadgeIds.length}/10)
             </Button>
-          </Link>
+            <Link href="/learning-path">
+              <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md shadow-orange-500/25 text-xs">
+                <Sparkles className="w-4 h-4 mr-1.5" /> แผนการเรียน AI
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Row */}
@@ -162,7 +208,138 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Subject Progress Cards */}
+        {/* O-NET 2570 Exam Mastery Hub Banner */}
+        <div className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 text-white rounded-3xl p-5 sm:p-6 mb-8 shadow-xl shadow-orange-600/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-orange-400/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl shrink-0 shadow-inner">
+              🎯
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-black text-base sm:text-lg">สนามสอบจำลอง O-NET 2570 (เสมือนจริง 4 วิชา)</span>
+                <Badge className="bg-amber-300 text-orange-950 font-black text-[10px]">สทศ. 2570</Badge>
+              </div>
+              <p className="text-orange-100 text-xs sm:text-sm max-w-xl leading-relaxed">
+                ฝึกทำข้อสอบตรงตาม Test Blueprint สทศ. (สอบ ก.พ. 2570) ครบ 4 วิชา: คณิต, วิทย์, ไทย, อังกฤษ พร้อมกระดาษฝนตัวเลขและเฉลย 4 สเต็ป
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto shrink-0">
+            <Link href="/onet-exam" className="w-full sm:w-auto">
+              <Button size="lg" className="bg-white text-orange-900 hover:bg-orange-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full">
+                🚀 เข้าสนามสอบ O-NET →
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* M.1 Advance Announcement Banner */}
+        <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 text-white rounded-2xl p-4 sm:p-5 mb-8 shadow-lg shadow-purple-600/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">
+              🚀
+            </div>
+            <div>
+              <h4 className="font-black text-sm sm:text-base flex items-center gap-2">
+                <span>เปิดตัวหลักสูตรเสริม: เรียนล่วงหน้า ม.1 (Advance Track)</span>
+                <Badge className="bg-amber-400 text-purple-950 font-black text-[10px]">NEW</Badge>
+              </h4>
+              <p className="text-purple-100 text-xs mt-0.5">
+                เสริมความพร้อมห้อง Gifted และเตรียมตัวล่วงหน้า ครบทั้งจำนวนเต็ม, เลขยกกำลัง, Q=mcΔt, และ Past Continuous
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Link href="/subjects/math" className="w-full sm:w-auto">
+              <Button size="sm" className="bg-white text-purple-900 hover:bg-purple-50 font-bold text-xs w-full">
+                ลองเรียนเลย →
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Action Hub - 3 Core New Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {/* Flashcards */}
+          <Link href="/flashcards" className="group">
+            <Card className="border-2 border-orange-200/90 bg-gradient-to-br from-orange-50 to-white shadow-md hover:shadow-xl hover:border-orange-400 transition-all rounded-2xl h-full flex flex-col justify-between overflow-hidden">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center text-xl shadow-md shadow-orange-500/20 group-hover:scale-110 transition-transform">
+                    🃏
+                  </div>
+                  <Badge className="bg-orange-100 text-orange-800 border-orange-200 font-bold text-[10px]">
+                    Spaced Repetition
+                  </Badge>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-1 group-hover:text-orange-600 transition-colors">
+                  Flashcards สูตรลับ ม.1
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  การ์ดพลิก 3D ท่องจำสูตรคิดเร็ว วิทย์จุดลวง และศัพท์สำคัญ พร้อมเสียงอ่าน TTS
+                </p>
+              </CardContent>
+              <div className="px-5 py-2.5 bg-orange-100/50 border-t border-orange-100 flex justify-between items-center text-xs font-bold text-orange-700">
+                <span>เริ่มท่องจำ</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </Link>
+
+          {/* Mock Exam 45 Mins */}
+          <Link href="/mock-exam" className="group">
+            <Card className="border-2 border-red-200/90 bg-gradient-to-br from-red-50 to-white shadow-md hover:shadow-xl hover:border-red-400 transition-all rounded-2xl h-full flex flex-col justify-between overflow-hidden">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center text-xl shadow-md shadow-red-500/20 group-hover:scale-110 transition-transform">
+                    ⏱️
+                  </div>
+                  <Badge className="bg-red-100 text-red-800 border-red-200 font-bold text-[10px]">
+                    จับเวลา 45 นาที
+                  </Badge>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-1 group-hover:text-red-600 transition-colors">
+                  Mock Exam จำลองสอบจริง
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  ชุดข้อสอบรวม 3 วิชา 30 ข้อ ประเมินเกรด วิเคราะห์ความพร้อมก่อนลงสนามจริง
+                </p>
+              </CardContent>
+              <div className="px-5 py-2.5 bg-red-100/50 border-t border-red-100 flex justify-between items-center text-xs font-bold text-red-700">
+                <span>เข้าห้องสอบจำลอง</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </Link>
+
+          {/* Printable Cheat Sheets */}
+          <Link href="/cheat-sheets" className="group">
+            <Card className="border-2 border-amber-200/90 bg-gradient-to-br from-amber-50 to-white shadow-md hover:shadow-xl hover:border-amber-400 transition-all rounded-2xl h-full flex flex-col justify-between overflow-hidden">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
+                    📄
+                  </div>
+                  <Badge className="bg-amber-100 text-amber-800 border-amber-200 font-bold text-[10px]">
+                    พิมพ์ PDF แผ่นเดียว
+                  </Badge>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-1 group-hover:text-amber-600 transition-colors">
+                  สรุปสูตรลับ Cheat Sheet
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  สรุปสูตรลัดและจุดเน้น 3 วิชาแบบหน้าเดียว พิมพ์พกไปอ่านทบทวนหน้าห้องสอบ
+                </p>
+              </CardContent>
+              <div className="px-5 py-2.5 bg-amber-100/50 border-t border-amber-100 flex justify-between items-center text-xs font-bold text-amber-700">
+                <span>เปิดดู & พิมพ์</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </Link>
+        </div>
+
+        {/* Subject Progress Cards (24 Modules) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[
             { 
@@ -230,35 +407,57 @@ export default function DashboardPage() {
               <Award className="w-4 h-4 text-orange-600" /> เมนูด่วนสำหรับการฝึกฝน
             </h3>
             <div className="flex flex-wrap gap-3">
+              <Button 
+                onClick={() => setShowVoiceCall(true)}
+                className="gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20"
+              >
+                <PhoneCall className="w-4 h-4" /> 📞 คุยสดกับครูพี่ AI
+              </Button>
               <Link href="/pre-test">
                 <Button variant="outline" className="gap-2 border-orange-200 text-orange-800 hover:bg-orange-50 text-xs font-semibold">
                   <FlaskConical className="w-4 h-4 text-orange-600" /> ทำ Pre-Test ใหม่
                 </Button>
               </Link>
-              <Link href="/learning-path">
+              <Link href="/flashcards">
                 <Button variant="outline" className="gap-2 border-orange-200 text-orange-800 hover:bg-orange-50 text-xs font-semibold">
-                  <Target className="w-4 h-4 text-red-600" /> ดูคำแนะนำ AI
+                  <Layers className="w-4 h-4 text-orange-600" /> ท่องจำ Flashcards
                 </Button>
               </Link>
-              <Link href="/subjects/math">
+              <Link href="/mock-exam">
                 <Button variant="outline" className="gap-2 border-orange-200 text-orange-800 hover:bg-orange-50 text-xs font-semibold">
-                  <BookOpen className="w-4 h-4 text-orange-600" /> สูตรลับคณิตศาสตร์
+                  <Timer className="w-4 h-4 text-red-600" /> สอบ Mock Exam 45 นาที
                 </Button>
               </Link>
-              <Link href="/subjects/science">
-                <Button variant="outline" className="gap-2 border-orange-200 text-orange-800 hover:bg-orange-50 text-xs font-semibold">
-                  <FlaskConical className="w-4 h-4 text-red-600" /> เทคนิควิทยาศาสตร์
+              <Link href="/vocab-bank">
+                <Button variant="outline" className="gap-2 border-amber-300 text-amber-900 bg-amber-50/60 hover:bg-amber-100 text-xs font-bold shadow-xs">
+                  <BookOpen className="w-4 h-4 text-amber-600" /> 📖 คลังศัพท์ Oxford 3000
                 </Button>
               </Link>
-              <Link href="/subjects/english">
+              <Link href="/cheat-sheets">
                 <Button variant="outline" className="gap-2 border-orange-200 text-orange-800 hover:bg-orange-50 text-xs font-semibold">
-                  <MessageCircle className="w-4 h-4 text-amber-600" /> เทคนิคภาษาอังกฤษ
+                  <Printer className="w-4 h-4 text-amber-600" /> โหลดชีทสรุปสูตรลับ
                 </Button>
               </Link>
             </div>
           </CardContent>
         </Card>
       </main>
+
+      {/* Achievements Modal */}
+      <AchievementsModal
+        isOpen={showAchievements}
+        onClose={() => setShowAchievements(false)}
+      />
+
+      {/* Realtime Live Voice Call Modal */}
+      <VoiceCallModal
+        isOpen={showVoiceCall}
+        onClose={() => setShowVoiceCall(false)}
+        subject="math"
+        moduleId="numbers_basics"
+        lessonTitle="ภาพรวมเตรียมสอบ ม.1"
+      />
+
       <Footer />
     </div>
   )

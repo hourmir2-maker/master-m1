@@ -1,7 +1,19 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { BookOpen, Brain, Target, Trophy, CheckCircle, Sparkles, ArrowRight } from 'lucide-react'
+import { 
+  BookOpen, 
+  Brain, 
+  Target, 
+  Trophy, 
+  CheckCircle, 
+  Sparkles, 
+  ArrowRight,
+  Layers,
+  Timer,
+  Printer,
+  Volume2
+} from 'lucide-react'
 
 export default function LandingPage() {
   return (
@@ -34,7 +46,7 @@ export default function LandingPage() {
         <section className="py-20 text-center relative overflow-hidden">
           <div className="inline-flex items-center gap-2 bg-orange-100/90 text-orange-800 border border-orange-200/80 rounded-full px-4 py-1.5 text-xs md:text-sm font-semibold mb-6 shadow-sm">
             <Sparkles className="w-4 h-4 text-orange-600 animate-pulse" />
-            ระบบกวดวิชา AI วิเคราะห์และปรับบทเรียนเฉพาะบุคคล
+            ระบบกวดวิชา AI วิเคราะห์และปรับบทเรียนเฉพาะบุคคล (EdTech Framework)
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight">
@@ -45,7 +57,7 @@ export default function LandingPage() {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-slate-600 mb-4 max-w-2xl mx-auto font-normal">
-            ทดสอบก่อนเรียน (Pre-Test) ให้ <span className="font-semibold text-orange-700">Gemini AI</span> วิเคราะห์จุดอ่อน แล้วจัดเส้นทางการเรียนรู้เฉพาะตัว เพื่อพาคุณไปสู่เป้าหมายเดียวกัน
+            ทดสอบก่อนเรียน (Pre-Test) ให้ <span className="font-semibold text-orange-700">Gemini AI</span> วิเคราะห์จุดอ่อน ท่องจำด้วย <span className="font-semibold text-amber-700">Flashcards</span> และสอบเสมือนจริงด้วย <span className="font-semibold text-red-700">Mock Exam 45 นาที</span>
           </p>
           
           <p className="text-sm font-medium text-orange-800/70 mb-10 flex items-center justify-center gap-2">
@@ -59,11 +71,33 @@ export default function LandingPage() {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base sm:text-lg px-8 py-6 border-2 border-orange-200 text-orange-700 hover:bg-orange-50 font-semibold">
-                มีบัญชีแล้ว? เข้าสู่ระบบ
+            <Link href="/onet-exam" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base sm:text-lg px-8 py-6 border-2 border-orange-500 bg-white text-orange-700 hover:bg-orange-50 font-bold shadow-md">
+                🎯 สอบจำลอง O-NET 2570 (4 วิชา)
               </Button>
             </Link>
+          </div>
+        </section>
+
+        {/* Feature Highlights Grid */}
+        <section className="py-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Brain, title: 'AI วินิจฉัยแม่นยำ', desc: 'Gemini AI ชี้จุดอ่อน-จุดแข็งรายหัวข้อ พร้อมจัดลำดับการเรียนเฉพาะตัว', color: 'text-orange-600 bg-orange-100/70' },
+              { icon: Layers, title: 'Flashcards 3D & TTS', desc: 'ระบบ Spaced Repetition ท่องจำสูตรลัดและศัพท์ พร้อมเสียงอ่านครูพี่ AI', color: 'text-amber-600 bg-amber-100/70' },
+              { icon: Timer, title: 'Mock Exam 45 นาที', desc: 'ระบบจับเวลาจำลองสอบจริง 3 วิชา 30 ข้อ วิเคราะห์เกรดและความพร้อมทันที', color: 'text-red-600 bg-red-100/70' },
+              { icon: Printer, title: 'ชีทสรุปสูตรลับแผ่นเดียว', desc: 'ดาวน์โหลดและพิมพ์สูตรลัด High-Yield 3 วิชาไปอ่านทบทวนหน้าห้องสอบ', color: 'text-yellow-700 bg-yellow-100/70' },
+            ].map((f, i) => (
+              <Card key={i} className="border border-orange-100 shadow-sm hover:shadow-lg transition-all bg-white rounded-2xl overflow-hidden">
+                <CardContent className="pt-6 text-center">
+                  <div className={`w-14 h-14 rounded-2xl ${f.color} flex items-center justify-center mx-auto mb-4 shadow-sm`}>
+                    <f.icon className="w-7 h-7" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-base mb-2">{f.title}</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">{f.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
@@ -76,8 +110,8 @@ export default function LandingPage() {
             {[
               { step: '1', icon: '📝', title: 'ทำ Pre-Test', desc: 'ทดสอบ 30 ข้อ ครอบคลุม 3 วิชาหลัก ประเมินพื้นฐานจริง' },
               { step: '2', icon: '🤖', title: 'AI ประมวลผล', desc: 'Gemini AI ชี้จุดอ่อน-จุดแข็ง พร้อมวิเคราะห์ลึกรายหัวข้อ' },
-              { step: '3', icon: '📚', title: 'เรียนตามแผนเฉพาะตัว', desc: 'จัดลำดับบทเรียนและสูตรลับให้ตรงกับระดับของแต่ละคน' },
-              { step: '4', icon: '🏆', title: 'พิชิตข้อสอบ', desc: 'เก็บ Badge, ทำแบบฝึกหัด และพร้อมลงสนามสอบจริง' },
+              { step: '3', icon: '📚', title: 'เรียน 24 โมดูล', desc: 'ฝึกฝนสูตรลัดและทำโจทย์ พร้อมทบทวนด้วย Flashcards' },
+              { step: '4', icon: '🏆', title: 'สอบ Mock Exam', desc: 'จำลองสอบ 45 นาที เก็บ Badge และพร้อมลงสนามสอบจริง' },
             ].map((item) => (
               <div key={item.step} className="bg-white/70 backdrop-blur-sm border border-orange-100/80 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all">
                 <div className="w-12 h-12 bg-gradient-to-tr from-orange-500 to-red-500 text-white rounded-full flex items-center justify-center text-lg mx-auto mb-4 font-black shadow-md shadow-orange-500/20">
@@ -91,32 +125,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Features */}
-        <section className="py-14">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Brain, title: 'AI วินิจฉัยแม่นยำ', desc: 'เจาะลึกเฉพาะหัวข้อที่ไม่เข้าใจ ไม่เสียเวลากับเรื่องที่คล่องแล้ว', color: 'text-orange-600 bg-orange-100/70' },
-              { icon: Target, title: 'เป้าหมายโรงเรียนในฝัน', desc: 'ออกแบบให้สอดคล้องกับข้อสอบห้องเรียนพิเศษและห้องธรรมดา', color: 'text-red-600 bg-red-100/70' },
-              { icon: BookOpen, title: '3 วิชาหลักครบครัน', desc: 'คณิตศาสตร์ วิทยาศาสตร์ และภาษาอังกฤษ เข้มข้นตรงหลักสูตร', color: 'text-amber-600 bg-amber-100/70' },
-              { icon: Trophy, title: 'Gamified Learning', desc: 'ระบบเลเวลและ Badge เพิ่มความสนุกและแรงผลักดันในการอ่านหนังสือ', color: 'text-yellow-700 bg-yellow-100/70' },
-            ].map((f, i) => (
-              <Card key={i} className="border border-orange-100 shadow-sm hover:shadow-lg transition-all bg-white">
-                <CardContent className="pt-6 text-center">
-                  <div className={`w-14 h-14 rounded-2xl ${f.color} flex items-center justify-center mx-auto mb-4`}>
-                    <f.icon className="w-7 h-7" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-base mb-2">{f.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         {/* Subjects Preview */}
         <section className="py-14">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 mb-2">3 วิชาหลัก พร้อมสูตรลับ & เทคนิคขั้นสูง</h2>
-          <p className="text-center text-slate-500 text-sm mb-12">เน้นความเข้าใจ กระชับ ไม่เน้นท่องจำ</p>
+          <p className="text-center text-slate-500 text-sm mb-12">เน้นความเข้าใจ กระชับ ไม่เน้นท่องจำ (24 โมดูลครบถ้วน)</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
@@ -133,7 +145,7 @@ export default function LandingPage() {
                 secret: 'เทคนิค 3S Reading', modules: ['Grammar, Tenses, If-Clause & Tags', 'Vocabulary Power & Root Words', 'Reading Comprehension (Skim/Scan)', 'Everyday Polite Communication', 'Error Identification & Structure', 'Active vs Passive & Modal Verbs', 'Comparison & Conjunctions', 'Cloze Test & Paragraph Completion']
               },
             ].map((s, i) => (
-              <Card key={i} className="overflow-hidden border-orange-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white">
+              <Card key={i} className="overflow-hidden border-orange-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white rounded-2xl">
                 <div className={`bg-gradient-to-br ${s.color} text-white p-6 relative`}>
                   <div className="text-5xl mb-2">{s.emoji}</div>
                   <h3 className="text-2xl font-bold tracking-tight">{s.subject}</h3>
@@ -185,11 +197,18 @@ export default function LandingPage() {
           <p className="text-slate-600 max-w-lg mx-auto text-sm sm:text-base mb-8">
             สมัครฟรีวันนี้ ทำแบบทดสอบเพียง 20 นาที แล้วรับแผนการเรียนที่ออกแบบมาเพื่อคุณโดยเฉพาะ
           </p>
-          <Link href="/register">
-            <Button size="lg" className="text-base sm:text-lg px-10 py-6 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-xl shadow-orange-500/25 font-bold transition-all hover:scale-105">
-              🎯 เริ่มทำ Pre-Test ฟรีทันที
-            </Button>
-          </Link>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/register">
+              <Button size="lg" className="text-base sm:text-lg px-10 py-6 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-xl shadow-orange-500/25 font-bold transition-all hover:scale-105">
+                🎯 เริ่มทำ Pre-Test ฟรีทันที
+              </Button>
+            </Link>
+            <Link href="/cheat-sheets">
+              <Button size="lg" variant="outline" className="text-base sm:text-lg px-8 py-6 border-2 border-orange-300 text-orange-800 hover:bg-orange-100/60 font-bold">
+                📄 ดูสูตรลับ Cheat Sheet
+              </Button>
+            </Link>
+          </div>
         </section>
       </main>
 
