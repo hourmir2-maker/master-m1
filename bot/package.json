@@ -1,0 +1,16 @@
+{
+  "name": "shopee-affiliate-bot",
+  "version": "1.0.0",
+  "description": "Automated Affiliate posting bot using Node.js, SQLite, and Gemini AI",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "init-db": "node database.js init"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "rss-parser": "^3.13.0",
+    "sqlite3": "^5.1.7"
+  }
+}
