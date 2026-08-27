@@ -24,7 +24,7 @@ export default function AdBanner({
   const adRef = useRef<HTMLModElement | null>(null)
   const isLoaded = useRef(false)
 
-  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-XXXXXXXXXXXXXXXX'
+  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-7280055452989562'
 
   useEffect(() => {
     // ป้องกันการ push ซ้ำใน React 18/19 StrictMode
