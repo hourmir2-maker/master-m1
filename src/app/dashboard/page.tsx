@@ -339,8 +339,8 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Subject Progress Cards (24 Modules) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Subject Progress Cards (32 Modules - 4 Core Subjects) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             { 
               label: 'คณิตศาสตร์', 
@@ -371,6 +371,16 @@ export default function DashboardPage() {
               gradient: 'from-amber-500 to-orange-500',
               border: 'border-amber-100',
               secret: '8 โมดูล + เทคนิค 3S Reading'
+            },
+            { 
+              label: 'ภาษาไทย', 
+              emoji: '📖',
+              count: 8, 
+              href: '/subjects/thai', 
+              color: 'text-rose-600', 
+              gradient: 'from-rose-500 to-pink-500',
+              border: 'border-rose-100',
+              secret: '8 โมดูล + อัตนัย 15 คะแนน สพฐ.'
             },
           ].map(s => (
             <Card key={s.label} className={`border ${s.border} shadow-md bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all`}>

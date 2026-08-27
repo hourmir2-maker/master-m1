@@ -9,7 +9,7 @@ export interface PracticeQuestion {
 
 export interface LessonData {
   id: string
-  subject: 'math' | 'science' | 'english'
+  subject: 'math' | 'science' | 'english' | 'thai'
   title: string
   subtitle: string
   emoji: string
@@ -1634,7 +1634,13 @@ export const LESSONS_DATA: Record<string, Record<string, LessonData>> = {
         }
       ]
     }
-  }
+  },
+  thai: {}
+}
+
+import { THAI_LESSONS_DATA } from './thai-lessons-data'
+if (THAI_LESSONS_DATA) {
+  Object.assign(LESSONS_DATA.thai, THAI_LESSONS_DATA)
 }
 
 import { M1_ADVANCED_LESSONS_DATA } from './m1-advanced-lessons-data'
