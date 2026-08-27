@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
+import AdBanner from '@/components/AdBanner'
 import { 
   ArrowLeft, 
   Printer, 
@@ -311,6 +312,10 @@ export default function CheatSheetsPage() {
             <p className="text-[11px] text-slate-400 mt-0.5">
               พร้อมสำหรับพิมพ์แผ่นเดียวขนาด A4 หน้า-หลัง ทบทวนหน้าห้องสอบ
             </p>
+          </div>
+
+          <div className="no-print">
+            <AdBanner slotId="cheat_sheet_bottom" />
           </div>
         </div>
       </main>

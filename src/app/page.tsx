@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import AdBanner from '@/components/AdBanner'
 import { 
   BookOpen, 
   Brain, 
@@ -215,6 +216,11 @@ export default function LandingPage() {
             </Link>
           </div>
         </section>
+
+        {/* AdSense Placement */}
+        <div className="max-w-4xl mx-auto px-4">
+          <AdBanner slotId="landing_footer_banner" />
+        </div>
       </main>
 
       <footer className="bg-white border-t border-orange-100 py-8 text-center text-slate-500 text-xs sm:text-sm">
