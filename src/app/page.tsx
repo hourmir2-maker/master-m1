@@ -30,12 +30,17 @@ export default function LandingPage() {
               <p className="text-[11px] text-orange-900/60 font-medium leading-none mt-0.5">เตรียมพร้อม พิชิตทุกข้อสอบ</p>
             </div>
           </div>
-          <div className="flex gap-2.5">
+          <div className="flex items-center gap-2">
+            <Link href="/school">
+              <Button variant="outline" className="border-blue-200 text-blue-800 bg-blue-50/80 hover:bg-blue-100 font-bold text-xs shadow-xs">
+                🏫 สำหรับโรงเรียน (School Portal)
+              </Button>
+            </Link>
             <Link href="/login">
-              <Button variant="ghost" className="text-orange-800 hover:text-orange-900 hover:bg-orange-100/60 font-medium">เข้าสู่ระบบ</Button>
+              <Button variant="ghost" className="text-orange-800 hover:text-orange-900 hover:bg-orange-100/60 font-medium text-xs sm:text-sm">เข้าสู่ระบบ</Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-md shadow-orange-500/25 font-semibold">สมัครฟรี</Button>
+              <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-md shadow-orange-500/25 font-semibold text-xs sm:text-sm">สมัครฟรี</Button>
             </Link>
           </div>
         </div>
