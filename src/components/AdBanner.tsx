@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface AdBannerProps {
   slotId?: string
@@ -23,29 +23,45 @@ export default function AdBanner({
 }: AdBannerProps) {
   const adRef = useRef<HTMLModElement | null>(null)
   const isLoaded = useRef(false)
+  const [mounted, setMounted] = useState(false)
 
-  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-7280055452989562'
+  const clientId = 'ca-pub-7280055452989562'
 
   useEffect(() => {
-    // ป้องกันการ push ซ้ำใน React 18/19 StrictMode
-    if (isLoaded.current) return
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        window.adsbygoogle.push({})
-        isLoaded.current = true
-      }
-    } catch (err) {
-      console.warn('AdSense push warning:', err)
-    }
+    setMounted(true)
   }, [])
 
+  useEffect(() => {
+    if (!mounted || isLoaded.current) return
+    const timer = setTimeout(() => {
+      try {
+        if (typeof window !== 'undefined' && adRef.current && adRef.current.offsetWidth > 0) {
+          window.adsbygoogle = window.adsbygoogle || []
+          window.adsbygoogle.push({})
+          isLoaded.current = true
+        }
+      } catch (err) {
+        // Safe catch for AdSense pending review states
+      }
+    }, 200)
+
+    return () => clearTimeout(timer)
+  }, [mounted])
+
+  if (!mounted) {
+    return (
+      <div className={`w-full overflow-hidden my-4 text-center ${className}`}>
+        <div className="min-h-[90px] bg-slate-50/50 rounded-xl border border-slate-100 animate-pulse" />
+      </div>
+    )
+  }
+
   return (
-    <div className={`w-full overflow-hidden my-4 text-center ${className}`}>
+    <div className={`w-full overflow-hidden my-4 text-center ${className}`} suppressHydrationWarning>
       <div className="text-[10px] text-slate-400 font-semibold mb-1 uppercase tracking-wider">
-        ผู้สนับสนุน / โฆษณา
+        ผู้สนับสนุน
       </div>
       
-      {/* Google AdSense ins tag */}
       <ins
         ref={adRef}
         className="adsbygoogle block mx-auto rounded-xl overflow-hidden bg-slate-50/50 border border-slate-100 min-h-[90px]"
@@ -58,3 +74,4 @@ export default function AdBanner({
     </div>
   )
 }
+
