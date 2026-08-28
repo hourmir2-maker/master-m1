@@ -38,6 +38,24 @@ export async function POST(req: NextRequest) {
         console.warn('Progress insert warning:', error.message)
       }
 
+      // 3. Trigger Automated Parent Telegram Notification
+      try {
+        const { sendParentTelegramNotification } = await import('@/lib/telegram-notify')
+        const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle()
+        const studentName = profile?.full_name || 'น้องภูมิรพีร์'
+        
+        await sendParentTelegramNotification({
+          userId,
+          studentName,
+          subject,
+          moduleId,
+          score: typeof score === 'number' ? score : 100,
+          timeSpent: timeSpent || 0
+        })
+      } catch (tgErr) {
+        console.warn('Telegram parent notification warning (non-fatal):', tgErr)
+      }
+
       return NextResponse.json({ success: true, data })
     } catch (dbErr) {
       console.warn('DB Error in progress route (non-fatal):', dbErr)

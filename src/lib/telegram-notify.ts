@@ -1,0 +1,94 @@
+import { LESSONS_DATA } from './lessons-data'
+
+/**
+ * MASTER ม.1 — Automated Parent Telegram Notification System
+ * ส่งผลการสอบและความก้าวหน้าของน้องภูมิรพีร์เข้า Telegram คุณพ่อแบบ Real-time
+ */
+
+interface ProgressNotificationParams {
+  userId: string
+  studentName?: string
+  subject: string
+  moduleId: string
+  score: number
+  timeSpent?: number
+}
+
+const SUBJECT_EMOJIS: Record<string, string> = {
+  math: '🔢 คณิตศาสตร์',
+  science: '🔬 วิทยาศาสตร์',
+  english: '🗣️ ภาษาอังกฤษ',
+  thai: '🇹🇭 ภาษาไทย'
+}
+
+export async function sendParentTelegramNotification({
+  userId,
+  studentName = 'น้องภูมิรพีร์',
+  subject,
+  moduleId,
+  score,
+  timeSpent = 0
+}: ProgressNotificationParams): Promise<boolean> {
+  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '8674389337:AAF-z2Xu6L6aNud9kNSTCM6-lvyO0n0ROeI'
+  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || process.env.TELEGRAM_ALLOWED_USERS
+
+  if (!botToken) {
+    console.warn('[TelegramNotify] Missing TELEGRAM_BOT_TOKEN')
+    return false
+  }
+
+  const subjectLabel = SUBJECT_EMOJIS[subject] || subject
+  const moduleTitle = LESSONS_DATA[subject]?.[moduleId]?.title || moduleId
+  const isPassed = score >= 60
+  const passBadge = score === 100 ? '🌟 คะแนนเต็ม 100% (ยอดเยี่ยมมาก!)' : score >= 80 ? '🏆 ระดับยอดเยี่ยม (80%+)' : isPassed ? '✅ ผ่านเกณฑ์มาตรฐาน' : '💪 ยังไม่ผ่าน (ต้องได้ 60%+)'
+
+  // Format current Thai date & time
+  const now = new Date()
+  const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
+  const thaiDateStr = now.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' })
+
+  const messageText = `🔔 [รายงานผลการเรียน] ${studentName} 👦
+━━━━━━━━━━━━━━━━━━━━
+🎯 เป้าหมาย: ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊
+📚 วิชา: ${subjectLabel}
+📖 บทเรียน: ${moduleTitle}
+🎯 ผลคะแนน: ${score}% (${passBadge})
+⏰ เวลาทำเสร็จ: ${thaiDateStr} | ${thaiTimeStr} น.
+━━━━━━━━━━━━━━━━━━━━
+💡 สถานะ: บันทึกความก้าวหน้าลงระบบเรียบร้อย
+📱 ดูแดชบอร์ดเต็ม: https://master-m1.vercel.app/learning-path`
+
+  // If parentChatId is available, send directly
+  if (parentChatId) {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: parentChatId,
+          text: messageText,
+          parse_mode: 'HTML'
+        })
+      })
+      const resData = await res.json()
+      if (!resData.ok) {
+        // Fallback without parse_mode
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: parentChatId,
+            text: messageText
+          })
+        })
+      }
+      return true
+    } catch (e) {
+      console.warn('[TelegramNotify] Error sending Telegram message:', e)
+      return false
+    }
+  } else {
+    console.log('[TelegramNotify] Ready to notify. Message payload:', messageText)
+    return true
+  }
+}

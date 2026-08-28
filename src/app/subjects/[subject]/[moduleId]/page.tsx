@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { LESSONS_DATA, LessonData, PracticeQuestion } from '@/lib/lessons-data'
+import { DYNAMIC_QUESTION_POOL } from '@/lib/dynamic-quiz-pool'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -82,7 +83,10 @@ export default function LessonDetailPage() {
       }
     })
     if (lesson) {
-      setQuestions(lesson.practiceQuestions)
+      const extraSets = DYNAMIC_QUESTION_POOL[subject]?.[moduleId] || []
+      const setB = extraSets[0] || []
+      const combined = [...(lesson.practiceQuestions || []), ...setB]
+      setQuestions(combined.length > 0 ? combined : (lesson.practiceQuestions || []))
     }
   }, [subject, moduleId])
 
