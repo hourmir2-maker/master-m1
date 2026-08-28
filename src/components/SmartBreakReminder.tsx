@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Sparkles, Coffee, Eye, GlassWater, Dumbbell, Timer, CheckCircle2, Play } from 'lucide-react'
+import { Eye, GlassWater, Dumbbell } from 'lucide-react'
 
 const BREAK_INTERVAL_MINUTES = 25 // เตือนพักทุกๆ 25 นาทีตามหลัก Pomodoro
 const BREAK_DURATION_SECONDS = 5 * 60 // พัก 5 นาที
+
+// หน้าที่ห้ามแสดง Popup (กำลังสอบอยู่)
+const EXAM_PAGES = ['/onet-exam', '/mock-exam', '/pre-test']
 
 const HEALTHY_TIPS = [
   {
@@ -31,15 +35,18 @@ const HEALTHY_TIPS = [
 ]
 
 export default function SmartBreakReminder() {
+  const pathname = usePathname()
   const [showModal, setShowModal] = useState(false)
   const [breakTimeLeft, setBreakTimeLeft] = useState(BREAK_DURATION_SECONDS)
   const [isBreakActive, setIsBreakActive] = useState(false)
   const [tipIndex, setTipIndex] = useState(0)
 
+  const isExamPage = EXAM_PAGES.some(p => pathname?.startsWith(p))
+
   useEffect(() => {
-    // นับเวลาการเรียน 25 นาที
+    if (isExamPage) return // ❌ ไม่แสดงระหว่างสอบเด็ดขาด
+
     const sessionTimer = setInterval(() => {
-      // ตรวจสอบว่าน้องกำลังทำอะไรอยู่ ถ้าครบ 25 นาทีให้เปิดเตือน
       setShowModal(true)
       setIsBreakActive(true)
       setBreakTimeLeft(BREAK_DURATION_SECONDS)
@@ -47,7 +54,7 @@ export default function SmartBreakReminder() {
     }, BREAK_INTERVAL_MINUTES * 60 * 1000)
 
     return () => clearInterval(sessionTimer)
-  }, [])
+  }, [isExamPage])
 
   useEffect(() => {
     let countdown: NodeJS.Timeout | null = null

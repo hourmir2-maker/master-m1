@@ -255,8 +255,58 @@ ${sciPassed.map(p => `✅ ${LESSONS_DATA.science?.[p.module_id]?.title || p.modu
       return NextResponse.json({ ok: true })
     }
 
-    // Default response
-    await sendReply(`สวัสดีครับคุณพ่อคุณแม่ พิมพ์ <b>/pretest</b> เพื่อดูผลสอบก่อนเรียน หรือ <b>/report</b> เพื่อดูผลการเรียนล่าสุดได้เลยครับ 😊`)
+    // Command: /thai (ดูผลวิชาภาษาไทย)
+    if (text.includes('/thai') || text.includes('ภาษาไทย') || text.includes('ไทย')) {
+      const thaiMsg = `🇹🇭 <b>ความก้าวหน้าวิชาภาษาไทย (หลักสูตร 1000%): ${studentName}</b>
+━━━━━━━━━━━━━━━━━━━━
+• บทเรียนที่ผ่านแล้ว: <b>${thaiPassed.length} จาก 8 บท</b>
+${thaiPassed.map(p => `✅ ${LESSONS_DATA.thai?.[p.module_id]?.title || p.module_id} (ได้ ${p.score}%)`).join('\n') || '📌 แนะนำเริ่มจาก: <b>คำยืมบาลี-สันสกฤต (สูตรลัด 3 วิ)</b> และ <b>ชนิดของคำ 7 ชนิด</b>'}
+━━━━━━━━━━━━━━━━━━━━
+📚 <b>8 โมดูล ภาษาไทยมาตรฐาน สพฐ. 2551 (ปรับปรุง 2560):</b>
+1. คำไทยแท้ & คำยืม บาลี-สันสกฤต-เขมร-อังกฤษ
+2. ชนิดของคำ 7 ชนิด & หน้าที่ในประโยค
+3. โครงสร้างประโยค (ความเดียว-ความรวม-ความซ้อน)
+4. คำราชาศัพท์ ระดับภาษา & คำสุภาพ
+5. สำนวน สุภาษิต คำพังเพย & ปริศนาคำทาย
+6. การอ่านจับใจความ & ตีความ (Critical Reading)
+7. วรรณคดีลำนำ (รามเกียรติ์, พลายงาม, โคลงโลกนิติ)
+8. การเขียนย่อความ เรียงความ & จดหมาย
+━━━━━━━━━━━━━━━━━━━━
+💡 <b>สูตรลัดภาษาไทย 3 วิ:</b> ตัดช้อยส์บาลี-สันสกฤตด้วย "ศ ษ ฤ = สันสกฤต, ส เดียว + ตัวสะกดวรรค = บาลี"
+🌐 <b>เข้าเรียนภาษาไทย:</b> https://master-m1.vercel.app/subjects/thai`
+      await sendReply(thaiMsg)
+      return NextResponse.json({ ok: true })
+    }
+
+    // Command: /english หรือ /eng
+    if (text.includes('/english') || text.includes('/eng') || text.includes('อังกฤษ')) {
+      const engMsg = `🗣️ <b>ความก้าวหน้าวิชาภาษาอังกฤษ: ${studentName}</b>
+━━━━━━━━━━━━━━━━━━━━
+• คะแนน Pre-Test: <b>6/10 (60%)</b>
+• บทเรียนที่ผ่านแล้ว: <b>${engPassed.length} จาก 8 บท</b>
+${engPassed.map(p => `✅ ${LESSONS_DATA.english?.[p.module_id]?.title || p.module_id} (ได้ ${p.score}%)`).join('\n') || '📌 แนะนำบทเรียนสำคัญ: <b>Grammar & Tenses</b> และ <b>Vocabulary Root Words</b>'}
+━━━━━━━━━━━━━━━━━━━━
+💡 เทคนิค 3S: <b>Skim ➔ Scan ➔ Error</b> สแกนคำตอบได้ใน 30 วินาที
+🌐 เข้าเรียนอังกฤษได้ที่: https://master-m1.vercel.app/subjects/english`
+      await sendReply(engMsg)
+      return NextResponse.json({ ok: true })
+    }
+
+    // Default: แสดงเมนูคำสั่งทั้งหมด
+    await sendReply(`📋 <b>คำสั่งที่ใช้ได้ทั้งหมดครับ (ครูพี่ MASTER AI):</b>
+━━━━━━━━━━━━━━━━━━━━
+🧪 <b>/pretest</b> — ดูผลสอบวัดระดับก่อนเรียน (Pre-Test)
+📊 <b>/report</b> — รายงานภาพรวมทุกวิชา
+📈 <b>/history</b> — ประวัติและพัฒนาการคะแนนทุกบท
+━━━━━━━━━━━━━━━━━━━━
+🔢 <b>/math</b> — คณิตศาสตร์ (8 โมดูล สูตรลัด 3 วิ)
+🔬 <b>/science</b> — วิทยาศาสตร์ (8 โมดูล รากฐานเภสัช)
+🗣️ <b>/english</b> — ภาษาอังกฤษ (8 โมดูล 3S Method)
+🇹🇭 <b>/thai</b> — ภาษาไทย (8 โมดูล หลักสูตร 1000%)
+🎯 <b>/onet</b> — สนามสอบจำลอง O-NET 2570
+━━━━━━━━━━━━━━━━━━━━
+🔗 <b>/link อีเมลน้อง</b> — ผูกบัญชีติดตามบุตรหลาน
+🌐 https://master-m1.vercel.app`)
     return NextResponse.json({ ok: true })
   } catch (err: unknown) {
     console.error('Telegram Webhook error:', err)
