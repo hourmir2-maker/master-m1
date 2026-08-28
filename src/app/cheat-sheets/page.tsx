@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 
 export default function CheatSheetsPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'math' | 'science' | 'english'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'math' | 'science' | 'english' | 'thai'>('all')
 
   const handlePrint = () => {
     if (typeof window !== 'undefined') {
@@ -58,10 +58,11 @@ export default function CheatSheetsPage() {
         <div className="flex flex-wrap gap-2 justify-center mb-6 no-print">
           {(
             [
-              { id: 'all', label: 'รวมครบ 3 วิชา', icon: '📚' },
+              { id: 'all', label: 'รวมครบ 4 วิชา', icon: '📚' },
               { id: 'math', label: 'คณิตศาสตร์', icon: '🔢' },
               { id: 'science', label: 'วิทยาศาสตร์', icon: '🔬' },
               { id: 'english', label: 'ภาษาอังกฤษ', icon: '🗣️' },
+              { id: 'thai', label: 'ภาษาไทย 1000%', icon: '🇹🇭' },
             ] as const
           ).map(tab => (
             <button
@@ -297,6 +298,76 @@ export default function CheatSheetsPage() {
                     <li className="bg-white/80 p-2.5 rounded-xl border border-amber-100">
                       <strong>🧩 Suffix บอกชนิดคำ:</strong><br />
                       -tion, -ment, -ness = <em>คำนาม</em> | -ful, -less, -ous = <em>คุณศัพท์</em>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Thai Cheat Sheet */}
+          {(activeTab === 'all' || activeTab === 'thai') && (
+            <section className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-emerald-100 space-y-4 print-section">
+              <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-2xl">🇹🇭</span>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900">
+                      สรุปสูตรลัดภาษาไทย 3 วินาที (สพฐ. 2551 ปรับปรุง 2560)
+                    </h3>
+                    <p className="text-xs text-emerald-600 font-medium">
+                      เทคนิคตัดช้อยส์บาลี-สันสกฤต ราชาศัพท์ และการอ่านจับใจความ O-NET
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  ไทย 1000%
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                {/* Pali vs Sanskrit */}
+                <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-2.5">
+                  <h4 className="font-bold text-emerald-950 flex items-center gap-1.5 border-b border-emerald-200/60 pb-1.5">
+                    <Zap className="w-4 h-4 text-emerald-600" /> สูตรลัด 3 วิ: แยกคำยืม บาลี vs สันสกฤต
+                  </h4>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>✨ สันสกฤต (ตัดช้อยส์ใน 3 วิ):</strong><br />
+                      เจอ <em>ศ ษ ฤ ฤๅ ฦ ฦๅ รหัน (รร) ควบกล้ำ</em> = <strong>สันสกฤตแน่นอน!</strong><br />
+                      <span className="text-[11px] text-slate-500">เช่น กษัตริย์, ศิลปะ, ฤกษ์, ภรรยา, พฤกษ์</span>
+                    </li>
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>📌 บาลี (พยัญชนะวรรคเคร่งครัด):</strong><br />
+                      ใช้ <em>ส ตัวเดียว</em> (ไม่มี ศ ษ) + พยัญชนะสะกดแถว 1 ตามด้วย 1 หรือ 2<br />
+                      <span className="text-[11px] text-slate-500">เช่น สิกขา (ก=1 ข=2), วุฒิ, ปัญญา, สงฆ์</span>
+                    </li>
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>👑 คำไทยแท้:</strong> สระไอไม้พะม้วน 20 คำ + คำโดดเสียงวรรณยุกต์ซ้อน
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Royal & Sentence Structure */}
+                <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-2.5">
+                  <h4 className="font-bold text-emerald-950 flex items-center gap-1.5 border-b border-emerald-200/60 pb-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" /> กับดักประโยค & คำราชาศัพท์
+                  </h4>
+                  <ul className="space-y-2 text-slate-700">
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>🏰 คำราชาศัพท์ "ทรง":</strong><br />
+                      <em>ทรง + คำกริยาราชาศัพท์ = ผิด!</em> (ห้ามใช้ ทรงโปรด, ทรงเสด็จ)<br />
+                      <em>ทรง + คำนามธรรมดา = ถูก</em> (ทรงศีล, ทรงดนตรี)
+                    </li>
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>🧩 ชนิดประโยค 3 แบบ:</strong><br />
+                      • ความเดียว: ประธาน 1 + กริยา 1<br />
+                      • ความรวม: มีคำเชื่อม <em>และ, แต่, หรือ, จึง</em><br />
+                      • ความซ้อน: มีประโยคย่อยเชื่อมด้วย <em>ที่, ซึ่ง, อัน, ว่า, ให้</em>
+                    </li>
+                    <li className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
+                      <strong>📖 อ่านจับใจความ O-NET:</strong><br />
+                      ใจความสำคัญมักอยู่ <em>ประโยคแรก</em> หรือ <em>ประโยคสุดท้าย</em> ของย่อหน้า
                     </li>
                   </ul>
                 </div>

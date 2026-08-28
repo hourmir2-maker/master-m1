@@ -20,6 +20,7 @@ import ReportModal from '@/components/ReportModal'
 import AiTutorChat from '@/components/AiTutorChat'
 import AudioLessonPlayer from '@/components/AudioLessonPlayer'
 import Footer from '@/components/Footer'
+import { soundFX } from '@/lib/sound-fx'
 import { 
   ArrowLeft, 
   Lightbulb, 
@@ -138,6 +139,7 @@ export default function LessonDetailPage() {
     })
 
     if (unansweredIndices.length > 0) {
+      soundFX.playWrong()
       setValidationWarning(`⚠️ คุณยังไม่ได้ตอบข้อ ${unansweredIndices.join(', ')} (ตอบแล้ว ${Object.keys(selectedAnswers).length}/${questions.length} ข้อ) กรุณาเลือกคำตอบให้ครบก่อนส่งตรวจครับ`)
       return
     }
@@ -146,6 +148,11 @@ export default function LessonDetailPage() {
     setSubmittedQuiz(true)
     setShowScoreModal(true)
     const scoreObj = calculateScore()
+    if (scoreObj.percentage >= 70) {
+      soundFX.playFanfare()
+    } else {
+      soundFX.playCorrect()
+    }
     setSavingProgress(true)
 
     // 1. Always save to LocalStorage for instant and reliable offline/client persistence
