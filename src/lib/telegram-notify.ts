@@ -12,6 +12,8 @@ interface ProgressNotificationParams {
   moduleId: string
   score: number
   timeSpent?: number
+  attemptCount?: number
+  prevScore?: number
 }
 
 const SUBJECT_EMOJIS: Record<string, string> = {
@@ -27,7 +29,9 @@ export async function sendParentTelegramNotification({
   subject,
   moduleId,
   score,
-  timeSpent = 0
+  timeSpent = 0,
+  attemptCount = 1,
+  prevScore = 0
 }: ProgressNotificationParams): Promise<boolean> {
   const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
   const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
@@ -42,21 +46,35 @@ export async function sendParentTelegramNotification({
   const isPassed = score >= 60
   const passBadge = score === 100 ? '🌟 คะแนนเต็ม 100% (ยอดเยี่ยมมาก!)' : score >= 80 ? '🏆 ระดับยอดเยี่ยม (80%+)' : isPassed ? '✅ ผ่านเกณฑ์มาตรฐาน' : '💪 ยังไม่ผ่าน (ต้องได้ 60%+)'
 
+  // Growth calculation
+  let growthText = ''
+  if (attemptCount > 1 && prevScore > 0) {
+    const diff = score - prevScore
+    if (diff > 0) {
+      growthText = `\n📈 <b>การพัฒนา:</b> ทำครั้งที่ ${attemptCount} (คะแนนเพิ่มขึ้น +${diff}% จากครั้งก่อน! 🚀)`
+    } else if (diff === 0) {
+      growthText = `\n📈 <b>การพัฒนา:</b> ทำครั้งที่ ${attemptCount} (รักษามาตรฐานคะแนนได้ดีเยี่ยม)`
+    } else {
+      growthText = `\n📈 <b>การพัฒนา:</b> ทำครั้งที่ ${attemptCount}`
+    }
+  } else {
+    growthText = `\n📈 <b>การพัฒนา:</b> ฝึกทำครั้งแรก (First Attempt)`
+  }
+
   // Format current Thai date & time
   const now = new Date()
   const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
   const thaiDateStr = now.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' })
 
-  const messageText = `🔔 [รายงานผลการเรียน] ${studentName} 👦
+  const messageText = `🔔 <b>[รายงานผลการเรียน & พัฒนาการ] ${studentName}</b> 👦
 ━━━━━━━━━━━━━━━━━━━━
-🎯 เป้าหมาย: ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊
-📚 วิชา: ${subjectLabel}
-📖 บทเรียน: ${moduleTitle}
-🎯 ผลคะแนน: ${score}% (${passBadge})
-⏰ เวลาทำเสร็จ: ${thaiDateStr} | ${thaiTimeStr} น.
+🎯 <b>เป้าหมาย:</b> ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊
+📚 <b>วิชา:</b> ${subjectLabel}
+📖 <b>บทเรียน:</b> ${moduleTitle}
+🎯 <b>คะแนนครั้งนี้:</b> ${score}% (${passBadge})${growthText}
+⏰ <b>เวลาทำเสร็จ:</b> ${thaiDateStr} | ${thaiTimeStr} น.
 ━━━━━━━━━━━━━━━━━━━━
-💡 สถานะ: บันทึกความก้าวหน้าลงระบบเรียบร้อย
-📱 ดูแดชบอร์ดเต็ม: https://master-m1.vercel.app/learning-path`
+💡 <i>พิมพ์ <code>/history</code> หรือ <code>/report</code> เพื่อดูเส้นทางพัฒนาการทั้งหมดได้ตลอด 24 ชม. ครับ</i>`
 
   // If parentChatId is available, send directly
   if (parentChatId) {

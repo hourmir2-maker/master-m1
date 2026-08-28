@@ -11,14 +11,20 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      // 1. Delete previous progress for this user + module if any
-      await supabase
+      // 1. Fetch previous attempts to calculate growth delta
+      const { data: previousAttempts } = await supabase
         .from('progress')
-        .delete()
+        .select('*')
         .eq('user_id', userId)
         .eq('module_id', moduleId)
 
-      // 2. Insert fresh clean record
+      const attemptCount = (previousAttempts?.length || 0) + 1
+      const prevBestScore = previousAttempts && previousAttempts.length > 0 
+        ? Math.max(...previousAttempts.map(p => p.score || 0))
+        : 0
+
+      // 2. Insert fresh attempt record
+      const currentScore = typeof score === 'number' ? score : 100
       const { data, error } = await supabase
         .from('progress')
         .insert({
@@ -27,7 +33,7 @@ export async function POST(req: NextRequest) {
           subject,
           module_id: moduleId,
           completed: true,
-          score: typeof score === 'number' ? score : 100,
+          score: currentScore,
           time_spent: timeSpent || 0,
           completed_at: new Date().toISOString(),
         })
@@ -38,7 +44,7 @@ export async function POST(req: NextRequest) {
         console.warn('Progress insert warning:', error.message)
       }
 
-      // 3. Trigger Automated Parent Telegram Notification
+      // 3. Trigger Automated Parent Telegram Notification with Growth Delta
       try {
         const { sendParentTelegramNotification } = await import('@/lib/telegram-notify')
         const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle()
@@ -49,8 +55,10 @@ export async function POST(req: NextRequest) {
           studentName,
           subject,
           moduleId,
-          score: typeof score === 'number' ? score : 100,
-          timeSpent: timeSpent || 0
+          score: currentScore,
+          timeSpent: timeSpent || 0,
+          attemptCount,
+          prevScore: prevBestScore
         })
       } catch (tgErr) {
         console.warn('Telegram parent notification warning (non-fatal):', tgErr)
