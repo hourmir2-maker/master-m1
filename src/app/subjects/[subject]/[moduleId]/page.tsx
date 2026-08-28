@@ -42,6 +42,7 @@ const SUBJECT_CONFIG: Record<string, { label: string; gradient: string; text: st
   math:    { label: 'คณิตศาสตร์', gradient: 'from-orange-500 via-amber-500 to-red-500', text: 'text-orange-600', bg: 'bg-orange-50' },
   science: { label: 'วิทยาศาสตร์', gradient: 'from-red-500 via-orange-500 to-amber-500', text: 'text-red-600', bg: 'bg-red-50' },
   english: { label: 'ภาษาอังกฤษ',  gradient: 'from-amber-500 via-orange-500 to-red-500', text: 'text-amber-600', bg: 'bg-amber-50' },
+  thai:    { label: 'ภาษาไทย',    gradient: 'from-amber-500 via-orange-500 to-red-500', text: 'text-amber-600', bg: 'bg-amber-50' },
 }
 
 export default function LessonDetailPage() {

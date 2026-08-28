@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const currentLesson = LESSONS_DATA[subject]?.[moduleId]
-    const subjectName = subject === 'math' ? 'คณิตศาสตร์' : subject === 'science' ? 'วิทยาศาสตร์' : 'ภาษาอังกฤษ'
+    const subjectName = subject === 'math' ? 'คณิตศาสตร์' : subject === 'science' ? 'วิทยาศาสตร์' : subject === 'thai' ? 'ภาษาไทย' : 'ภาษาอังกฤษ'
 
     // Extract the latest user question
     const userMessages = messages.filter((m: ChatMessage) => m.role === 'user')

@@ -1,0 +1,141 @@
+{
+  "setA": {
+    "moduleCount": 8,
+    "questionCount": 80,
+    "modules": {
+      "thai_reading": {
+        "title": "การอ่านจับใจความ ตีความ โวหารภาพพจน์ & แยกแยะข้อเท็จจริง",
+        "questionCount": 10,
+        "secretFormulaSteps": 4,
+        "summaryPoints": 4
+      },
+      "thai_word_classes": {
+        "title": "ชนิดของคำ 7 ชนิด & หน้าที่ของคำในประโยค",
+        "questionCount": 10,
+        "secretFormulaSteps": 4,
+        "summaryPoints": 4
+      },
+      "thai_royal_loanwords": {
+        "title": "คำราชาศัพท์ คำสุภาพ & คำยืมภาษาต่างประเทศ",
+        "questionCount": 10,
+        "secretFormulaSteps": 3,
+        "summaryPoints": 4
+      },
+      "thai_sentence_structures": {
+        "title": "โครงสร้างประโยค (สามัญ รวม ซ้อน) & ระดับภาษา",
+        "questionCount": 10,
+        "secretFormulaSteps": 4,
+        "summaryPoints": 4
+      },
+      "thai_idioms_dialects": {
+        "title": "สำนวน สุภาษิต คำพังเพย & ภาษาไทยมาตรฐาน vs ภาษาถิ่น 4 ภาค",
+        "questionCount": 10,
+        "secretFormulaSteps": 3,
+        "summaryPoints": 4
+      },
+      "thai_literature_poetry": {
+        "title": "ฉันทลักษณ์ กลอนสุภาพ & วรรณคดีวรรณกรรม ป.6",
+        "questionCount": 10,
+        "secretFormulaSteps": 3,
+        "summaryPoints": 4
+      },
+      "thai_writing": {
+        "title": "การเขียนสื่อสาร เขียนย่อความ & เขียนเรื่องตามจินตนาการ",
+        "questionCount": 10,
+        "secretFormulaSteps": 4,
+        "summaryPoints": 4
+      },
+      "thai_listening_speaking": {
+        "title": "การฟัง การดู การพูด & การวิเคราะห์สื่อโฆษณา",
+        "questionCount": 10,
+        "secretFormulaSteps": 3,
+        "summaryPoints": 4
+      }
+    }
+  },
+  "setB": {
+    "moduleCount": 8,
+    "questionCount": 80,
+    "modules": {
+      "thai_reading": {
+        "questionCount": 10
+      },
+      "thai_word_classes": {
+        "questionCount": 10
+      },
+      "thai_royal_loanwords": {
+        "questionCount": 10
+      },
+      "thai_sentence_structures": {
+        "questionCount": 10
+      },
+      "thai_idioms_dialects": {
+        "questionCount": 10
+      },
+      "thai_literature_poetry": {
+        "questionCount": 10
+      },
+      "thai_writing": {
+        "questionCount": 10
+      },
+      "thai_listening_speaking": {
+        "questionCount": 10
+      }
+    }
+  },
+  "kb": {
+    "moduleCount": 8,
+    "modules": {
+      "thai_reading": {
+        "title": "การอ่านจับใจความ ตีความ โวหารภาพพจน์ & แยกแยะข้อเท็จจริง",
+        "obecIndicator": "ท 1.1 ป.6/1, ป.6/2, ป.6/3, ป.6/4, ป.6/5 (อ่านออกเสียง อ่านจับใจความ แยกข้อเท็จจริงและข้อคิดเห็น และอธิบายความหมายโดยนัย)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_writing": {
+        "title": "การเขียนสื่อสาร เขียนย่อความ & เขียนเรื่องตามจินตนาการ (อัตนัย 15 คะแนน)",
+        "obecIndicator": "ท 2.1 ป.6/1, ป.6/2, ป.6/5, ป.6/8 (เขียนสื่อสาร ย่อความ เรียงความ และเขียนเรื่องตามจินตนาการ)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_listening_speaking": {
+        "title": "การฟัง การดู การพูด & การวิเคราะห์สื่อโฆษณา",
+        "obecIndicator": "ท 3.1 ป.6/1, ป.6/2, ป.6/3 (พูดแสดงความรู้ความเข้าใจ วิเคราะห์ความน่าเชื่อถือจากสื่อโฆษณา และมีมารยาทในการฟัง การดู และการพูด)",
+        "speedHacksCount": 1,
+        "trapAlertsCount": 1
+      },
+      "thai_word_classes": {
+        "title": "ชนิดของคำ 7 ชนิด & หน้าที่ของคำในประโยค",
+        "obecIndicator": "ท 4.1 ป.6/1 (วิเคราะห์ชนิดและหน้าที่ของคำในประโยค)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_royal_loanwords": {
+        "title": "คำราชาศัพท์ คำสุภาพ & คำยืมภาษาต่างประเทศ",
+        "obecIndicator": "ท 4.1 ป.6/2 (ใช้คำได้ถูกต้องตามกาลเทศะและบุคคล และระบุลักษณะของคำยืมภาษาต่างประเทศ)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_sentence_structures": {
+        "title": "โครงสร้างประโยค (สามัญ รวม ซ้อน) & ระดับภาษา",
+        "obecIndicator": "ท 4.1 ป.6/3 (แต่งประโยครวมและประโยคซ้อนได้ถูกต้องตามโครงสร้าง)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_idioms_dialects": {
+        "title": "สำนวน สุภาษิต คำพังเพย & ภาษาไทยมาตรฐาน vs ภาษาถิ่น 4 ภาค",
+        "obecIndicator": "ท 4.1 ป.6/5, ป.6/6 (เปรียบเทียบภาษาไทยมาตรฐานกับภาษาถิ่น และอธิบายความหมายของสำนวนที่เป็นคำพังเพยและสุภาษิต)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      },
+      "thai_literature_poetry": {
+        "title": "ฉันทลักษณ์ กลอนสุภาพ & วรรณคดีวรรณกรรม ป.6",
+        "obecIndicator": "ท 4.1 ป.6/4, ท 5.1 ป.6/1, ป.6/2, ป.6/3 (แต่งบทร้อยกรอง แสดงความคิดเห็นและอธิบายคุณค่าของวรรณคดีและวรรณกรรม)",
+        "speedHacksCount": 2,
+        "trapAlertsCount": 2
+      }
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
