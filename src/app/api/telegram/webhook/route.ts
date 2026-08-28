@@ -171,6 +171,37 @@ ${prog.length > 0 ? prog.map((p, idx) => {
       return NextResponse.json({ ok: true })
     }
 
+    // Command: /onet (ดูผลสอบสนามสอบจำลอง O-NET 2570)
+    if (text.includes('/onet') || text.includes('onet') || text.includes('โอเน็ต')) {
+      const onetMath = prog.filter(p => p.subject === 'onet_math')
+      const onetSci = prog.filter(p => p.subject === 'onet_science')
+      const onetEng = prog.filter(p => p.subject === 'onet_english')
+      const onetThai = prog.filter(p => p.subject === 'onet_thai')
+
+      const formatOnetScore = (items: any[]) => {
+        if (items.length === 0) return '<i>(ยังไม่ได้เข้าสอบ)</i>'
+        const best = Math.max(...items.map(i => i.score || 0))
+        return `<b>${best}/100 คะแนน</b> (สอบแล้ว ${items.length} ครั้ง)`
+      }
+
+      const onetMsg = `🎯 <b>ผลการสอบสนามจำลอง O-NET 2570: ${studentName}</b> 👦
+━━━━━━━━━━━━━━━━━━━━
+📜 <b>มาตรฐาน:</b> ข้อสอบตรงตาม Test Blueprint สทศ. 2570
+
+🔢 <b>คณิตศาสตร์ O-NET:</b> ${formatOnetScore(onetMath)}
+🔬 <b>วิทยาศาสตร์ O-NET:</b> ${formatOnetScore(onetSci)}
+🗣️ <b>ภาษาอังกฤษ O-NET:</b> ${formatOnetScore(onetEng)}
+🇹🇭 <b>ภาษาไทย O-NET:</b> ${formatOnetScore(onetThai)}
+━━━━━━━━━━━━━━━━━━━━
+💡 <b>ข้อสอบ O-NET 2570 มีครบ 4 วิชา:</b>
+• มีทั้งแบบปรนัย 4 ตัวเลือก และแบบอัตนัยฝนตัวเลขทศนิยม
+• มีระบบจับเวลาเสมือนจริงในห้องสอบ
+🌐 <b>เข้าฝึกสนามสอบ O-NET:</b> https://master-m1.vercel.app/onet-exam`
+
+      await sendReply(onetMsg)
+      return NextResponse.json({ ok: true })
+    }
+
     // Command: /report (รายงานภาพรวม)
     if (text.includes('/report') || text.includes('รายงาน') || text.includes('คะแนน')) {
       const reportMsg = `📊 <b>รายงานพัฒนาการการเรียน: ${studentName}</b> 👦

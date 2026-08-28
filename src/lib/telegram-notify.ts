@@ -41,8 +41,17 @@ export async function sendParentTelegramNotification({
     return false
   }
 
-  const subjectLabel = SUBJECT_EMOJIS[subject] || subject
-  const moduleTitle = LESSONS_DATA[subject]?.[moduleId]?.title || moduleId
+  let subjectLabel = SUBJECT_EMOJIS[subject] || subject
+  let moduleTitle = LESSONS_DATA[subject]?.[moduleId]?.title || moduleId
+
+  if (subject.startsWith('onet_')) {
+    const rawSub = subject.replace('onet_', '')
+    subjectLabel = `🎯 สนามสอบจำลอง O-NET 2570 (${SUBJECT_EMOJIS[rawSub] || rawSub})`
+    moduleTitle = `ข้อสอบเสมือนจริงตรงตาม Blueprint สทศ. (เต็ม 100 คะแนน)`
+  } else if (subject.startsWith('mock_')) {
+    subjectLabel = `🏆 สนามสอบจำลองเข้า ม.1 Gifted (${SUBJECT_EMOJIS[subject.replace('mock_', '')] || subject})`
+    moduleTitle = `ชุดข้อสอบคัดเลือกห้องเรียนพิเศษ`
+  }
   const isPassed = score >= 60
   const passBadge = score === 100 ? '🌟 คะแนนเต็ม 100% (ยอดเยี่ยมมาก!)' : score >= 80 ? '🏆 ระดับยอดเยี่ยม (80%+)' : isPassed ? '✅ ผ่านเกณฑ์มาตรฐาน' : '💪 ยังไม่ผ่าน (ต้องได้ 60%+)'
 
