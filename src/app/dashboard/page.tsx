@@ -33,7 +33,7 @@ import VoiceCallModal from '@/components/VoiceCallModal'
 export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
-  const [user, setUser] = useState<{ full_name: string; school_target?: string } | null>(null)
+  const [user, setUser] = useState<{ full_name: string; email?: string; school_target?: string } | null>(null)
   const [progressData, setProgressData] = useState<{ subject: string; completed: boolean; score?: number }[]>([])
   const [gameState, setGameState] = useState<GamificationState>(getGamificationState())
   const [showAchievements, setShowAchievements] = useState(false)
@@ -273,17 +273,25 @@ export default function DashboardPage() {
                 <p className="text-blue-100 text-xs sm:text-sm max-w-xl leading-relaxed">
                   คุณพ่อคุณแม่สามารถรับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
                 </p>
+                <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                  <span className="bg-blue-900/60 text-sky-200 px-3 py-1 rounded-lg border border-blue-400/30 font-medium">
+                    👦 นักเรียน: <b>{user?.full_name || 'ด.ช.ภูมิรพีร์ มากแก้ว'}</b>
+                  </span>
+                  <span className="bg-blue-900/60 text-sky-200 px-3 py-1 rounded-lg border border-blue-400/30 font-mono text-[11px]">
+                    📧 รหัสผูกบัญชี: <b>{user?.email || 'phumrapeeft@gmail.com'}</b>
+                  </span>
+                </div>
               </div>
             </div>
             <div className="flex gap-2 w-full sm:w-auto shrink-0">
               <a 
-                href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.full_name || 'student'}`}
+                href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || user?.full_name || 'student'}`}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="w-full sm:w-auto"
               >
                 <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full hover:scale-105 transition-transform">
-                  💬 กดเชื่อมต่อ @MasterM1_Parent_bot →
+                  💬 กดผูกบัญชีน้องเข้า Telegram →
                 </Button>
               </a>
             </div>
@@ -292,27 +300,27 @@ export default function DashboardPage() {
           {/* 3-Step Guide Card for Parents */}
           <div className="bg-blue-950/40 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-blue-300/20">
             <div className="text-xs font-bold text-sky-200 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <span>💡 ตัวอย่างขั้นตอนการใช้งานสำหรับผู้ปกครอง:</span>
+              <span>💡 ตัวอย่างขั้นตอนการผูกบัญชีและการใช้งานสำหรับผู้ปกครอง:</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
-                <span className="font-bold text-white block text-sm text-sky-300">1. เปิดแอป Telegram</span>
+                <span className="font-bold text-white block text-sm text-sky-300">1. กดปุ่มผูกบัญชี</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
-                  เปิดแอป Telegram ในมือถือ หรือแตะปุ่มเชื่อมต่อด้านบนเพื่อเข้าสู่บอท
+                  แตะปุ่ม <b>"กดผูกบัญชีน้องเข้า Telegram"</b> ด้านบน เพื่อเปิดบอท <b>ครูพี่ MASTER AI</b>
                 </p>
               </div>
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
-                <span className="font-bold text-white block text-sm text-sky-300">2. เข้าห้องแชทบอท</span>
+                <span className="font-bold text-white block text-sm text-sky-300">2. กด Start ใน Telegram</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
-                  แตะที่ห้องแชท <b>ครูพี่ MASTER AI</b> (<code>@MasterM1_Parent_bot</code>) แล้วกดปุ่ม Start
+                  แตะ <b>Start</b> ระบบจะผูกบัญชีกับ <b>{user?.full_name || 'น้อง'}</b> อัตโนมัติ (หรือพิมพ์ <code>/link {user?.email || 'อีเมลน้อง'}</code>)
                 </p>
               </div>
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
-                <span className="font-bold text-white block text-sm text-sky-300">3. พิมพ์คำสั่งเช็คผล (24 ชม.)</span>
+                <span className="font-bold text-white block text-sm text-sky-300">3. เช็คผลได้ตลอด 24 ชม.</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
+                  • <code>/pretest</code> ➔ ดูผลสอบก่อนเรียน<br/>
                   • <code>/report</code> ➔ สรุปคะแนนทุกวิชา<br/>
-                  • <code>/math</code> ➔ ดูคะแนนคณิตศาสตร์<br/>
-                  • <code>/science</code> ➔ ดูคะแนนวิทยาศาสตร์
+                  • <code>/history</code> ➔ ดูประวัติพัฒนาการ
                 </p>
               </div>
             </div>
