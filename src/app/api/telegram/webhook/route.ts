@@ -48,11 +48,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true })
       }
 
-      // Find student in Supabase
+      // Find student in Supabase by email or full_name
       const { data: matchedUser } = await supabase
         .from('profiles')
         .select('*')
-        .or(`email.ilike.%${queryParam}%,id.ilike.%${queryParam}%,full_name.ilike.%${queryParam}%`)
+        .or(`email.ilike.%${queryParam}%,full_name.ilike.%${queryParam}%`)
         .limit(1)
         .maybeSingle()
 
