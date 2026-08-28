@@ -87,8 +87,20 @@
 - **Dynamic Zero-Typing QR Code**: หน้า Dashboard ต้องสร้าง Dynamic QR Code สู่ `https://t.me/MasterM1_Parent_bot?start=link_<email>` ตามบัญชีที่ล็อกอิน เพื่อให้ผู้ปกครองสแกนแล้วผูกบัญชีได้ทันที
 - **24/7 Commands Support**: บอทต้องรองรับคำสั่ง `/pretest`, `/report`, `/history`, `/math`, `/science`, `/english`, `/link <email>` ตลอด 24 ชม.
 
+### Rule 16 — Cognitive Learning Psychology & 10-Question Scaffolding Standard
+- **Micro-Learning Session Length**: แบบฝึกหัดทุกบทเรียนต้องยึดมาตรฐานชุดละ **10 ข้อ (12–15 นาที)** เพื่อให้สอดคล้องกับช่วงสมาธิสูงสุด (Peak Focus Span) ป้องกันความเครียดและอาการหมดไฟ (No Burnout)
+- **Stepped Cognitive Scaffolding**: โครงสร้างข้อสอบ 10 ข้อต้องจัดระดับความยากแบบขั้นบันไดเสมอ:
+  - **ข้อ 1–3**: สร้างความมั่นใจ ปูพื้นฐาน (Confidence Builder)
+  - **ข้อ 4–7**: โจทย์ประยุกต์ สสวท. พร้อมฝึกสูตรลัด 3 วินาที (Application Zone)
+  - **ข้อ 8–10**: โจทย์ประลองไหวพริบระดับห้องพิเศษ Gifted & ดักจุดลวงข้อสอบ 10 ปี (Gifted Challenge)
+- **Dual-Track Pathway Alignment**:
+  - **Personalized Track**: เส้นทางเฉพาะตัวตามเป้าหมายอาชีพ (เช่น เภสัชกร/แพทย์ เน้นสารละลาย %w/w, เซลล์, เลขคิดเร็ว 3 วิ)
+  - **OBEC Standard Track**: ครบ 4 วิชาหลัก 32 โมดูล (คณิต, วิทย์, อังกฤษ, ไทย 1000%) ตรงตามหลักสูตร สพฐ. 2551 (ปรับปรุง 2560)
+- **Comprehensive Telegram Telemetry**: ผลการเรียนทุกรูปแบบ (Pre-Test, แบบฝึกหัด 32 โมดูล, O-NET 2570, และประวัติพัฒนาการ) ต้องส่งแจ้งเตือนและเรียกดูผ่านคำสั่งบอทได้ 24 ชม.
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
 - ดูรายละเอียดฟีเจอร์ Gamification, Mock Exam, Printable PDF, Audio TTS, และระบบส่งผลให้ผู้ปกครอง ได้ที่ [ROADMAP.md](./ROADMAP.md)
+
 
