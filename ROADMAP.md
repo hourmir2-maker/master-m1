@@ -42,3 +42,11 @@
 ## 💼 6. ระบบการสร้างรายได้ที่ปลอดภัย (Safe Monetization in Future)
 - 📢 **Direct In-House Banner**: แบนเนอร์แนะนำหนังสือคู่มือสอบ/เครื่องเขียนที่คัดกรองเนื้อหา 100% ปลอดภัยสำหรับเด็ก
 - 🛡️ **Google AdSense (Education Safe Mode)**: เปิดโหมดป้องกันการพนัน/อบายมุข 100%
+
+---
+
+## 🎯 7. แผนยุทธศาสตร์เฟสถัดไป (APPROVED STRATEGIC MASTER PLAN)
+- 🔢 **ทีมคณิตศาสตร์**: คลังโจทย์ Set C (Gifted สสวท. 80 ข้อ) + สูตรลัด 3 วิ Interactive Engine (อนุกรมเกาส์, พื้นที่ใบไม้ $4/7a^2$)
+- 🔬 **ทีมวิทยาศาสตร์**: โจทย์เข้มข้นสารละลาย %w/w + กล้องจุลทรรศน์ + Virtual Science Lab จำลองการทดสอบสารอาหาร
+- 🗣️ **ทีมภาษาอังกฤษ**: Native Audio Vocab เสียงเจ้าของภาษา + Speed Reading Passage 45 วินาที
+- 🏗️ **ทีมระบบ & UX**: Daily Streak ไฟการเรียน + Multi-Parent Supabase Table + Parent Shareable Achievement Card
