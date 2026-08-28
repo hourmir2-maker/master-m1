@@ -85,7 +85,7 @@
 - **PostgREST Query Invariant**: ห้ามใช้ `.ilike` บนคอลัมน์ UUID (เช่น `id`) ใน Supabase `.or(...)` filter เด็ดขาด ให้ค้นหาเฉพาะ `email.ilike.%...%` และ `full_name.ilike.%...%` เพื่อป้องกัน PostgreSQL Type Error 42883
 - **Attempt History & Score Growth**: ทุกการทำแบบฝึกหัดใน `/api/progress` ต้องบันทึกประวัติทุกรอบ (Attempt count) และคำนวณผลต่างคะแนน (+% Growth) ส่งแจ้งเตือน Real-time เข้า Telegram ผู้ปกครอง
 - **Dynamic Zero-Typing QR Code**: หน้า Dashboard ต้องสร้าง Dynamic QR Code สู่ `https://t.me/MasterM1_Parent_bot?start=link_<email>` ตามบัญชีที่ล็อกอิน เพื่อให้ผู้ปกครองสแกนแล้วผูกบัญชีได้ทันที
-- **24/7 Commands Support**: บอทต้องรองรับคำสั่ง `/pretest`, `/report`, `/history`, `/math`, `/science`, `/english`, `/link <email>` ตลอด 24 ชม.
+- **24/7 Commands Support**: บอทต้องรองรับคำสั่ง `/pretest`, `/report`, `/history`, `/math`, `/science`, `/english`, `/thai`, `/onet`, `/link <email>` ตลอด 24 ชม.
 
 ### Rule 16 — Cognitive Learning Psychology & 10-Question Scaffolding Standard
 - **Micro-Learning Session Length**: แบบฝึกหัดทุกบทเรียนต้องยึดมาตรฐานชุดละ **10 ข้อ (12–15 นาที)** เพื่อให้สอดคล้องกับช่วงสมาธิสูงสุด (Peak Focus Span) ป้องกันความเครียดและอาการหมดไฟ (No Burnout)
@@ -98,9 +98,20 @@
   - **OBEC Standard Track**: ครบ 4 วิชาหลัก 32 โมดูล (คณิต, วิทย์, อังกฤษ, ไทย 1000%) ตรงตามหลักสูตร สพฐ. 2551 (ปรับปรุง 2560)
 - **Comprehensive Telegram Telemetry**: ผลการเรียนทุกรูปแบบ (Pre-Test, แบบฝึกหัด 32 โมดูล, O-NET 2570, และประวัติพัฒนาการ) ต้องส่งแจ้งเตือนและเรียกดูผ่านคำสั่งบอทได้ 24 ชม.
 
+### Rule 17 — Smart Brain-Break Reminder & Playful Socratic Pivot Standard
+- **Smart 25-Minute Break Reminder**: ใน `src/components/SmartBreakReminder.tsx` ต้องจับเวลา 25 นาทีและแสดง Modal พักสมอง 5 นาทีตามหลัก Pomodoro พร้อมกฎพักสายตา 20-20-20 และดื่มน้ำ
+- **Exam-Page Suppression Invariant**: SmartBreakReminder ต้องใช้ `usePathname()` ตรวจก่อนเสมอ — ถ้า path เริ่มด้วย `/onet-exam`, `/mock-exam`, `/pre-test` ให้ return ออกทันทีโดยไม่ตั้ง interval เพื่อป้องกันการรบกวนขณะสอบ
+- **Playful Banter & Socratic Pivot**: `/api/chat-tutor` AI Tutor ต้องตอบรับบทสนทนาทั่วไปด้วยน้ำเสียงอบอุ่น 1-2 ประโยค แล้ววกกลับเข้าบทเรียนโดยผูกเรื่องที่น้องคุยเข้ากับหลักการทางวิชาการเสมอ (The Socratic Pivot)
+
+### Rule 18 — AdSense Native Script & Telegram Command Completeness
+- **AdSense Script Invariant**: ใน `src/app/layout.tsx` ต้องใช้ native `<script async>` tag สำหรับ Google AdSense เสมอ ห้ามใช้ Next.js `<Script strategy="afterInteractive">` เพราะจะเพิ่ม `data-nscript` attribute ที่ AdSense ไม่รองรับ
+- **Telegram Command Parity Invariant**: ทุกครั้งที่เพิ่มวิชาใหม่หรือ feature ใหม่ ต้องเพิ่ม Telegram bot command handler ใน `/api/telegram/webhook/route.ts` คู่กันเสมอ
+- **Default Help Menu Standard**: Default reply ของบอท (กรณีไม่ตรง command ไหน) ต้องแสดงเมนูคำสั่งครบทุกคำสั่ง (`/pretest`, `/report`, `/history`, `/math`, `/science`, `/english`, `/thai`, `/onet`, `/link`) เสมอ
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
 - ดูรายละเอียดฟีเจอร์ Gamification, Mock Exam, Printable PDF, Audio TTS, และระบบส่งผลให้ผู้ปกครอง ได้ที่ [ROADMAP.md](./ROADMAP.md)
+
 
 
