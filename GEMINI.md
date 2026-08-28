@@ -72,6 +72,14 @@
 - **Grammar Phonetics Preprocessor**: ระบบสังเคราะห์เสียงต้องแปลงตัวย่อภาษาอังกฤษและสัญลักษณ์ทางวิทยาศาสตร์/คณิตศาสตร์ให้อ่านเป็นภาษาไทยที่ชัดเจนเสมอ เช่น:
   - `V.1` ➔ *"กริยาช่องหนึ่ง"*, `V.inf` ➔ *"กริยาช่องเดิมไม่ผัน"*, `S +` ➔ *"ประธาน บวก"*, `If-Clause` ➔ *"อิฟ คลอส"*, `√` ➔ *"สแควรูท"*, `ห.ร.ม.` ➔ *"หอรอมอ"*
 
+### Rule 13 — Blogger & Facebook Auto-Publish Invariant
+- **Model Endpoint**: ต้องใช้ `gemini-3.6-flash` ใน `/api/cron/publish-blog` เสมอ
+- **Label & Title Sanitization**: ทุกการยิงโพสต์ขึ้น Google Blogger v3 ต้อง sanitize แท็ก `labels` (ลบเครื่องหมายพิเศษ ., &, / ออก) และคลีน `title` เสมอ เพื่อป้องกันข้อผิดพลาด 400 `INVALID_ARGUMENT`
+- **Vercel Serverless Optimization**: ต้องรันกระบวนการดึง AI Caption และการขอ Token Blogger แบบขนาน (`Promise.all`) พร้อมใช้ Rich HTML Template สำเร็จรูป เพื่อให้เวลาประมวลผลอยู่ต่ำกว่า 3 วินาที ป้องกัน Serverless Timeout
+
+### Rule 14 — Production Environment Variables Alignment
+- เมื่อมีการเพิ่ม Environment Variables สำหรับระบบ Automation ใน `.env.local` ต้องเพิ่มขึ้น Vercel Production เสมอ (`FB_PAGE_TOKEN`, `FB_PAGE_ID`, `BLOGGER_CLIENT_ID`, `BLOGGER_CLIENT_SECRET`, `BLOGGER_REFRESH_TOKEN`, `BLOGGER_BLOG_ID`)
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
