@@ -258,67 +258,91 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Parent Real-time Telegram Monitoring Banner */}
+        {/* Parent Real-time Telegram Monitoring Banner with QR Code */}
         <div className="bg-gradient-to-br from-blue-700 via-sky-700 to-indigo-800 text-white rounded-3xl p-6 sm:p-7 mb-8 shadow-xl shadow-blue-600/20 border border-blue-400/30">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5 pb-5 border-b border-blue-400/20">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl shrink-0 shadow-inner">
-                📱
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-black text-lg sm:text-xl">สำหรับผู้ปกครอง: ติดตามผลการเรียนผ่าน Telegram 24 ชม.</h3>
-                  <Badge className="bg-emerald-400 text-emerald-950 font-black text-[10px]">Real-Time Bot</Badge>
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-6 pb-6 border-b border-blue-400/20">
+            
+            {/* Left: Info & Description */}
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl shrink-0 shadow-inner">
+                  📱
                 </div>
-                <p className="text-blue-100 text-xs sm:text-sm max-w-xl leading-relaxed">
-                  คุณพ่อคุณแม่สามารถรับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
-                </p>
-                <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                  <span className="bg-blue-900/60 text-sky-200 px-3 py-1 rounded-lg border border-blue-400/30 font-medium">
-                    👦 นักเรียน: <b>{user?.full_name || 'ด.ช.ภูมิรพีร์ มากแก้ว'}</b>
-                  </span>
-                  <span className="bg-blue-900/60 text-sky-200 px-3 py-1 rounded-lg border border-blue-400/30 font-mono text-[11px]">
-                    📧 รหัสผูกบัญชี: <b>{user?.email || 'phumrapeeft@gmail.com'}</b>
-                  </span>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-black text-lg sm:text-xl">สำหรับผู้ปกครอง: ติดตามผลการเรียนผ่าน Telegram 24 ชม.</h3>
+                    <Badge className="bg-emerald-400 text-emerald-950 font-black text-[10px]">Real-Time Bot</Badge>
+                  </div>
+                  <p className="text-blue-100 text-xs sm:text-sm leading-relaxed">
+                    คุณพ่อคุณแม่รับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
+                  </p>
                 </div>
               </div>
+
+              <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                <span className="bg-blue-900/60 text-sky-200 px-3 py-1.5 rounded-xl border border-blue-400/30 font-medium">
+                  👦 นักเรียน: <b>{user?.full_name || 'ด.ช.ภูมิรพีร์ มากแก้ว'}</b>
+                </span>
+                <span className="bg-blue-900/60 text-sky-200 px-3 py-1.5 rounded-xl border border-blue-400/30 font-mono text-[11px]">
+                  📧 รหัสผูกบัญชี: <b>{user?.email || 'phumrapeeft@gmail.com'}</b>
+                </span>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a 
+                  href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || user?.full_name || 'student'}`}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-full sm:w-auto"
+                >
+                  <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full hover:scale-105 transition-transform">
+                    💬 หรือแตะเพื่อเปิดใน Telegram →
+                  </Button>
+                </a>
+              </div>
             </div>
-            <div className="flex gap-2 w-full sm:w-auto shrink-0">
-              <a 
-                href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || user?.full_name || 'student'}`}
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-full sm:w-auto"
-              >
-                <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full hover:scale-105 transition-transform">
-                  💬 กดผูกบัญชีน้องเข้า Telegram →
-                </Button>
-              </a>
+
+            {/* Right: QR Code Scanner for Parents */}
+            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex flex-col items-center justify-center shrink-0 w-full sm:w-auto text-center shadow-lg">
+              <div className="bg-white p-2.5 rounded-xl shadow-md mb-2">
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || 'phumrapeeft@gmail.com'}`)}`} 
+                  alt="QR Code สำหรับผู้ปกครองผูกบัญชี Telegram" 
+                  className="w-32 h-32 object-contain rounded-lg"
+                />
+              </div>
+              <span className="text-[11px] font-bold text-sky-200 flex items-center gap-1">
+                📷 ใช้มือถือสแกน QR Code นี้
+              </span>
+              <span className="text-[10px] text-blue-200/80">
+                ผูกแจ้งเตือนกับน้องเข้ามือถือทันที
+              </span>
             </div>
+
           </div>
 
           {/* 3-Step Guide Card for Parents */}
           <div className="bg-blue-950/40 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-blue-300/20">
             <div className="text-xs font-bold text-sky-200 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <span>💡 ตัวอย่างขั้นตอนการผูกบัญชีและการใช้งานสำหรับผู้ปกครอง:</span>
+              <span>💡 ขั้นตอนง่ายๆ สำหรับผู้ปกครอง:</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
-                <span className="font-bold text-white block text-sm text-sky-300">1. กดปุ่มผูกบัญชี</span>
+                <span className="font-bold text-white block text-sm text-sky-300">1. สแกน QR หรือแตะปุ่ม</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
-                  แตะปุ่ม <b>"กดผูกบัญชีน้องเข้า Telegram"</b> ด้านบน เพื่อเปิดบอท <b>ครูพี่ MASTER AI</b>
+                  ใช้กล้องมือถือสแกน <b>QR Code</b> หรือแตะปุ่มเพื่อเปิดบอท <b>ครูพี่ MASTER AI</b>
                 </p>
               </div>
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
                 <span className="font-bold text-white block text-sm text-sky-300">2. กด Start ใน Telegram</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
-                  แตะ <b>Start</b> ระบบจะผูกบัญชีกับ <b>{user?.full_name || 'น้อง'}</b> อัตโนมัติ (หรือพิมพ์ <code>/link {user?.email || 'อีเมลน้อง'}</code>)
+                  แตะ <b>Start</b> ครั้งเดียว ระบบจะผูกบัญชีกับ <b>{user?.full_name || 'น้อง'}</b> อัตโนมัติทันที
                 </p>
               </div>
               <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
                 <span className="font-bold text-white block text-sm text-sky-300">3. เช็คผลได้ตลอด 24 ชม.</span>
                 <p className="text-blue-100 text-[11px] leading-relaxed">
-                  • <code>/pretest</code> ➔ ดูผลสอบก่อนเรียน<br/>
+                  • <code>/pretest</code> ➔ ผลสอบก่อนเรียน<br/>
                   • <code>/report</code> ➔ สรุปคะแนนทุกวิชา<br/>
                   • <code>/history</code> ➔ ดูประวัติพัฒนาการ
                 </p>
