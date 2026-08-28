@@ -258,6 +258,36 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Parent Real-time Telegram Monitoring Banner */}
+        <div className="bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white rounded-3xl p-5 sm:p-6 mb-8 shadow-xl shadow-blue-600/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-400/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl shrink-0 shadow-inner">
+              📱
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-black text-base sm:text-lg">สำหรับผู้ปกครอง: ติดตามผลการเรียนผ่าน Telegram 24 ชม.</span>
+                <Badge className="bg-emerald-400 text-emerald-950 font-black text-[10px]">Real-Time Bot</Badge>
+              </div>
+              <p className="text-blue-100 text-xs sm:text-sm max-w-xl leading-relaxed">
+                คุณพ่อคุณแม่สามารถรับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto shrink-0">
+            <a 
+              href={`https://t.me/fortuneflorist_bot?start=link_${user?.full_name || 'student'}`}
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="w-full sm:w-auto"
+            >
+              <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full">
+                💬 เชื่อมต่อ Telegram ผู้ปกครอง →
+              </Button>
+            </a>
+          </div>
+        </div>
+
         {/* Action Hub - 3 Core New Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Flashcards */}
