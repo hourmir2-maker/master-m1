@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const adsenseClientId = 'ca-pub-7280055452989562'
 
   return (
-    <html lang="th">
+    <html lang="th" suppressHydrationWarning>
       <head>
         {/* Google AdSense Auto Ads — ใช้ native <script> ป้องกัน data-nscript warning */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className={geist.className}>
+      <body className={geist.className} suppressHydrationWarning>
         {children}
         <SmartBreakReminder />
       </body>
