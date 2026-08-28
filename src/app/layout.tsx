@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'ระบบกวดวิชาออนไลน์ AI Personalized สำหรับนักเรียนเตรียมเข้า ม.1 และสนามสอบ O-NET ครบ 4 วิชา',
 }
 
+import SmartBreakReminder from '@/components/SmartBreakReminder'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-7280055452989562'
 
@@ -24,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
       </head>
-      <body className={geist.className}>{children}</body>
+      <body className={geist.className}>
+        {children}
+        <SmartBreakReminder />
+      </body>
     </html>
   )
 }
