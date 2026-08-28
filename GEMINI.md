@@ -108,10 +108,20 @@
 - **Telegram Command Parity Invariant**: ทุกครั้งที่เพิ่มวิชาใหม่หรือ feature ใหม่ ต้องเพิ่ม Telegram bot command handler ใน `/api/telegram/webhook/route.ts` คู่กันเสมอ
 - **Default Help Menu Standard**: Default reply ของบอท (กรณีไม่ตรง command ไหน) ต้องแสดงเมนูคำสั่งครบทุกคำสั่ง (`/pretest`, `/report`, `/history`, `/math`, `/science`, `/english`, `/thai`, `/onet`, `/link`) เสมอ
 
+### Rule 19 — Web Audio Synthesizer Standard
+- **Zero-External Asset Audio Invariant**: ใน `src/lib/sound-fx.ts` การเล่นเสียงประกอบ (ตอบถูก ตอบผิด ฉลอง Fanfare) ต้องใช้ Web Audio API สังเคราะห์เสียงผ่าน `AudioContext` และ `OscillatorNode` เท่านั้น ห้ามโหลดไฟล์เสียง MP3/WAV ภายนอก เพื่อให้รองรับการทำงานออฟไลน์ 100%
+- **SSR Safety Invariant**: ทุกฟังก์ชันเกี่ยวกับเสียงต้องตรวจสอบ `typeof window !== 'undefined'` และมี `try...catch` ครอบเสมอ เพื่อป้องกัน Error ระหว่าง Server-Side Rendering (SSR) และ Next.js Build
+
+### Rule 20 — Git Secret History Hygiene & GitHub Sync Standard
+- **Zero-Secret Commit Invariant**: ห้าม Commit ไฟล์ความลับ เช่น `token.json`, `credentials.json`, `.env.local` หรือ API Key ลงใน Git Repository เด็ดขาด ต้องมีบันทึกระบุใน `.gitignore` เสมอ
+- **GitHub Push Protection Resolution**: หากการ `git push` โดนบล็อกด้วย GitHub Push Protection (GH013) ต้องใช้ `git filter-branch` หรือ `git filter-repo` ทำความสะอาดประวัติ commit ย้อนหลังให้สะอาด ก่อนทำการ `--force` push เสมอ
+- **Repository Parity**: ทุกครั้งที่จบเซสชันการพัฒนา ต้องตรวจสอบว่า local commit ทั้งหมดถูก Push ขึ้น remote origin (`main`) บน GitHub (`hourmir2-maker/master-m1`) ครบถ้วน เพื่อรองรับการทำงานข้ามเครื่อง
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
 - ดูรายละเอียดฟีเจอร์ Gamification, Mock Exam, Printable PDF, Audio TTS, และระบบส่งผลให้ผู้ปกครอง ได้ที่ [ROADMAP.md](./ROADMAP.md)
+
 
 
 
