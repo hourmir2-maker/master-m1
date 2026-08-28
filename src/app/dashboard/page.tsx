@@ -259,32 +259,63 @@ export default function DashboardPage() {
         </div>
 
         {/* Parent Real-time Telegram Monitoring Banner */}
-        <div className="bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white rounded-3xl p-5 sm:p-6 mb-8 shadow-xl shadow-blue-600/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-400/30">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl shrink-0 shadow-inner">
-              📱
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-black text-base sm:text-lg">สำหรับผู้ปกครอง: ติดตามผลการเรียนผ่าน Telegram 24 ชม.</span>
-                <Badge className="bg-emerald-400 text-emerald-950 font-black text-[10px]">Real-Time Bot</Badge>
+        <div className="bg-gradient-to-br from-blue-700 via-sky-700 to-indigo-800 text-white rounded-3xl p-6 sm:p-7 mb-8 shadow-xl shadow-blue-600/20 border border-blue-400/30">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5 pb-5 border-b border-blue-400/20">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl shrink-0 shadow-inner">
+                📱
               </div>
-              <p className="text-blue-100 text-xs sm:text-sm max-w-xl leading-relaxed">
-                คุณพ่อคุณแม่สามารถรับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
-              </p>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-black text-lg sm:text-xl">สำหรับผู้ปกครอง: ติดตามผลการเรียนผ่าน Telegram 24 ชม.</h3>
+                  <Badge className="bg-emerald-400 text-emerald-950 font-black text-[10px]">Real-Time Bot</Badge>
+                </div>
+                <p className="text-blue-100 text-xs sm:text-sm max-w-xl leading-relaxed">
+                  คุณพ่อคุณแม่สามารถรับรายงานคะแนนและพัฒนาการของน้องได้ทันทีที่ทำแบบฝึกหัดเสร็จ โดยไม่ต้องเปิดคอมพิวเตอร์
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto shrink-0">
+              <a 
+                href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.full_name || 'student'}`}
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full sm:w-auto"
+              >
+                <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full hover:scale-105 transition-transform">
+                  💬 กดเชื่อมต่อ @MasterM1_Parent_bot →
+                </Button>
+              </a>
             </div>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto shrink-0">
-            <a 
-              href={`https://t.me/fortuneflorist_bot?start=link_${user?.full_name || 'student'}`}
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="w-full sm:w-auto"
-            >
-              <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full">
-                💬 เชื่อมต่อ Telegram ผู้ปกครอง →
-              </Button>
-            </a>
+
+          {/* 3-Step Guide Card for Parents */}
+          <div className="bg-blue-950/40 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-blue-300/20">
+            <div className="text-xs font-bold text-sky-200 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <span>💡 ตัวอย่างขั้นตอนการใช้งานสำหรับผู้ปกครอง:</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
+                <span className="font-bold text-white block text-sm text-sky-300">1. เปิดแอป Telegram</span>
+                <p className="text-blue-100 text-[11px] leading-relaxed">
+                  เปิดแอป Telegram ในมือถือ หรือแตะปุ่มเชื่อมต่อด้านบนเพื่อเข้าสู่บอท
+                </p>
+              </div>
+              <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
+                <span className="font-bold text-white block text-sm text-sky-300">2. เข้าห้องแชทบอท</span>
+                <p className="text-blue-100 text-[11px] leading-relaxed">
+                  แตะที่ห้องแชท <b>ครูพี่ MASTER AI</b> (<code>@MasterM1_Parent_bot</code>) แล้วกดปุ่ม Start
+                </p>
+              </div>
+              <div className="bg-blue-900/40 p-3.5 rounded-xl border border-blue-400/20 space-y-1">
+                <span className="font-bold text-white block text-sm text-sky-300">3. พิมพ์คำสั่งเช็คผล (24 ชม.)</span>
+                <p className="text-blue-100 text-[11px] leading-relaxed">
+                  • <code>/report</code> ➔ สรุปคะแนนทุกวิชา<br/>
+                  • <code>/math</code> ➔ ดูคะแนนคณิตศาสตร์<br/>
+                  • <code>/science</code> ➔ ดูคะแนนวิทยาศาสตร์
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

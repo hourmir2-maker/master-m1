@@ -29,8 +29,8 @@ export async function sendParentTelegramNotification({
   score,
   timeSpent = 0
 }: ProgressNotificationParams): Promise<boolean> {
-  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '8674389337:AAF-z2Xu6L6aNud9kNSTCM6-lvyO0n0ROeI'
-  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || process.env.TELEGRAM_ALLOWED_USERS
+  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
+  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
 
   if (!botToken) {
     console.warn('[TelegramNotify] Missing TELEGRAM_BOT_TOKEN')
