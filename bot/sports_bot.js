@@ -37,7 +37,7 @@ async function summarizeSportsNews(title, snippet) {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiKey}`;
     
     const prompt = `คุณคือคอลัมนิสต์และบล็อกเกอร์ข่าวกีฬาชาวไทยที่มีความรู้ลึกซึ้งเรื่องฟุตบอลและกีฬาต่างประเทศ มีสไตล์การเขียนที่สนุกสนาน เป็นกันเอง ดึงดูดความสนใจได้ดี
 โปรดสรุปและวิเคราะห์ข่าวกีฬาชิ้นนี้เป็นภาษาไทยสั้นๆ (ประมาณ 3-5 บรรทัด) ให้อ่านเข้าใจง่าย น่าตื่นเต้น และสนุกสนาน

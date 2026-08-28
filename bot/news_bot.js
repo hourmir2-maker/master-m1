@@ -36,7 +36,7 @@ async function summarizeEduArticle(title, subject, summary, speedHack) {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiKey}`;
     
     const prompt = `คุณคือครูพี่ติวเตอร์สุดเก่งและเป็นกันเองของเพจการศึกษา "MASTER ม.1"
 โปรดช่วยสรุปเนื้อหาบทเรียน/สูตรลัดการศึกษานี้ให้เป็นแคปชั่น Facebook สั้นๆ (3-5 บรรทัด) ให้อ่านสนุก เข้าใจง่าย มีประโยชน์ และน่าแชร์ต่อนักเรียนและผู้ปกครอง

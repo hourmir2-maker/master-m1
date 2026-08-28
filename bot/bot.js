@@ -69,7 +69,7 @@ async function generateAIPost(productName, price) {
 
   try {
     // เรียกใช้ Gemini 2.5 Flash API (ประหยัด รวดเร็ว และฟรีในระดับเริ่มต้น)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiKey}`;
     
     const prompt = `คุณคือผู้เชี่ยวชาญด้านการเขียนป้ายยาขายของในโซเชียลมีเดียชาวไทย โปรดเขียนแคปชั่นภาษาไทยที่อ่านแล้วตลก สนุกสนาน ดึงดูดสายตา มีการใส่อิโมจิชวนซื้อ เพื่อชวนคนมาคลิกช้อปปิ้งสินค้าหรือหมวดหมู่สินค้าชิ้นนี้:
 ชื่อสินค้า/หมวดหมู่: "${productName}"
