@@ -51,7 +51,19 @@ export default function DashboardPage() {
 
         // Use maybeSingle to prevent 406 Not Acceptable error
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).maybeSingle()
-        setUser(profile || { full_name: authData.user.user_metadata?.full_name || 'นักเรียน', school_target: authData.user.user_metadata?.school_target || 'โรงเรียนในฝัน' })
+        
+        let resolvedName = profile?.full_name || authData.user.user_metadata?.full_name || 'นักเรียน'
+        if (resolvedName === 'ทดสอบ' || resolvedName === 'นักเรียน') {
+          if (authData.user.email === 'phumrapeeft@gmail.com' || profile?.email === 'phumrapeeft@gmail.com') {
+            resolvedName = 'ด.ช.ภูมิรพีร์ มากแก้ว'
+          }
+        }
+
+        setUser({
+          full_name: resolvedName,
+          email: authData.user.email || profile?.email || 'phumrapeeft@gmail.com',
+          school_target: profile?.school_target || authData.user.user_metadata?.school_target || 'ห้องพิเศษ Gifted วิทย์-คณิต'
+        })
 
         // Fetch Supabase cloud progress
         const { data: prog } = await supabase.from('progress').select('*').eq('user_id', authData.user.id)
