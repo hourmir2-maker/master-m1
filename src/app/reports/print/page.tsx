@@ -19,9 +19,14 @@ import {
   BookOpen,
   Send
 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
-export default function PrintableReportCardPage() {
+function ReportCardContent() {
+  const searchParams = useSearchParams()
+  const studentIdParam = searchParams.get('studentId')
+
   const [studentName, setStudentName] = useState('ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)')
   const [targetSchool, setTargetSchool] = useState('สอบเข้า ม.1 ห้องเรียนพิเศษ Gifted / SMP / EP')
   const [progressList, setProgressList] = useState<any[]>([])
@@ -36,17 +41,42 @@ export default function PrintableReportCardPage() {
       setIsLoading(true)
       try {
         const supabase = createClient()
-        const { data: dbProgress } = await supabase
-          .from('progress')
-          .select('*')
-          .order('created_at', { ascending: false })
 
-        if (dbProgress && dbProgress.length > 0) {
-          setProgressList(dbProgress)
+        // If studentId param is present, fetch profile for this student
+        if (studentIdParam) {
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('full_name, school_target')
+            .eq('id', studentIdParam)
+            .maybeSingle()
+
+          if (prof) {
+            setStudentName(prof.full_name || 'ผู้เรียน')
+            if (prof.school_target) setTargetSchool(prof.school_target)
+          }
+
+          const { data: dbProgress } = await supabase
+            .from('progress')
+            .select('*')
+            .eq('user_id', studentIdParam)
+            .order('created_at', { ascending: false })
+
+          if (dbProgress) {
+            setProgressList(dbProgress)
+          }
         } else {
-          // Fallback to local storage if offline
-          const stored = localStorage.getItem('master_m1_progress')
-          if (stored) setProgressList(JSON.parse(stored))
+          // Default: fetch all progress
+          const { data: dbProgress } = await supabase
+            .from('progress')
+            .select('*')
+            .order('created_at', { ascending: false })
+
+          if (dbProgress && dbProgress.length > 0) {
+            setProgressList(dbProgress)
+          } else {
+            const stored = localStorage.getItem('master_m1_progress')
+            if (stored) setProgressList(JSON.parse(stored))
+          }
         }
       } catch (e) {
         console.warn('Error loading progress:', e)
@@ -56,7 +86,7 @@ export default function PrintableReportCardPage() {
     }
 
     loadRealData()
-  }, [])
+  }, [studentIdParam])
 
   // Calculate 100% Real Authentic Stats
   const stats = useMemo(() => {
@@ -389,5 +419,13 @@ export default function PrintableReportCardPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PrintableReportCardPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500 font-bold">กำลังโหลดรายงานผลวิชาการ...</div>}>
+      <ReportCardContent />
+    </Suspense>
   )
 }

@@ -104,6 +104,28 @@ export default function AdminPage() {
   // Telemetry & Live Progress State
   const [telemetryMode, setTelemetryMode] = useState<'live' | 'benchmark'>('live')
   const [liveProgressList, setLiveProgressList] = useState<Array<{ subject?: string; completed?: boolean; score?: number; moduleId?: string; module_id?: string; updated_at?: string }>>([])
+  const [isBatchSendingReports, setIsBatchSendingReports] = useState<boolean>(false)
+
+  // Batch Send 1-to-1 Reports to All Parents
+  const handleBatchSendReports = async () => {
+    if (!confirm(`คุณต้องการส่งใบรายงานผลรายบุคคลเข้า Telegram ของผู้ปกครองทุกคน (${studentsList.length} คน) หรือไม่?`)) return
+    setIsBatchSendingReports(true)
+    try {
+      const res = await fetch('/api/admin/batch-send-reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await res.json()
+      if (data.success) {
+        logAdminAction('BATCH_SEND_REPORTS', `ส่งรายงานผลรายบุคคลถึงผู้ปกครองสำเร็จ ${data.sentCount}/${data.totalStudents} คน`)
+        triggerToast(`🚀 ส่งรายงานผลรายบุคคลถึงผู้ปกครองทุกคนสำเร็จ (${data.sentCount} คน) เรียบร้อยแล้ว!`)
+      }
+    } catch (e) {
+      console.warn('Error batch sending reports:', e)
+    } finally {
+      setIsBatchSendingReports(false)
+    }
+  }
 
   // Fetch Students Directory from API
   const fetchStudents = async () => {
@@ -911,7 +933,17 @@ export default function AdminPage() {
                 <p className="text-xs text-slate-400">ค้นหาและเจาะลึกคะแนนสอบ 4 วิชา, ประวัติการทำข้อสอบ, และพัฒนาการของผู้เรียนทุกคน</p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  onClick={handleBatchSendReports}
+                  disabled={isBatchSendingReports || studentsList.length === 0}
+                  size="sm"
+                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
+                >
+                  <Send className={`w-3.5 h-3.5 ${isBatchSendingReports ? 'animate-spin' : ''}`} />
+                  {isBatchSendingReports ? 'กำลังส่งรายงานทุกคน...' : '🚀 ส่งรายงานรายบุคคลถึงผู้ปกครองทุกคน (1 คลิก)'}
+                </Button>
+
                 <Button
                   onClick={fetchStudents}
                   size="sm"
