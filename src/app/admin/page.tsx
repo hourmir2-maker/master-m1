@@ -1013,6 +1013,16 @@ export default function AdminPage() {
                         >
                           <Send className="w-3.5 h-3.5" /> ✈️ ส่งการบ้าน/โค้ชชิ่ง
                         </Button>
+
+                        <Link href="/reports/print" target="_blank">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-slate-700 bg-slate-800 text-slate-200 hover:text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
+                          >
+                            <Printer className="w-3.5 h-3.5" /> 📄 พิมพ์รายงานผล (PDF)
+                          </Button>
+                        </Link>
                       </div>
                     </div>
 

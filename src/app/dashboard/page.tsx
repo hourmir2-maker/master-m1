@@ -203,6 +203,14 @@ export default function DashboardPage() {
             >
               <Trophy className="w-4 h-4 mr-1.5 text-amber-600" /> หอเกียรติยศ ({gameState.unlockedBadgeIds.length}/10)
             </Button>
+            <Link href="/reports/print" target="_blank">
+              <Button
+                variant="outline"
+                className="border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold shadow-xs text-xs"
+              >
+                <Printer className="w-4 h-4 mr-1.5 text-slate-600" /> พิมพ์ใบรายงานผล (PDF)
+              </Button>
+            </Link>
             <Link href="/learning-path">
               <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md shadow-orange-500/25 text-xs">
                 <Sparkles className="w-4 h-4 mr-1.5" /> แผนการเรียน AI

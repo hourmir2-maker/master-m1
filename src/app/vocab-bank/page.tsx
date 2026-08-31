@@ -21,7 +21,13 @@ import {
   Layers,
   Filter,
   Copy,
-  Check
+  Check,
+  Flame,
+  Zap,
+  Swords,
+  Trophy,
+  RotateCcw,
+  Award
 } from 'lucide-react'
 
 export default function VocabBankPage() {
@@ -30,6 +36,77 @@ export default function VocabBankPage() {
   const [selectedLevel, setSelectedLevel] = useState<'all' | 'A1' | 'A2' | 'B1' | 'B2' | 'C1'>('all')
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [playingId, setPlayingId] = useState<string | null>(null)
+
+  // Vocab Arena Fast-Paced State
+  const [arenaActive, setArenaActive] = useState<boolean>(false)
+  const [arenaQuestions, setArenaQuestions] = useState<Array<{ word: VocabItem; options: string[]; answer: string }>>([])
+  const [arenaIndex, setArenaIndex] = useState<number>(0)
+  const [arenaScore, setArenaScore] = useState<number>(0)
+  const [arenaStreak, setArenaStreak] = useState<number>(0)
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [arenaFinished, setArenaFinished] = useState<boolean>(false)
+
+  // Start Fast-Paced Vocab Arena
+  const startArena = () => {
+    const shuffled = [...OXFORD_VOCAB_BANK].sort(() => Math.random() - 0.5).slice(0, 10)
+    const questions = shuffled.map(word => {
+      // Pick 3 random distractors
+      const distractors = OXFORD_VOCAB_BANK
+        .filter(w => w.id !== word.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map(w => w.meaning)
+      
+      const options = [word.meaning, ...distractors].sort(() => Math.random() - 0.5)
+      return { word, options, answer: word.meaning }
+    })
+
+    setArenaQuestions(questions)
+    setArenaIndex(0)
+    setArenaScore(0)
+    setArenaStreak(0)
+    setSelectedAnswer(null)
+    setIsCorrect(null)
+    setArenaFinished(false)
+    setArenaActive(true)
+  }
+
+  // Answer a question in Vocab Arena
+  const handleAnswerArena = (option: string) => {
+    if (selectedAnswer !== null) return
+    setSelectedAnswer(option)
+    const currentQ = arenaQuestions[arenaIndex]
+    const correct = option === currentQ.answer
+    setIsCorrect(correct)
+
+    if (correct) {
+      setArenaScore(prev => prev + 10 + (arenaStreak * 2))
+      setArenaStreak(prev => prev + 1)
+      handleSpeak(currentQ.word)
+    } else {
+      setArenaStreak(0)
+    }
+
+    setTimeout(() => {
+      if (arenaIndex + 1 < arenaQuestions.length) {
+        setArenaIndex(prev => prev + 1)
+        setSelectedAnswer(null)
+        setIsCorrect(null)
+      } else {
+        setArenaFinished(true)
+        // Award XP
+        try {
+          const storedGame = localStorage.getItem('master_m1_gamification')
+          if (storedGame) {
+            const parsed = JSON.parse(storedGame)
+            parsed.totalXp = (parsed.totalXp || 0) + 150
+            localStorage.setItem('master_m1_gamification', JSON.stringify(parsed))
+          }
+        } catch {}
+      }
+    }, 1200)
+  }
 
   // Filtered Vocabulary List
   const filteredVocab = useMemo(() => {
@@ -124,6 +201,15 @@ export default function VocabBankPage() {
               <p className="text-amber-100 text-xs sm:text-sm mt-1 max-w-2xl font-medium leading-relaxed">
                 รวบรวมคำศัพท์ที่ออกสอบบ่อยที่สุด พร้อมการออกเสียง (IPA + ถอดเสียงไทย), ชนิดของคำ, คำแปลไทย, และตัวอย่างประโยคจริง
               </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button
+                  onClick={startArena}
+                  className="bg-white text-orange-900 hover:bg-amber-100 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2"
+                >
+                  <Swords className="w-4 h-4 text-orange-600 animate-bounce" /> 
+                  ⚔️ เข้าสู่ Vocab Arena (ประลองศัพท์ 10 ข้อ Fast-Paced)
+                </Button>
+              </div>
             </div>
 
             <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/20 text-center shrink-0 w-full sm:w-auto">
@@ -132,6 +218,130 @@ export default function VocabBankPage() {
             </div>
           </div>
         </div>
+
+        {/* =========================================================================
+            VOCAB ARENA INTERACTIVE SPEED QUIZ MODAL
+            ========================================================================= */}
+        {arenaActive && (
+          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white shadow-2xl space-y-6">
+              {!arenaFinished ? (
+                <div className="space-y-6">
+                  {/* Top Arena Bar */}
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div className="flex items-center gap-2">
+                      <Swords className="w-5 h-5 text-amber-400" />
+                      <span className="font-black text-amber-300 text-sm">
+                        VOCAB ARENA — ข้อที่ {arenaIndex + 1}/10
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {arenaStreak > 1 && (
+                        <Badge className="bg-orange-500 text-white font-black text-xs animate-pulse">
+                          🔥 COMBO x{arenaStreak}
+                        </Badge>
+                      )}
+                      <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/40 text-xs font-bold">
+                        คะแนน: {arenaScore}
+                      </Badge>
+                      <button
+                        onClick={() => setArenaActive(false)}
+                        className="text-slate-400 hover:text-white text-base font-bold ml-2"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Word Card */}
+                  <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-800 text-center space-y-2">
+                    <span className="text-xs text-amber-400 font-mono font-bold tracking-wider uppercase">
+                      คำศัพท์ระดับ {arenaQuestions[arenaIndex].word.level} ({arenaQuestions[arenaIndex].word.pos})
+                    </span>
+                    <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                      {arenaQuestions[arenaIndex].word.word}
+                    </h2>
+                    <p className="text-slate-400 text-xs font-mono">
+                      {arenaQuestions[arenaIndex].word.phonetic} • [{arenaQuestions[arenaIndex].word.thaiPhonetic}]
+                    </p>
+
+                    <Button
+                      onClick={() => handleSpeak(arenaQuestions[arenaIndex].word)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-amber-300 hover:text-white text-xs mt-2"
+                    >
+                      <Volume2 className="w-4 h-4 mr-1" /> ฟังเสียงอ่านสำเนียง US
+                    </Button>
+                  </div>
+
+                  {/* 4 Choices */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {arenaQuestions[arenaIndex].options.map((option, idx) => {
+                      const isSelected = selectedAnswer === option
+                      const isTarget = option === arenaQuestions[arenaIndex].answer
+                      
+                      let btnStyle = 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                      if (selectedAnswer !== null) {
+                        if (isTarget) {
+                          btnStyle = 'bg-emerald-600 border-emerald-400 text-white shadow-lg'
+                        } else if (isSelected && !isCorrect) {
+                          btnStyle = 'bg-rose-600 border-rose-400 text-white'
+                        }
+                      }
+
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleAnswerArena(option)}
+                          disabled={selectedAnswer !== null}
+                          className={`p-4 rounded-xl text-left border text-xs sm:text-sm font-bold transition-all ${btnStyle}`}
+                        >
+                          <span className="text-amber-400 mr-2 font-mono">{idx + 1}.</span>
+                          {option}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : (
+                /* Arena Finished View */
+                <div className="text-center space-y-6 py-4 animate-fade-in">
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center text-4xl mx-auto shadow-xl">
+                    🏆
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white">ยอดเยี่ยมมาก! การประลองสิ้นสุด</h3>
+                    <p className="text-xs text-amber-300 font-semibold mt-1">
+                      คุณทำคะแนนได้ {arenaScore} แต้ม • รับพลัง EXP +150 แต้ม! 🚀
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-slate-950/80 rounded-2xl border border-slate-800 space-y-1 text-xs text-slate-300">
+                    <p>✓ สะสมคลังคำศัพท์ Oxford 3000 เตรียมสอบเข้า ม.1 Gifted / EP สำเร็จไปอีก 10 คำ</p>
+                  </div>
+
+                  <div className="flex gap-3 justify-center">
+                    <Button
+                      onClick={startArena}
+                      className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs rounded-xl shadow-md"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 mr-1" /> ประลองอีกรอบ (10 คำใหม่)
+                    </Button>
+                    <Button
+                      onClick={() => setArenaActive(false)}
+                      variant="outline"
+                      className="border-slate-700 text-slate-300 hover:text-white text-xs rounded-xl"
+                    >
+                      กลับสู่คลังคำศัพท์
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Search & Filter Controls */}
         <div className="bg-white/90 backdrop-blur-sm border border-amber-200/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
