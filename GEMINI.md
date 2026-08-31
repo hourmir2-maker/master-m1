@@ -117,6 +117,31 @@
 - **GitHub Push Protection Resolution**: หากการ `git push` โดนบล็อกด้วย GitHub Push Protection (GH013) ต้องใช้ `git filter-branch` หรือ `git filter-repo` ทำความสะอาดประวัติ commit ย้อนหลังให้สะอาด ก่อนทำการ `--force` push เสมอ
 - **Repository Parity**: ทุกครั้งที่จบเซสชันการพัฒนา ต้องตรวจสอบว่า local commit ทั้งหมดถูก Push ขึ้น remote origin (`main`) บน GitHub (`hourmir2-maker/master-m1`) ครบถ้วน เพื่อรองรับการทำงานข้ามเครื่อง
 
+### Rule 21 — Smart Conditional Privacy & Personalized Student Identity Invariant
+- **Student Identity**: บุตรชายของผู้พัฒนาคือ **ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)**
+- **Smart Conditional Privacy**: ทุกการแสดงผลข้อความส่วนตัว/ข้อคิดกำลังใจจากผู้ปกครอง (คุณพ่อไพโรจน์ มากแก้ว) ต้องผูกกับระบบ `isPhumrapee` (`userProfile?.email === 'phumrapeeft@gmail.com' || userProfile?.full_name?.includes('ภูมิรพีร์')`) เสมอ
+- **General Fallback Mode**: หากเป็นนักเรียนทั่วไปหรือผู้ใช้อื่นเข้าสู่ระบบ หน้าเว็บต้องสลับไปแสดงการ์ดเทคนิควิชาการทั่วไป (General Academic Coaching Card) อัตโนมัติ เพื่อความเป็นส่วนตัวและความปลอดภัย 100%
+
+### Rule 22 — 56-Module Full Dual-Track Curriculum & 560-Question Scaffolding Invariant
+- **Full Curriculum Structure**: โครงสร้างหลักสูตร MASTER ม.1 ประกอบด้วย **56 โมดูลเต็ม (รวม 560 ข้อสอบ Scaffolding)**:
+  - 📖 ภาษาไทย (8 โมดูลหลัก สพฐ. / 80 ข้อ)
+  - 🔢 คณิตศาสตร์ (16 โมดูล: ป.6 สอบเข้า ม.1 [8 บท] + ม.1 Advance [8 บท] / 160 ข้อ)
+  - 🔬 วิทยาศาสตร์ (16 โมดูล: ป.6 สอบเข้า ม.1 [8 บท] + ม.1 Advance [8 บท] / 160 ข้อ)
+  - 🇬🇧 ภาษาอังกฤษ (16 โมดูล: ป.6 สอบเข้า ม.1 [8 บท] + ม.1 Advance EP [8 บท] / 160 ข้อ)
+- **Modular Data Architecture**: ข้อมูลบทเรียนต้องแยกเป็นไฟล์ Dataset อิสระ (`src/lib/*-lessons-data.ts`) แล้วนำเข้าและผสานรวมผ่าน `Object.assign` ใน `src/lib/lessons-data.ts` เพื่อความปลอดภัยของหน่วยความจำและง่ายต่อการบำรุงรักษา
+
+### Rule 23 — 4-Tier Academic Accuracy & Quality Verification Standard
+- **Zero-Error Academic Invariant**: เนื้อหาบทเรียนและเฉลยข้อสอบต้องผ่านการตรวจสอบความถูกต้อง 100% ด้วยมาตรฐาน 4 ชั้น:
+  1. *Tier 1 (Curriculum Grounding)*: อ้างอิงหลักสูตรแกนกลาง สพฐ. 2551 (ปรับปรุง 2560), ตำรา สสวท., และ CEFR A2-B1
+  2. *Tier 2 (Double-Solver Audit)*: คำนวณแก้โจทย์ซ้ำ ตรวจสอบว่ามี 1 คำตอบที่ถูกแท้จริง และอธิบายตัวเลือกผิดทุกข้อ
+  3. *Tier 3 (Automated Data Linter)*: ตรวจสอบ `correctAnswer` ตรงกับ `options` 100%, มี `explanation` และ `tip` ดักจุดลวง
+  4. *Tier 4 (Real-time Telemetry)*: มีปุ่ม `[ 🚩 แจ้งจุดผิด ]` เชื่อมต่อ API `/api/reports` ส่งเตือนเข้า Telegram ครูพี่ AI 24 ชม.
+
+### Rule 24 — Oxford 3000 & Interactive Lexical Mastery System Invariant
+- **Smart Vocab Bank (`/vocab-bank`)**: รวมคำศัพท์ Oxford 3000™ และ CEFR A1-C1 ครบ 11 หมวดหมู่ พร้อมระบบออกเสียงเจ้าของภาษา US ด้วย Web Speech API และมีคำอ่านสัทอักษรภาษาไทย (`thaiPhonetic`) กำกับทุกคำ
+- **Spaced Repetition Flashcards (`/flashcards`)**: ระบบการ์ดคำศัพท์ช่วยจำเพื่อถ่ายโอนข้อมูลสู่ความจำระยะยาว (Long-Term Memory)
+- **Affixes & Roots Decoding**: ฝึกทักษะการแกะความหมายคำศัพท์ด้วย Prefix/Suffix ใน 3 วินาที
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
