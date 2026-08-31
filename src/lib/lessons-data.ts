@@ -1643,6 +1643,11 @@ if (THAI_LESSONS_DATA) {
   Object.assign(LESSONS_DATA.thai, THAI_LESSONS_DATA)
 }
 
+import { MATH_LESSONS_DATA } from './math-lessons-data'
+if (MATH_LESSONS_DATA) {
+  Object.assign(LESSONS_DATA.math, MATH_LESSONS_DATA)
+}
+
 import { M1_ADVANCED_LESSONS_DATA } from './m1-advanced-lessons-data'
 
 if (M1_ADVANCED_LESSONS_DATA) {

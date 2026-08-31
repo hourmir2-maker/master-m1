@@ -6,7 +6,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
-import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Sparkles, Rocket, Target } from 'lucide-react'
+import AdBanner from '@/components/AdBanner'
+import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Sparkles, Rocket, Target, Award, Heart } from 'lucide-react'
 
 const MATH_MODULES_P6 = [
   { 
@@ -303,6 +304,30 @@ export default function MathSubjectPage() {
               </Card>
             )
           })}
+        </div>
+
+        {/* Special Mentoring & Motivation Card */}
+        <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+              <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเพื่อ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องภูมิ)
+            </Badge>
+            <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+              🎯 ม.1 Gifted Pathway
+            </Badge>
+          </div>
+          <h3 className="text-xl font-black flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-amber-200" />
+            ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
+          </h3>
+          <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+            &ldquo;ความเก่งคณิตศาสตร์ไม่ได้เกิดจากพรสวรรค์ แต่เกิดจากการฝึกฝนสูตรลัด 3 วินาทีและความมุ่งมั่นไม่ยอมแพ้ พ่อเชื่อมั่นในศักยภาพของภูมิ 100% ก้าวสู่ห้องเรียนพิเศษ ม.1 และความฝันที่ยิ่งใหญ่ให้ได้นะลูก!&rdquo;
+          </p>
+        </div>
+
+        {/* AdSense Placement */}
+        <div className="mt-6">
+          <AdBanner slotId="math_subject_bottom" />
         </div>
       </div>
 
