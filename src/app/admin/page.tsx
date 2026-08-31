@@ -152,6 +152,24 @@ export default function AdminPage() {
     }
   }
 
+  // Send AI Diagnostic report to Telegram
+  const handleSendDiagnosticToTelegram = async (analysis: any) => {
+    if (!analysis) return
+    try {
+      const res = await fetch('/api/admin/send-telegram-diagnostic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysis })
+      })
+      if (res.ok) {
+        logAdminAction('SEND_TELEGRAM_DIAGNOSTIC', `ส่งผลการวินิจฉัย AI ของ ${analysis.studentName} เข้า Telegram ผู้ปกครอง`)
+        triggerToast(`ส่งรายงานผลวิเคราะห์ของ ${analysis.studentName} เข้า Telegram ผู้ปกครองเรียบร้อยแล้ว!`)
+      }
+    } catch (e) {
+      console.warn('Error sending diagnostic to Telegram:', e)
+    }
+  }
+
   // Load Initial Settings & Live Progress
   useEffect(() => {
     setIsAuthenticated(isAdminAuthenticated())
@@ -1012,7 +1030,7 @@ export default function AdminPage() {
                         {/* Broadcast to Parent Button */}
                         <div className="pt-1 flex justify-end">
                           <Button
-                            onClick={() => triggerToast(`ส่งรายงานผลวิเคราะห์ของ ${selectedStudent.fullName} เข้า Telegram ผู้ปกครองเรียบร้อยแล้ว!`)}
+                            onClick={() => handleSendDiagnosticToTelegram(studentAiAnalysis[selectedStudent.id])}
                             size="sm"
                             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
                           >

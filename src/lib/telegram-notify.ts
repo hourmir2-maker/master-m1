@@ -2,7 +2,7 @@ import { LESSONS_DATA } from './lessons-data'
 
 /**
  * MASTER ม.1 — Automated Parent Telegram Notification System
- * ส่งผลการสอบและความก้าวหน้าของน้องภูมิรพีร์เข้า Telegram คุณพ่อแบบ Real-time
+ * ส่งผลการสอบและความก้าวหน้าของน้องฟอร์จูนเข้า Telegram คุณพ่อแบบ Real-time
  */
 
 interface ProgressNotificationParams {
@@ -25,7 +25,7 @@ const SUBJECT_EMOJIS: Record<string, string> = {
 
 export async function sendParentTelegramNotification({
   userId,
-  studentName = 'น้องภูมิรพีร์',
+  studentName = 'น้องฟอร์จูน',
   subject,
   moduleId,
   score,
@@ -99,7 +99,6 @@ export async function sendParentTelegramNotification({
       })
       const resData = await res.json()
       if (!resData.ok) {
-        // Fallback without parse_mode
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -114,8 +113,65 @@ export async function sendParentTelegramNotification({
       console.warn('[TelegramNotify] Error sending Telegram message:', e)
       return false
     }
-  } else {
-    console.log('[TelegramNotify] Ready to notify. Message payload:', messageText)
-    return true
+  }
+  return true
+}
+
+/**
+ * ส่งผลวิเคราะห์ AI รายบุคคลจากหน้า Admin เข้า Telegram ผู้ปกครอง
+ */
+export async function sendAiDiagnosticTelegramNotification(analysis: {
+  studentName: string
+  overallReadiness: number
+  gradeLevelPrediction: string
+  strengths: string[]
+  weaknesses: string[]
+  giftedRecommendation: string
+  parentCoachingTip: string
+}): Promise<boolean> {
+  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
+  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+
+  if (!botToken || !parentChatId) return false
+
+  const now = new Date()
+  const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
+  const thaiDateStr = now.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' })
+
+  const strengthsList = (analysis.strengths || []).map(s => `• ${s}`).join('\n')
+  const weaknessesList = (analysis.weaknesses || []).map(w => `• ${w}`).join('\n')
+
+  const messageText = `🧠 <b>[รายงานการวินิจฉัย AI รายบุคคล] ${analysis.studentName}</b>
+━━━━━━━━━━━━━━━━━━━━
+🎯 <b>ดัชนีความพร้อมรวม:</b> ${analysis.overallReadiness}% (${analysis.gradeLevelPrediction})
+
+🌟 <b>จุดแข็งโดดเด่น:</b>
+${strengthsList}
+
+⚠️ <b>จุดลวงที่ต้องระวัง/จุดที่ต้องเสริม:</b>
+${weaknessesList}
+
+🎯 <b>แผนกลยุทธ์สอบเข้าห้องพิเศษ Gifted:</b>
+${analysis.giftedRecommendation}
+
+💖 <b>ข้อคิดโค้ชชิ่งสำหรับคุณพ่อ:</b>
+${analysis.parentCoachingTip}
+━━━━━━━━━━━━━━━━━━━━
+⏰ <i>วิเคราะห์โดย Gemini AI • ${thaiDateStr} ${thaiTimeStr} น.</i>`
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: parentChatId,
+        text: messageText,
+        parse_mode: 'HTML'
+      })
+    })
+    return res.ok
+  } catch (e) {
+    console.warn('Error sending diagnostic to Telegram:', e)
+    return false
   }
 }
