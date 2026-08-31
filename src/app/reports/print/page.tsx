@@ -16,7 +16,8 @@ import {
   TrendingUp,
   AlertCircle,
   Clock,
-  BookOpen
+  BookOpen,
+  Send
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -101,22 +102,62 @@ export default function PrintableReportCardPage() {
     }
   }, [progressList])
 
+  const [isSendingTg, setIsSendingTg] = useState(false)
+  const [tgSentToast, setTgSentToast] = useState(false)
+
   const handlePrint = () => {
     window.print()
+  }
+
+  const handleSendToTelegram = async () => {
+    setIsSendingTg(true)
+    try {
+      const res = await fetch('/api/admin/send-telegram-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName,
+          targetSchool
+        })
+      })
+      if (res.ok) {
+        setTgSentToast(true)
+        setTimeout(() => setTgSentToast(false), 4000)
+      }
+    } catch (e) {
+      console.warn('Error sending telegram report:', e)
+    } finally {
+      setIsSendingTg(false)
+    }
   }
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 py-8 px-4 print:bg-white print:p-0 print:m-0 font-sans">
       {/* Print Controls Bar (Hidden in Print) */}
-      <div className="max-w-4xl mx-auto mb-6 flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 print:hidden">
+      <div className="max-w-4xl mx-auto mb-6 flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 print:hidden flex-wrap gap-3">
         <Link href="/admin">
           <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-900">
             <ArrowLeft className="w-4 h-4 mr-1.5" /> กลับหน้าควบคุม Admin
           </Button>
         </Link>
 
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-500 font-medium">📄 รายงานผลจากฐานข้อมูลจริง 100%</span>
+        <div className="flex items-center gap-2.5">
+          {tgSentToast && (
+            <span className="text-xs text-emerald-600 font-bold animate-pulse">
+              ✓ ส่งเข้า Telegram คุณพ่อแล้ว!
+            </span>
+          )}
+
+          <Button
+            onClick={handleSendToTelegram}
+            disabled={isSendingTg}
+            variant="outline"
+            className="border-orange-300 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5"
+          >
+            <Send className={`w-3.5 h-3.5 ${isSendingTg ? 'animate-spin' : 'text-orange-600'}`} />
+            {isSendingTg ? 'กำลังส่ง...' : '📲 ส่งรายงานเข้า Telegram คุณพ่อ'}
+          </Button>
+
           <Button 
             onClick={handlePrint}
             className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
