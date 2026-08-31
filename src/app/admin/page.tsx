@@ -139,6 +139,10 @@ export default function AdminPage() {
           if (!selectedStudent && data.students.length > 0) {
             setSelectedStudent(data.students[0])
           }
+          const fortune = data.students.find((s: any) => s.isFortune)
+          if (fortune && fortune.recentHistory) {
+            setLiveProgressList(fortune.recentHistory)
+          }
         }
       }
     } catch (e) {
@@ -812,17 +816,21 @@ export default function AdminPage() {
                     <span className="text-orange-400">🔢 คณิตศาสตร์</span>
                     <span className="text-white">
                       {telemetryMode === 'live' 
-                        ? `${liveStats.mathDone}/16 บท (${liveStats.mathAvg}%)` 
+                        ? (liveStats.mathDone > 0 ? `${liveStats.mathDone}/16 บท (${liveStats.mathAvg}%)` : '0/16 บท (ยังไม่เริ่ม)')
                         : '96% (16 บท)'}
                     </span>
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                     <div 
-                      className="bg-orange-500 h-2 rounded-full transition-all" 
-                      style={{ width: `${telemetryMode === 'live' ? (liveStats.mathDone > 0 ? liveStats.mathAvg : 20) : 96}%` }} 
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${telemetryMode === 'live' ? ((liveStats.mathDone / 16) * 100) : 96}%` }} 
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400">⚡ ถอดรูท 3 วิ & เรขาคณิต สสวท.</p>
+                  <p className="text-[10px] text-slate-400">
+                    {liveStats.mathDone > 0 
+                      ? `✓ บันทึกผลสอบแล้ว ${liveStats.mathDone} บท (${liveStats.mathAvg}%)` 
+                      : '⚡ ถอดรูท 3 วิ & เรขาคณิต สสวท.'}
+                  </p>
                 </div>
 
                 {/* Science */}
@@ -831,17 +839,21 @@ export default function AdminPage() {
                     <span className="text-red-400">🔬 วิทยาศาสตร์</span>
                     <span className="text-white">
                       {telemetryMode === 'live' 
-                        ? `${liveStats.scienceDone}/16 บท (${liveStats.scienceAvg}%)` 
+                        ? (liveStats.scienceDone > 0 ? `${liveStats.scienceDone}/16 บท (${liveStats.scienceAvg}%)` : '0/16 บท (ยังไม่เริ่ม)')
                         : '94% (16 บท)'}
                     </span>
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                     <div 
-                      className="bg-red-500 h-2 rounded-full transition-all" 
-                      style={{ width: `${telemetryMode === 'live' ? (liveStats.scienceDone > 0 ? liveStats.scienceAvg : 20) : 94}%` }} 
+                      className="bg-red-500 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${telemetryMode === 'live' ? ((liveStats.scienceDone / 16) * 100) : 94}%` }} 
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400">⚡ สารละลาย %w/w & เซลล์พืชสัตว์</p>
+                  <p className="text-[10px] text-slate-400">
+                    {liveStats.scienceDone > 0 
+                      ? `✓ บันทึกผลสอบแล้ว ${liveStats.scienceDone} บท (${liveStats.scienceAvg}%)` 
+                      : '⚡ สารละลาย %w/w & เซลล์พืชสัตว์'}
+                  </p>
                 </div>
 
                 {/* English */}
@@ -850,17 +862,21 @@ export default function AdminPage() {
                     <span className="text-amber-400">🇬🇧 ภาษาอังกฤษ</span>
                     <span className="text-white">
                       {telemetryMode === 'live' 
-                        ? `${liveStats.englishDone}/16 บท (${liveStats.englishAvg}%)` 
+                        ? (liveStats.englishDone > 0 ? `${liveStats.englishDone}/16 บท (${liveStats.englishAvg}%)` : '0/16 บท (ยังไม่เริ่ม)')
                         : '92% (16 บท)'}
                     </span>
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                     <div 
-                      className="bg-amber-500 h-2 rounded-full transition-all" 
-                      style={{ width: `${telemetryMode === 'live' ? (liveStats.englishDone > 0 ? liveStats.englishAvg : 20) : 92}%` }} 
+                      className="bg-amber-500 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${telemetryMode === 'live' ? ((liveStats.englishDone / 16) * 100) : 92}%` }} 
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400">⚡ Oxford 3000 & ศัพท์การแพทย์ US</p>
+                  <p className="text-[10px] text-slate-400">
+                    {liveStats.englishDone > 0 
+                      ? `✓ บันทึกผลสอบแล้ว ${liveStats.englishDone} บท (${liveStats.englishAvg}%)` 
+                      : '⚡ Oxford 3000 & ศัพท์การแพทย์ US'}
+                  </p>
                 </div>
 
                 {/* Thai */}
@@ -869,17 +885,21 @@ export default function AdminPage() {
                     <span className="text-emerald-400">📖 ภาษาไทย</span>
                     <span className="text-white">
                       {telemetryMode === 'live' 
-                        ? `${liveStats.thaiDone}/8 บท (${liveStats.thaiAvg}%)` 
+                        ? (liveStats.thaiDone > 0 ? `${liveStats.thaiDone}/8 บท (${liveStats.thaiAvg}%)` : '0/8 บท (ยังไม่เริ่ม)')
                         : '96% (8 บท)'}
                     </span>
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                     <div 
-                      className="bg-emerald-500 h-2 rounded-full transition-all" 
-                      style={{ width: `${telemetryMode === 'live' ? (liveStats.thaiDone > 0 ? liveStats.thaiAvg : 20) : 96}%` }} 
+                      className="bg-emerald-500 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${telemetryMode === 'live' ? ((liveStats.thaiDone / 8) * 100) : 96}%` }} 
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400">⚡ สแกนใจความสำคัญ & ราชาศัพท์</p>
+                  <p className="text-[10px] text-slate-400">
+                    {liveStats.thaiDone > 0 
+                      ? `✓ บันทึกผลสอบแล้ว ${liveStats.thaiDone} บท (${liveStats.thaiAvg}%)` 
+                      : '⚡ สแกนใจความสำคัญ & ราชาศัพท์'}
+                  </p>
                 </div>
               </div>
             </Card>
