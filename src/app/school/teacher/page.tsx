@@ -34,6 +34,9 @@ import {
   FileSpreadsheet
 } from 'lucide-react'
 
+import { getAdminSettings } from '@/lib/admin-settings'
+import { useEffect } from 'react'
+
 export default function TeacherPortalPage() {
   const [selectedClassId, setSelectedClassId] = useState<string>('cls_p6_1')
   const [assignments, setAssignments] = useState<SchoolAssignment[]>(SAMPLE_ASSIGNMENTS)
@@ -41,6 +44,36 @@ export default function TeacherPortalPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [newTitle, setNewTitle] = useState('')
   const [newSubject, setNewSubject] = useState<'math' | 'science' | 'thai' | 'english'>('math')
+  const [adminSettings, setAdminSettings] = useState(getAdminSettings())
+
+  useEffect(() => {
+    setAdminSettings(getAdminSettings())
+  }, [])
+
+  if (!adminSettings.school_enabled) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white flex flex-col justify-between p-4">
+        <div className="max-w-md mx-auto my-auto text-center space-y-4 py-12">
+          <div className="text-4xl">🏫</div>
+          <Badge className="bg-rose-500/20 text-rose-400 border-rose-500/30 text-xs">ปิดปรับปรุงชั่วคราว</Badge>
+          <h2 className="text-xl font-bold text-white">แดชบอร์ดคุณครูอยู่ในช่วงปิดปรับปรุงชั่วคราว</h2>
+          <p className="text-xs text-slate-400">{adminSettings.maintenance_message}</p>
+          <div className="pt-2 flex justify-center gap-2">
+            <Link href="/dashboard">
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs">
+                ไปหน้าบทเรียนทั่วไป
+              </Button>
+            </Link>
+            <Link href="/admin">
+              <Button size="sm" variant="outline" className="border-slate-700 text-slate-300 text-xs font-bold">
+                Admin Unlock
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const currentClass = SAMPLE_CLASSROOMS.find(c => c.id === selectedClassId) || SAMPLE_CLASSROOMS[0]
 

@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -25,10 +25,17 @@ import {
   KeyRound
 } from 'lucide-react'
 
+import { getAdminSettings } from '@/lib/admin-settings'
+
 export default function SchoolPortalPage() {
   const router = useRouter()
   const [classCodeInput, setClassCodeInput] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+  const [adminSettings, setAdminSettings] = useState(getAdminSettings())
+
+  useEffect(() => {
+    setAdminSettings(getAdminSettings())
+  }, [])
 
   const handleJoinClass = (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,6 +45,68 @@ export default function SchoolPortalPage() {
     }
     const cleanCode = classCodeInput.trim().toUpperCase()
     router.push(`/school/join?code=${encodeURIComponent(cleanCode)}`)
+  }
+
+  // If school feature is disabled by Admin
+  if (!adminSettings.school_enabled) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white flex flex-col justify-between p-4">
+        <header className="max-w-xl mx-auto w-full pt-6 flex justify-between items-center">
+          <Link href="/">
+            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800">
+              ← กลับหน้าแรก (Home)
+            </Button>
+          </Link>
+          <Link href="/admin">
+            <Button size="sm" className="bg-orange-500/20 text-orange-400 border border-orange-500/30 hover:bg-orange-500/30 text-xs font-bold">
+              🔐 เข้าสู่ระบบ Admin
+            </Button>
+          </Link>
+        </header>
+
+        <main className="max-w-xl mx-auto w-full my-auto py-8 text-center space-y-6">
+          <div className="w-20 h-20 rounded-3xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-4xl mx-auto shadow-2xl">
+            🏫
+          </div>
+
+          <div className="space-y-3">
+            <Badge className="bg-rose-500/20 text-rose-400 border-rose-500/30 text-xs px-3 py-1 font-bold">
+              🔴 ปิดปรับปรุงชั่วคราว (Maintenance Mode)
+            </Badge>
+            <h1 className="text-3xl font-black text-white">
+              ระบบสำหรับโรงเรียน (School Portal)
+            </h1>
+            <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+              {adminSettings.maintenance_message || 'ระบบสำหรับโรงเรียนกำลังอยู่ในช่วงเตรียมการและปรับปรุงระบบชั่วคราว'}
+            </p>
+          </div>
+
+          <div className="bg-slate-850/80 p-5 rounded-2xl border border-slate-800 max-w-md mx-auto text-left space-y-3 shadow-lg">
+            <p className="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              ระบบหลักสูตร 4 วิชา 56 โมดูล พร้อมใช้งานในเส้นทางทั่วไป
+            </p>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              นักเรียนและผู้ปกครองสามารถเข้าสู่ระบบฝึกฝนบทเรียนและแบบฝึกหัดได้ตามปกติผ่านทางหน้าหลัก
+            </p>
+            <div className="pt-2 flex flex-col sm:flex-row gap-2">
+              <Link href="/dashboard" className="flex-1">
+                <Button className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs py-2 rounded-xl">
+                  🚀 ไปที่หน้าแดชบอร์ดบทเรียน
+                </Button>
+              </Link>
+              <Link href="/admin" className="flex-1">
+                <Button variant="outline" className="w-full border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold text-xs py-2 rounded-xl">
+                  🔑 ปลดล็อก Admin (23235656)
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    )
   }
 
   return (
