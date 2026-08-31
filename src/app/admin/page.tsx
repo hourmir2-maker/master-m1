@@ -76,6 +76,8 @@ export default function AdminPage() {
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null)
   const [studentSearchQuery, setStudentSearchQuery] = useState<string>('')
   const [isLoadingStudents, setIsLoadingStudents] = useState<boolean>(false)
+  const [isAnalyzingStudent, setIsAnalyzingStudent] = useState<boolean>(false)
+  const [studentAiAnalysis, setStudentAiAnalysis] = useState<Record<string, any>>({})
 
   // CMS State
   const [selectedSubject, setSelectedSubject] = useState<'math' | 'science' | 'english' | 'thai'>('math')
@@ -111,6 +113,42 @@ export default function AdminPage() {
       console.warn('Error loading students:', e)
     } finally {
       setIsLoadingStudents(false)
+    }
+  }
+
+  // Trigger Individual Student AI Analysis
+  const handleAnalyzeStudent = async (student: any) => {
+    if (!student) return
+    setIsAnalyzingStudent(true)
+    try {
+      const res = await fetch('/api/admin/analyze-student', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: student.id,
+          studentName: student.fullName,
+          isFortune: student.isFortune,
+          stats: student.stats,
+          recentHistory: student.recentHistory,
+          preTestScores: student.preTestScores
+        })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        if (data.success && data.analysis) {
+          setStudentAiAnalysis(prev => ({
+            ...prev,
+            [student.id]: data.analysis
+          }))
+          logAdminAction('AI_ANALYZE_STUDENT', `วิเคราะห์พัฒนาการรายบุคคลของ: ${student.fullName}`)
+          triggerToast(`วิเคราะห์พัฒนาการของ ${student.fullName} ด้วย Gemini AI สำเร็จ!`)
+        }
+      }
+    } catch (e) {
+      console.warn('Error analyzing student:', e)
+    } finally {
+      setIsAnalyzingStudent(false)
     }
   }
 
@@ -892,14 +930,97 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      <Button
-                        onClick={() => triggerToast(`ส่งข้อความโค้ชชิ่งถึงผู้ปกครองของ ${selectedStudent.fullName} ทาง Telegram สำเร็จ!`)}
-                        size="sm"
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl"
-                      >
-                        <Send className="w-3.5 h-3.5 mr-1" /> ส่งการบ้าน/โค้ชชิ่ง
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() => handleAnalyzeStudent(selectedStudent)}
+                          disabled={isAnalyzingStudent}
+                          size="sm"
+                          className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
+                        >
+                          <Sparkles className={`w-3.5 h-3.5 ${isAnalyzingStudent ? 'animate-spin' : 'text-amber-300'}`} />
+                          {isAnalyzingStudent ? 'AI กำลังวิเคราะห์...' : '🧠 AI วิเคราะห์ผู้เรียนรายบุคคล'}
+                        </Button>
+
+                        <Button
+                          onClick={() => triggerToast(`ส่งข้อความโค้ชชิ่งถึงผู้ปกครองของ ${selectedStudent.fullName} ทาง Telegram สำเร็จ!`)}
+                          size="sm"
+                          className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl"
+                        >
+                          <Send className="w-3.5 h-3.5 mr-1" /> ส่งการบ้าน/โค้ชชิ่ง
+                        </Button>
+                      </div>
                     </div>
+
+                    {/* AI Diagnosis Result Card */}
+                    {studentAiAnalysis[selectedStudent.id] && (
+                      <div className="bg-gradient-to-br from-indigo-950/80 via-purple-950/60 to-slate-950 border-2 border-indigo-500/40 rounded-2xl p-5 space-y-4 shadow-xl animate-fade-in">
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-indigo-800/60 pb-3">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-5 h-5 text-amber-300" />
+                            <h5 className="font-black text-white text-sm">
+                              ผลการวินิจฉัยและแผนพัฒนาอัจฉริยะ (Gemini AI Diagnostic)
+                            </h5>
+                          </div>
+                          <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-xs font-bold">
+                            ดัชนีความพร้อม: {studentAiAnalysis[selectedStudent.id].overallReadiness}% • {studentAiAnalysis[selectedStudent.id].gradeLevelPrediction}
+                          </Badge>
+                        </div>
+
+                        {/* Strengths & Weaknesses */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                          <div className="bg-slate-900/80 p-3.5 rounded-xl border border-emerald-900/50 space-y-2">
+                            <span className="font-bold text-emerald-400 flex items-center gap-1.5">
+                              <CheckCircle2 className="w-4 h-4" /> 🌟 จุดแข็งโดดเด่น (Strengths):
+                            </span>
+                            <ul className="space-y-1 text-slate-300 text-[11px] list-disc list-inside">
+                              {studentAiAnalysis[selectedStudent.id].strengths?.map((s: string, idx: number) => (
+                                <li key={idx}>{s}</li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div className="bg-slate-900/80 p-3.5 rounded-xl border border-amber-900/50 space-y-2">
+                            <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                              <AlertTriangle className="w-4 h-4" /> ⚠️ จุดที่ต้องระวัง/จุดลวง สทศ.:
+                            </span>
+                            <ul className="space-y-1 text-slate-300 text-[11px] list-disc list-inside">
+                              {studentAiAnalysis[selectedStudent.id].weaknesses?.map((w: string, idx: number) => (
+                                <li key={idx}>{w}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Strategic Recommendation */}
+                        <div className="bg-slate-900/80 p-3.5 rounded-xl border border-indigo-800/60 text-xs space-y-1.5">
+                          <span className="font-bold text-indigo-300 block">🎯 แผนกลยุทธ์เฉพาะบุคคล (Gifted Roadmap):</span>
+                          <p className="text-slate-300 text-[11px] leading-relaxed">
+                            {studentAiAnalysis[selectedStudent.id].giftedRecommendation}
+                          </p>
+                        </div>
+
+                        {/* Parent Coaching Tip */}
+                        <div className="bg-slate-900/80 p-3.5 rounded-xl border border-rose-900/50 text-xs space-y-1.5">
+                          <span className="font-bold text-rose-300 flex items-center gap-1.5">
+                            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> ข้อคิดและคำแนะนำสำหรับผู้ปกครองในการโค้ชชิ่ง:
+                          </span>
+                          <p className="text-rose-100/90 text-[11px] italic leading-relaxed">
+                            {studentAiAnalysis[selectedStudent.id].parentCoachingTip}
+                          </p>
+                        </div>
+
+                        {/* Broadcast to Parent Button */}
+                        <div className="pt-1 flex justify-end">
+                          <Button
+                            onClick={() => triggerToast(`ส่งรายงานผลวิเคราะห์ของ ${selectedStudent.fullName} เข้า Telegram ผู้ปกครองเรียบร้อยแล้ว!`)}
+                            size="sm"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
+                          >
+                            <Send className="w-3.5 h-3.5" /> ส่งรายงานนี้เข้า Telegram ผู้ปกครอง
+                          </Button>
+                        </div>
+                      </div>
+                    )}
 
                     {/* 4 Subjects Progress Radar Breakdown */}
                     <div className="space-y-3">
