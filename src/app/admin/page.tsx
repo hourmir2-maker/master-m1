@@ -79,6 +79,13 @@ export default function AdminPage() {
   const [isAnalyzingStudent, setIsAnalyzingStudent] = useState<boolean>(false)
   const [studentAiAnalysis, setStudentAiAnalysis] = useState<Record<string, any>>({})
 
+  // Coaching Modal State
+  const [showCoachingModal, setShowCoachingModal] = useState<boolean>(false)
+  const [coachingType, setCoachingType] = useState<'homework' | 'cheer' | 'trap' | 'custom'>('cheer')
+  const [coachingMessage, setCoachingMessage] = useState<string>('ลูกเก่งมากครับ พ่อภูมิใจในความมุ่งมั่นของน้องฟอร์จูน วันนี้ฝึกทำแบบฝึกหัดอย่างสบายๆ วันละ 15 นาที พ่อเชื่อมั่นในศักยภาพลูก 100% ครับ! ❤️')
+  const [coachingSubject, setCoachingSubject] = useState<string>('math')
+  const [isSendingCoaching, setIsSendingCoaching] = useState<boolean>(false)
+
   // CMS State
   const [selectedSubject, setSelectedSubject] = useState<'math' | 'science' | 'english' | 'thai'>('math')
   const [selectedModuleKey, setSelectedModuleKey] = useState<string>('numbers_basics')
@@ -167,6 +174,35 @@ export default function AdminPage() {
       }
     } catch (e) {
       console.warn('Error sending diagnostic to Telegram:', e)
+    }
+  }
+
+  // Send Homework & Coaching message to Telegram
+  const handleDispatchCoaching = async () => {
+    if (!selectedStudent) return
+    setIsSendingCoaching(true)
+    try {
+      const res = await fetch('/api/admin/send-coaching', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName: selectedStudent.fullName,
+          coachingType,
+          subject: coachingSubject === 'math' ? 'คณิตศาสตร์' : coachingSubject === 'science' ? 'วิทยาศาสตร์' : coachingSubject === 'english' ? 'ภาษาอังกฤษ' : 'ภาษาไทย',
+          moduleTitle: coachingType === 'homework' ? 'บทเรียนตามแผนการเรียนประจำสัปดาห์' : '',
+          customMessage: coachingMessage
+        })
+      })
+
+      if (res.ok) {
+        logAdminAction('SEND_COACHING_TELEGRAM', `ส่งข้อความโค้ชชิ่ง/การบ้านถึง ${selectedStudent.fullName} ทาง Telegram`)
+        triggerToast(`ส่งข้อความโค้ชชิ่ง/การบ้านถึงผู้ปกครองของ ${selectedStudent.fullName} เรียบร้อยแล้ว! 🚀`)
+        setShowCoachingModal(false)
+      }
+    } catch (e) {
+      console.warn('Error sending coaching:', e)
+    } finally {
+      setIsSendingCoaching(false)
     }
   }
 
@@ -960,11 +996,11 @@ export default function AdminPage() {
                         </Button>
 
                         <Button
-                          onClick={() => triggerToast(`ส่งข้อความโค้ชชิ่งถึงผู้ปกครองของ ${selectedStudent.fullName} ทาง Telegram สำเร็จ!`)}
+                          onClick={() => setShowCoachingModal(true)}
                           size="sm"
-                          className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl"
+                          className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
                         >
-                          <Send className="w-3.5 h-3.5 mr-1" /> ส่งการบ้าน/โค้ชชิ่ง
+                          <Send className="w-3.5 h-3.5" /> ✈️ ส่งการบ้าน/โค้ชชิ่ง
                         </Button>
                       </div>
                     </div>
@@ -1569,6 +1605,152 @@ export default function AdminPage() {
                 ))}
               </div>
             </Card>
+          </div>
+        )}
+
+        {/* =========================================================================
+            COACHING & HOMEWORK DISPATCHER MODAL
+            ========================================================================= */}
+        {showCoachingModal && selectedStudent && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-5">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold">
+                    ✈️
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-white">
+                      ส่งการบ้าน & โค้ชชิ่งถึง {selectedStudent.fullName}
+                    </h4>
+                    <p className="text-[11px] text-orange-300">
+                      ส่งตรงเข้า Telegram คุณพ่อ (@MasterM1_Parent_bot)
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowCoachingModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold p-1"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Coaching Type Selection */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-300 block">เลือกประเภทข้อความ:</label>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    onClick={() => {
+                      setCoachingType('cheer')
+                      setCoachingMessage('ลูกเก่งมากครับ พ่อภูมิใจในความมุ่งมั่นของน้องฟอร์จูน วันนี้ฝึกทำแบบฝึกหัดอย่างสบายๆ วันละ 15 นาที พ่อเชื่อมั่นในศักยภาพลูก 100% ครับ! ❤️')
+                    }}
+                    className={`p-2.5 rounded-xl text-left border font-semibold transition-all ${
+                      coachingType === 'cheer'
+                        ? 'bg-rose-950/60 border-rose-500/60 text-rose-200'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    💖 ให้กำลังใจ & ปลุกพลัง
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCoachingType('homework')
+                      setCoachingMessage('วันนี้พ่อมอบหมายให้น้องฟอร์จูนลองฝึกทำข้อสอบจับเวลา 1 ชุดนะลูก ค่อยๆ คิด ใช้สูตรลัด 3 วินาทีที่เรียนมาได้เลยครับ!')
+                    }}
+                    className={`p-2.5 rounded-xl text-left border font-semibold transition-all ${
+                      coachingType === 'homework'
+                        ? 'bg-blue-950/60 border-blue-500/60 text-blue-200'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    📝 มอบหมายการบ้านประจำวัน
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCoachingType('trap')
+                      setCoachingMessage('อย่าลืมระวังจุดลวง สทศ. เรื่องเศษส่วนซ้อนและการสแกนใจความสำคัญภาษาไทยนะลูก อ่านโจทย์ให้รอบคอบก่อนกาคำตอบ!')
+                    }}
+                    className={`p-2.5 rounded-xl text-left border font-semibold transition-all ${
+                      coachingType === 'trap'
+                        ? 'bg-amber-950/60 border-amber-500/60 text-amber-200'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    ⚡ เตือนจุดลวง สทศ. 10 ปี
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCoachingType('custom')
+                      setCoachingMessage('')
+                    }}
+                    className={`p-2.5 rounded-xl text-left border font-semibold transition-all ${
+                      coachingType === 'custom'
+                        ? 'bg-emerald-950/60 border-emerald-500/60 text-emerald-200'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    ✍️ พิมพ์ข้อความเอง
+                  </button>
+                </div>
+              </div>
+
+              {/* Subject selector for homework */}
+              {coachingType === 'homework' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 block">เลือกวิชาที่มอบหมาย:</label>
+                  <select
+                    value={coachingSubject}
+                    onChange={(e) => setCoachingSubject(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2.5 text-xs"
+                  >
+                    <option value="math">🔢 วิชาคณิตศาสตร์ (16 บท)</option>
+                    <option value="science">🔬 วิชาวิทยาศาสตร์ (16 บท)</option>
+                    <option value="english">🇬🇧 วิชาภาษาอังกฤษ (16 บท)</option>
+                    <option value="thai">📖 วิชาภาษาไทย (8 บท)</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Message Textarea */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-300 block">เนื้อหาข้อความที่จะส่งเข้า Telegram:</label>
+                <textarea
+                  rows={4}
+                  value={coachingMessage}
+                  onChange={(e) => setCoachingMessage(e.target.value)}
+                  placeholder="พิมพ์ข้อความโค้ชชิ่งหรือคำแนะนำ..."
+                  className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 text-xs focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2 justify-end pt-2">
+                <Button
+                  onClick={() => setShowCoachingModal(false)}
+                  variant="outline"
+                  size="sm"
+                  className="border-slate-700 text-slate-400 hover:text-white text-xs rounded-xl"
+                >
+                  ยกเลิก
+                </Button>
+
+                <Button
+                  onClick={handleDispatchCoaching}
+                  disabled={isSendingCoaching || !coachingMessage.trim()}
+                  size="sm"
+                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
+                >
+                  <Send className={`w-3.5 h-3.5 ${isSendingCoaching ? 'animate-spin' : ''}`} />
+                  {isSendingCoaching ? 'กำลังส่ง...' : '🚀 กดยิงเข้า Telegram ทันที'}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </main>
