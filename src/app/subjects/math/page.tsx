@@ -334,7 +334,7 @@ export default function MathSubjectPage() {
           <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3 border-2 border-amber-300/30">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
-                <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเฉพาะ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องภูมิ)
+                <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเฉพาะ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)
               </Badge>
               <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
                 🎯 เส้นทางสู่ห้องเรียนพิเศษ ม.1 Gifted & เภสัชกร
@@ -345,7 +345,7 @@ export default function MathSubjectPage() {
               ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
             </h3>
             <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
-              &ldquo;ความเก่งคณิตศาสตร์ไม่ได้เกิดจากพรสวรรค์ แต่เกิดจากการฝึกฝนสูตรลัด 3 วินาทีและความมุ่งมั่นไม่ยอมแพ้ พ่อเชื่อมั่นในศักยภาพของภูมิ 100% ก้าวสู่ห้องเรียนพิเศษ ม.1 และความฝันที่ยิ่งใหญ่ให้ได้นะลูก!&rdquo;
+              &ldquo;ความเก่งคณิตศาสตร์ไม่ได้เกิดจากพรสวรรค์ แต่เกิดจากการฝึกฝนสูตรลัด 3 วินาทีและความมุ่งมั่นไม่ยอมแพ้ พ่อเชื่อมั่นในศักยภาพของฟอร์จูน 100% ก้าวสู่ห้องเรียนพิเศษ ม.1 และความฝันที่ยิ่งใหญ่ให้ได้นะลูก!&rdquo;
             </p>
           </div>
         ) : (
