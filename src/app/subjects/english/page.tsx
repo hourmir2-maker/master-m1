@@ -6,7 +6,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
-import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Rocket, Target, Sparkles, Coffee } from 'lucide-react'
+import AdBanner from '@/components/AdBanner'
+import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Rocket, Target, Sparkles, Coffee, Heart, Award } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const ENGLISH_MODULES_P6 = [
   { 
@@ -179,24 +181,44 @@ const ENGLISH_MODULES_M1 = [
 export default function EnglishSubjectPage() {
   const [activeTrack, setActiveTrack] = useState<'p6' | 'm1'>('p6')
   const [completedModules, setCompletedModules] = useState<Record<string, number>>({})
+  const [userProfile, setUserProfile] = useState<{ email?: string; full_name?: string } | null>(null)
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('master_m1_progress')
-      if (stored) {
-        const list = JSON.parse(stored)
-        const map: Record<string, number> = {}
-        list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
-          if (item.subject === 'english' && item.completed) {
-            map[item.moduleId || item.module_id || ''] = item.score || 100
-          }
-        })
-        setCompletedModules(map)
+    async function loadData() {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).single()
+          setUserProfile({ email: user.email, full_name: profile?.full_name })
+        } else {
+          const savedName = localStorage.getItem('master_m1_user_name')
+          if (savedName) setUserProfile({ full_name: savedName })
+        }
+      } catch (e) {
+        console.warn('Auth check error:', e)
       }
-    } catch (e) {
-      console.warn('Error reading progress:', e)
+
+      try {
+        const stored = localStorage.getItem('master_m1_progress')
+        if (stored) {
+          const list = JSON.parse(stored)
+          const map: Record<string, number> = {}
+          list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
+            if (item.subject === 'english' && item.completed) {
+              map[item.moduleId || item.module_id || ''] = item.score || 100
+            }
+          })
+          setCompletedModules(map)
+        }
+      } catch (e) {
+        console.warn('Error reading progress:', e)
+      }
     }
+    loadData()
   }, [])
+
+  const isPhumrapee = userProfile?.email === 'phumrapeeft@gmail.com' || (userProfile?.full_name && userProfile.full_name.includes('ภูมิรพีร์'))
 
   const currentModules = activeTrack === 'p6' ? ENGLISH_MODULES_P6 : ENGLISH_MODULES_M1
 
@@ -351,6 +373,50 @@ export default function EnglishSubjectPage() {
               </Card>
             )
           })}
+        </div>
+
+        {/* Special Mentoring & Motivation Card (Personalized for Nong Fortune) */}
+        {isPhumrapee ? (
+          <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3 border-2 border-amber-300/30">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเฉพาะ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                🎯 เส้นทางสู่ห้องเรียนพิเศษ ม.1 EP / Gifted & สากล
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;ภาษาอังกฤษคือสะพานเชื่อมฟอร์จูนเข้าสู่วารสารการแพทย์และวิทยาศาสตร์ระดับสากล ไม่ต้องกลัวความผิดพลาด ยิ่งฝึกพูด ฝึกอ่าน และใช้เทคนิคตัดช้อยส์ 3 วินาทีทุกวัน ฟอร์จูนจะเก่งภาษาอังกฤษอย่างเป็นธรรมชาติแน่นอน พ่อเป็นกำลังใจให้ลูกเสมอ!&rdquo;
+            </p>
+          </div>
+        ) : (
+          <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-amber-200" /> เส้นทางสู่ห้องเรียนพิเศษ ม.1 (EP, MEP & Gifted)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                ⚡ สรุปหัวใจภาษาอังกฤษ 3 วินาที
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและเทคนิคพิชิตภาษาอังกฤษ MASTER ม.1
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;ภาษาอังกฤษระดับสอบเข้า ม.1 และห้องเรียนพิเศษ EP เน้นความแม่นยำด้านโครงสร้างไวยากรณ์ (Grammar), คลังคำศัพท์ Oxford 3000 และทักษะการอ่านเร็ว 3S Method ฝึกฝนสม่ำเสมอแล้วห้องเรียนพิเศษในฝันจะเป็นของเรา!&rdquo;
+            </p>
+          </div>
+        )}
+
+        {/* AdSense Placement */}
+        <div className="mt-6">
+          <AdBanner slotId="english_subject_bottom" />
         </div>
       </div>
 

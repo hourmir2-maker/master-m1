@@ -6,7 +6,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
-import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Rocket, Target } from 'lucide-react'
+import AdBanner from '@/components/AdBanner'
+import { ChevronRight, ArrowLeft, Lightbulb, CheckCircle2, Rocket, Target, Sparkles, Heart, Award } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const SCIENCE_MODULES_P6 = [
   { 
@@ -161,24 +163,44 @@ const SCIENCE_MODULES_M1 = [
 export default function ScienceSubjectPage() {
   const [activeTrack, setActiveTrack] = useState<'p6' | 'm1'>('p6')
   const [completedModules, setCompletedModules] = useState<Record<string, number>>({})
+  const [userProfile, setUserProfile] = useState<{ email?: string; full_name?: string } | null>(null)
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('master_m1_progress')
-      if (stored) {
-        const list = JSON.parse(stored)
-        const map: Record<string, number> = {}
-        list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
-          if (item.subject === 'science' && item.completed) {
-            map[item.moduleId || item.module_id || ''] = item.score || 100
-          }
-        })
-        setCompletedModules(map)
+    async function loadData() {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).single()
+          setUserProfile({ email: user.email, full_name: profile?.full_name })
+        } else {
+          const savedName = localStorage.getItem('master_m1_user_name')
+          if (savedName) setUserProfile({ full_name: savedName })
+        }
+      } catch (e) {
+        console.warn('Auth check error:', e)
       }
-    } catch (e) {
-      console.warn('Error reading progress:', e)
+
+      try {
+        const stored = localStorage.getItem('master_m1_progress')
+        if (stored) {
+          const list = JSON.parse(stored)
+          const map: Record<string, number> = {}
+          list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
+            if (item.subject === 'science' && item.completed) {
+              map[item.moduleId || item.module_id || ''] = item.score || 100
+            }
+          })
+          setCompletedModules(map)
+        }
+      } catch (e) {
+        console.warn('Error reading progress:', e)
+      }
     }
+    loadData()
   }, [])
+
+  const isPhumrapee = userProfile?.email === 'phumrapeeft@gmail.com' || (userProfile?.full_name && userProfile.full_name.includes('ภูมิรพีร์'))
 
   const currentModules = activeTrack === 'p6' ? SCIENCE_MODULES_P6 : SCIENCE_MODULES_M1
 
@@ -303,6 +325,50 @@ export default function ScienceSubjectPage() {
               </Card>
             )
           })}
+        </div>
+
+        {/* Special Mentoring & Motivation Card (Personalized for Nong Fortune) */}
+        {isPhumrapee ? (
+          <div className="mt-8 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 rounded-3xl p-6 text-white shadow-lg space-y-3 border-2 border-amber-300/30">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเฉพาะ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                🎯 เส้นทางสู่ห้องเรียนพิเศษ ม.1 Gifted & เภสัชกร
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;วิทยาศาสตร์คือการสังเกต คิดวิเคราะห์อย่างเป็นเหตุเป็นผล และการทดลองจริง ความรู้ชีววิทยาและเคมีจะเป็นบันไดขั้นสำคัญสู่ความฝันการเป็นเภสัชกรและนักวิทยาศาสตร์ผู้สร้างสรรค์ พ่อเชื่อมั่นในตัวฟอร์จูนเสมอ สู้ๆ นะลูก!&rdquo;
+            </p>
+          </div>
+        ) : (
+          <div className="mt-8 bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 rounded-3xl p-6 text-white shadow-lg space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-amber-200" /> เส้นทางสู่ห้องเรียนพิเศษ ม.1 (Gifted & SMP)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                ⚡ สรุปหัวใจวิทย์ 3 วินาที
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและเทคนิคพิชิตวิทยาศาสตร์ MASTER ม.1
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;วิทยาศาสตร์ระดับสอบเข้า ม.1 เน้นการคิดเชิงตรรกะ ทักษะการทดลอง และการเชื่อมโยงสูตรฟิสิกส์-เคมี-ชีวะ ฝึกฝนวิเคราะห์ตัวแปรและจับจุดลวง สทศ. ทุกวัน เพื่อคว้าคะแนนเต็ม 100%!&rdquo;
+            </p>
+          </div>
+        )}
+
+        {/* AdSense Placement */}
+        <div className="mt-6">
+          <AdBanner slotId="science_subject_bottom" />
         </div>
       </div>
 
