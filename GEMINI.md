@@ -142,6 +142,10 @@
 - **Spaced Repetition Flashcards (`/flashcards`)**: ระบบการ์ดคำศัพท์ช่วยจำเพื่อถ่ายโอนข้อมูลสู่ความจำระยะยาว (Long-Term Memory)
 - **Affixes & Roots Decoding**: ฝึกทักษะการแกะความหมายคำศัพท์ด้วย Prefix/Suffix ใน 3 วินาที
 
+### Rule 25 — Strict Real-Data Invariant (ห้ามจำลองคะแนนสอบ / ใช้ข้อมูลจริง 100%)
+- **Real-Data Only**: ห้ามรันสคริปต์ส่ง mock score หรือจำลองผลสอบปลอมเข้าสู่ Production Database หรือ Telegram เด็ดขาด
+- **Authentic Student Telemetry**: สถิติคะแนน, ประวัติการทำแบบฝึกหัด, และการแจ้งเตือนความก้าวหน้าทั้งหมดต้องเกิดขึ้นจากการเรียนจริงของผู้เรียน (ด.ช.ภูมิรพีร์ มากแก้ว / ผู้เรียนในระบบ) เท่านั้น 100%
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
