@@ -299,10 +299,10 @@ export default function DashboardPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'บทเรียนที่ผ่านแล้ว', value: `${totalCompleted} / 24`, color: 'text-orange-600', bg: 'bg-white border-orange-100' },
+            { label: 'บทเรียนที่ผ่านแล้ว', value: `${totalCompleted} / 56`, color: 'text-orange-600', bg: 'bg-white border-orange-100' },
             { label: 'คะแนนเฉลี่ยรวม', value: `${avgScore}%`, color: 'text-red-600', bg: 'bg-white border-orange-100' },
             { label: 'สถานะ Badge ปัจจุบัน', value: <Badge className={`${badge.color} text-[11px] font-bold py-0.5`}>{badge.label}</Badge>, color: '', bg: 'bg-white border-orange-100' },
-            { label: 'บทเรียนคงเหลือ', value: Math.max(0, 24 - totalCompleted), color: 'text-amber-600', bg: 'bg-white border-orange-100' },
+            { label: 'บทเรียนคงเหลือ', value: Math.max(0, 56 - totalCompleted), color: 'text-amber-600', bg: 'bg-white border-orange-100' },
           ].map((stat, i) => (
             <Card key={i} className={`border shadow-sm ${stat.bg} rounded-2xl`}>
               <CardContent className="pt-5 pb-4 text-center">

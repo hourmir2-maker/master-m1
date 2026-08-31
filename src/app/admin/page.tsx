@@ -349,19 +349,26 @@ export default function AdminPage() {
     const englishItems = liveProgressList.filter(p => p.subject === 'english' && p.completed)
     const thaiItems = liveProgressList.filter(p => p.subject === 'thai' && p.completed)
 
-    const calcAvg = (items: typeof liveProgressList, defaultTarget: number) => {
-      if (items.length === 0) return defaultTarget
-      const sum = items.reduce((acc, curr) => acc + (curr.score || 100), 0)
+    const calcAvg = (items: typeof liveProgressList) => {
+      if (items.length === 0) return 0
+      const sum = items.reduce((acc, curr) => acc + (curr.score ?? 0), 0)
       return Math.round(sum / items.length)
     }
 
-    const mathAvg = calcAvg(mathItems, 96)
-    const scienceAvg = calcAvg(scienceItems, 94)
-    const englishAvg = calcAvg(englishItems, 92)
-    const thaiAvg = calcAvg(thaiItems, 96)
+    const mathAvg = calcAvg(mathItems)
+    const scienceAvg = calcAvg(scienceItems)
+    const englishAvg = calcAvg(englishItems)
+    const thaiAvg = calcAvg(thaiItems)
 
     const totalDone = mathItems.length + scienceItems.length + englishItems.length + thaiItems.length
-    const overallAvg = Math.round((mathAvg + scienceAvg + englishAvg + thaiAvg) / 4)
+    const attemptedSubjects = [mathAvg, scienceAvg, englishAvg, thaiAvg].filter((_, idx) => {
+      const counts = [mathItems.length, scienceItems.length, englishItems.length, thaiItems.length]
+      return counts[idx] > 0
+    })
+
+    const overallAvg = attemptedSubjects.length > 0
+      ? Math.round(attemptedSubjects.reduce((a, b) => a + b, 0) / attemptedSubjects.length)
+      : 0
 
     return {
       mathDone: mathItems.length,

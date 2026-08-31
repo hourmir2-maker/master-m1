@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         : 0
 
       // 2. Insert fresh attempt record
-      const currentScore = typeof score === 'number' ? score : 100
+      const currentScore = typeof score === 'number' ? score : 0
       const { data, error } = await supabase
         .from('progress')
         .insert({
