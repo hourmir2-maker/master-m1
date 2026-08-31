@@ -2,14 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   try {
-    const { studentName, coachingType, subject, moduleTitle, customMessage } = await req.json()
+    const { 
+      studentName, 
+      coachingType, 
+      subject, 
+      moduleTitle, 
+      customMessage,
+      recipient = 'both',
+      studentTelegramId = ''
+    } = await req.json()
 
     const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
     const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
-
-    if (!botToken || !parentChatId) {
-      return NextResponse.json({ error: 'Telegram configuration missing' }, { status: 400 })
-    }
+    const studentChatId = studentTelegramId || process.env.STUDENT_TELEGRAM_CHAT_ID || ''
 
     const now = new Date()
     const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
@@ -36,17 +41,56 @@ export async function POST(req: NextRequest) {
 
     const messageText = `${emoji} <b>[${typeTitle}]</b>\n👦 <b>สำหรับ:</b> ${studentName || 'น้องฟอร์จูน'}\n━━━━━━━━━━━━━━━━━━━━\n${detailContent}💡 <b>ข้อความ/คำแนะนำ:</b>\n${customMessage || 'ฝึกฝนวันละนิดอย่างสม่ำเสมอ พ่อเชื่อมั่นในตัวน้อง 100% ครับ!'}\n━━━━━━━━━━━━━━━━━━━━\n⏰ <i>ส่งตรงจากระบบ MASTER M.1 Admin • ${thaiDateStr} ${thaiTimeStr} น.</i>`
 
-    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: parentChatId,
-        text: messageText,
-        parse_mode: 'HTML'
-      })
-    })
+    const targetChatIds: string[] = []
 
-    return NextResponse.json({ success: res.ok })
+    if ((recipient === 'parent' || recipient === 'both') && parentChatId) {
+      targetChatIds.push(parentChatId)
+    }
+
+    if ((recipient === 'student' || recipient === 'both') && studentChatId) {
+      targetChatIds.push(studentChatId)
+    }
+
+    // Dispatch messages
+    let atLeastOneSuccess = false
+    if (botToken && targetChatIds.length > 0) {
+      for (const chatId of targetChatIds) {
+        try {
+          const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: messageText,
+              parse_mode: 'HTML'
+            })
+          })
+          if (res.ok) atLeastOneSuccess = true
+        } catch (err) {
+          console.warn(`Error sending to chatId ${chatId}:`, err)
+        }
+      }
+    } else {
+      atLeastOneSuccess = true
+    }
+
+    const questPayload = {
+      id: 'quest_' + Date.now(),
+      studentName: studentName || 'น้องฟอร์จูน',
+      coachingType,
+      typeTitle,
+      emoji,
+      subject: subject || 'math',
+      message: customMessage,
+      createdAt: now.toISOString(),
+      senderName: 'คุณพ่อไพโรจน์ มากแก้ว'
+    }
+
+    return NextResponse.json({ 
+      success: atLeastOneSuccess, 
+      sentCount: targetChatIds.length,
+      quest: questPayload 
+    })
   } catch (error: any) {
     console.error('Error sending coaching Telegram:', error)
     return NextResponse.json({ error: error?.message || 'Server error' }, { status: 500 })

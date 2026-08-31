@@ -38,11 +38,21 @@ export default function DashboardPage() {
   const [gameState, setGameState] = useState<GamificationState>(getGamificationState())
   const [showAchievements, setShowAchievements] = useState(false)
   const [showVoiceCall, setShowVoiceCall] = useState(false)
+  const [dadQuest, setDadQuest] = useState<any | null>(null)
+  const [questHeartSent, setQuestHeartSent] = useState<boolean>(false)
 
   useEffect(() => {
     // Update daily streak on load
     const updatedGame = updateDailyStreak()
     setGameState(updatedGame)
+
+    // Load active Dad Quest if available
+    try {
+      const storedQuest = localStorage.getItem('master_m1_dad_active_quest')
+      if (storedQuest) {
+        setDadQuest(JSON.parse(storedQuest))
+      }
+    } catch {}
 
     const load = async () => {
       try {
@@ -200,6 +210,83 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* =========================================================================
+            DAD'S SPECIAL QUEST & CHEER INBOX (💌 กล่องจดหมาย & ภารกิจพิเศษจากคุณพ่อไพโรจน์)
+            ========================================================================= */}
+        {dadQuest && (
+          <div className="mb-8 relative group animate-fade-in">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 rounded-3xl blur-sm opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse" />
+            
+            <div className="relative bg-gradient-to-br from-white via-orange-50/40 to-amber-50/50 border-2 border-orange-200/80 rounded-3xl p-5 sm:p-6 shadow-xl">
+              <div className="flex items-start justify-between flex-wrap gap-3 pb-3 border-b border-orange-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-500 to-rose-500 text-white flex items-center justify-center text-2xl shadow-md">
+                    {dadQuest.emoji || '💌'}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base sm:text-lg font-black text-slate-900">
+                        {dadQuest.typeTitle || 'ภารกิจพิเศษจากคุณพ่อไพโรจน์'}
+                      </h3>
+                      <Badge className="bg-rose-500 text-white text-[10px] font-bold">
+                        ❤️ จากคุณพ่อ
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-orange-800/80 font-medium mt-0.5">
+                      ส่งถึง: <span className="font-bold text-orange-950">{dadQuest.studentName || 'น้องฟอร์จูน'}</span> • {new Date(dadQuest.createdAt).toLocaleDateString('th-TH')}
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => {
+                    localStorage.removeItem('master_m1_dad_active_quest')
+                    setDadQuest(null)
+                  }}
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-400 hover:text-slate-600 text-xs"
+                >
+                  ปิดการ์ด ✕
+                </Button>
+              </div>
+
+              {/* Message Content */}
+              <div className="my-4 p-4 bg-white/80 backdrop-blur-sm rounded-2xl border border-orange-100/80 space-y-2 text-slate-800">
+                <p className="text-sm sm:text-base font-semibold leading-relaxed whitespace-pre-line">
+                  {dadQuest.message}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
+                <Link href={`/subjects/${dadQuest.subject || 'math'}`}>
+                  <Button size="sm" className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs rounded-xl shadow-md shadow-orange-500/20">
+                    🚀 ลุยภารกิจวิชานี้ทันที
+                  </Button>
+                </Link>
+
+                <Button
+                  onClick={() => {
+                    setQuestHeartSent(true)
+                    // Add 100 XP
+                    const nextXp = (gameState.totalXp || 0) + 100
+                    const updated = { ...gameState, totalXp: nextXp }
+                    setGameState(updated)
+                    try { localStorage.setItem('master_m1_gamification', JSON.stringify(updated)) } catch {}
+                  }}
+                  disabled={questHeartSent}
+                  size="sm"
+                  variant="outline"
+                  className="border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold rounded-xl"
+                >
+                  {questHeartSent ? '💖 ส่งหัวใจให้คุณพ่อแล้ว (+100 XP)' : '❤️ ขอบคุณครับคุณพ่อ / รับพลังใจ (+100 XP)'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

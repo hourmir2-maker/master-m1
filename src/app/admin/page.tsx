@@ -82,6 +82,9 @@ export default function AdminPage() {
   // Coaching Modal State
   const [showCoachingModal, setShowCoachingModal] = useState<boolean>(false)
   const [coachingType, setCoachingType] = useState<'homework' | 'cheer' | 'trap' | 'custom'>('cheer')
+  const [coachingRecipient, setCoachingRecipient] = useState<'both' | 'parent' | 'student'>('both')
+  const [studentTelegramId, setStudentTelegramId] = useState<string>('')
+  const [broadcastInApp, setBroadcastInApp] = useState<boolean>(true)
   const [coachingMessage, setCoachingMessage] = useState<string>('ลูกเก่งมากครับ พ่อภูมิใจในความมุ่งมั่นของน้องฟอร์จูน วันนี้ฝึกทำแบบฝึกหัดอย่างสบายๆ วันละ 15 นาที พ่อเชื่อมั่นในศักยภาพลูก 100% ครับ! ❤️')
   const [coachingSubject, setCoachingSubject] = useState<string>('math')
   const [isSendingCoaching, setIsSendingCoaching] = useState<boolean>(false)
@@ -188,6 +191,8 @@ export default function AdminPage() {
         body: JSON.stringify({
           studentName: selectedStudent.fullName,
           coachingType,
+          recipient: coachingRecipient,
+          studentTelegramId,
           subject: coachingSubject === 'math' ? 'คณิตศาสตร์' : coachingSubject === 'science' ? 'วิทยาศาสตร์' : coachingSubject === 'english' ? 'ภาษาอังกฤษ' : 'ภาษาไทย',
           moduleTitle: coachingType === 'homework' ? 'บทเรียนตามแผนการเรียนประจำสัปดาห์' : '',
           customMessage: coachingMessage
@@ -195,8 +200,14 @@ export default function AdminPage() {
       })
 
       if (res.ok) {
-        logAdminAction('SEND_COACHING_TELEGRAM', `ส่งข้อความโค้ชชิ่ง/การบ้านถึง ${selectedStudent.fullName} ทาง Telegram`)
-        triggerToast(`ส่งข้อความโค้ชชิ่ง/การบ้านถึงผู้ปกครองของ ${selectedStudent.fullName} เรียบร้อยแล้ว! 🚀`)
+        const data = await res.json()
+        if (broadcastInApp && data.quest) {
+          try {
+            localStorage.setItem('master_m1_dad_active_quest', JSON.stringify(data.quest))
+          } catch {}
+        }
+        logAdminAction('SEND_COACHING_TELEGRAM', `ส่งข้อความโค้ชชิ่ง/การบ้านถึง ${selectedStudent.fullName} (${coachingRecipient === 'both' ? 'ทั้งคุณพ่อและน้อง' : coachingRecipient === 'student' ? 'น้องฟอร์จูน' : 'คุณพ่อ'})`)
+        triggerToast(`ส่งข้อความโค้ชชิ่ง/การบ้านถึง ${selectedStudent.fullName} สำเร็จแล้ว! 🚀`)
         setShowCoachingModal(false)
       }
     } catch (e) {
@@ -1717,9 +1728,62 @@ export default function AdminPage() {
                 </div>
               )}
 
+              {/* Recipient Selection (Dual-Channel) */}
+              <div className="space-y-1.5 bg-slate-950/80 p-3 rounded-2xl border border-slate-800">
+                <label className="text-xs font-bold text-orange-300 block">เลือกปลายทางผู้รับข้อความ:</label>
+                <div className="grid grid-cols-3 gap-1.5 text-[11px] font-bold">
+                  <button
+                    onClick={() => setCoachingRecipient('both')}
+                    className={`py-2 px-2 rounded-xl transition-all border text-center ${
+                      coachingRecipient === 'both'
+                        ? 'bg-orange-500 text-white border-orange-400 shadow-sm'
+                        : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    👨‍👦 ทั้งคู่ (พ่อ & น้อง)
+                  </button>
+
+                  <button
+                    onClick={() => setCoachingRecipient('parent')}
+                    className={`py-2 px-2 rounded-xl transition-all border text-center ${
+                      coachingRecipient === 'parent'
+                        ? 'bg-orange-500 text-white border-orange-400 shadow-sm'
+                        : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    👨 คุณพ่อเท่านั้น
+                  </button>
+
+                  <button
+                    onClick={() => setCoachingRecipient('student')}
+                    className={`py-2 px-2 rounded-xl transition-all border text-center ${
+                      coachingRecipient === 'student'
+                        ? 'bg-orange-500 text-white border-orange-400 shadow-sm'
+                        : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    👦 น้องฟอร์จูน
+                  </button>
+                </div>
+
+                {coachingRecipient !== 'parent' && (
+                  <div className="pt-2">
+                    <label className="text-[10px] text-slate-400 block mb-1">
+                      Telegram Chat ID / Username น้องฟอร์จูน (ถ้ามี):
+                    </label>
+                    <Input
+                      placeholder="เช่น @Fortune_SMP หรือ Chat ID..."
+                      value={studentTelegramId}
+                      onChange={(e) => setStudentTelegramId(e.target.value)}
+                      className="bg-slate-900 border-slate-700 text-white text-xs rounded-xl h-8"
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* Message Textarea */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-300 block">เนื้อหาข้อความที่จะส่งเข้า Telegram:</label>
+                <label className="text-xs font-bold text-slate-300 block">เนื้อหาข้อความที่จะส่ง:</label>
                 <textarea
                   rows={4}
                   value={coachingMessage}
@@ -1729,8 +1793,19 @@ export default function AdminPage() {
                 />
               </div>
 
+              {/* In-App Quest Box Checkbox */}
+              <label className="flex items-center gap-2 p-2.5 bg-slate-950/60 rounded-xl border border-slate-800 cursor-pointer text-xs text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={broadcastInApp}
+                  onChange={(e) => setBroadcastInApp(e.target.checked)}
+                  className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 bg-slate-900 border-slate-700"
+                />
+                <span>💌 แสดงเป็นการ์ดภารกิจพิเศษเรืองแสงบนหน้าเว็บ Dashboard ของน้อง</span>
+              </label>
+
               {/* Action Buttons */}
-              <div className="flex gap-2 justify-end pt-2">
+              <div className="flex gap-2 justify-end pt-1">
                 <Button
                   onClick={() => setShowCoachingModal(false)}
                   variant="outline"
