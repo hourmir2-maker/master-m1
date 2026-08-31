@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import SmartBreakReminder from '@/components/SmartBreakReminder'
+import AdsenseScript from '@/components/AdsenseScript'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -11,20 +12,10 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const adsenseClientId = 'ca-pub-7280055452989562'
-
   return (
     <html lang="th" suppressHydrationWarning>
-      <head>
-        {/* Google AdSense Auto Ads — ใช้ native <script> ป้องกัน data-nscript warning */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          crossOrigin="anonymous"
-        />
-      </head>
       <body className={geist.className} suppressHydrationWarning>
+        <AdsenseScript />
         {children}
         <SmartBreakReminder />
       </body>
