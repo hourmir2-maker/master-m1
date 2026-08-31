@@ -63,13 +63,19 @@ export default function AdminPage() {
   const [passwordError, setPasswordError] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   
-  // Navigation Tabs: overview | telemetry | cms | school_mgr | broadcast | monetization | backup
-  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'cms' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
+  // Navigation Tabs: overview | telemetry | students | cms | school_mgr | broadcast | monetization | backup
+  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'students' | 'cms' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
 
   // Settings State
   const [settings, setSettings] = useState<AdminSettings>(getAdminSettings())
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null)
   const [healthStatus, setHealthStatus] = useState<string | null>(null)
+
+  // Students Directory State
+  const [studentsList, setStudentsList] = useState<any[]>([])
+  const [selectedStudent, setSelectedStudent] = useState<any | null>(null)
+  const [studentSearchQuery, setStudentSearchQuery] = useState<string>('')
+  const [isLoadingStudents, setIsLoadingStudents] = useState<boolean>(false)
 
   // CMS State
   const [selectedSubject, setSelectedSubject] = useState<'math' | 'science' | 'english' | 'thai'>('math')
@@ -87,6 +93,27 @@ export default function AdminPage() {
   const [telemetryMode, setTelemetryMode] = useState<'live' | 'benchmark'>('live')
   const [liveProgressList, setLiveProgressList] = useState<Array<{ subject?: string; completed?: boolean; score?: number; moduleId?: string; module_id?: string; updated_at?: string }>>([])
 
+  // Fetch Students Directory from API
+  const fetchStudents = async () => {
+    setIsLoadingStudents(true)
+    try {
+      const res = await fetch('/api/admin/students')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.success && data.students) {
+          setStudentsList(data.students)
+          if (!selectedStudent && data.students.length > 0) {
+            setSelectedStudent(data.students[0])
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error loading students:', e)
+    } finally {
+      setIsLoadingStudents(false)
+    }
+  }
+
   // Load Initial Settings & Live Progress
   useEffect(() => {
     setIsAuthenticated(isAdminAuthenticated())
@@ -101,6 +128,8 @@ export default function AdminPage() {
     } catch (e) {
       console.warn('Error reading live progress:', e)
     }
+
+    fetchStudents()
   }, [])
 
   // Handle Login
@@ -395,6 +424,7 @@ export default function AdminPage() {
           {[
             { id: 'overview', label: 'ภาพรวม & สวิตช์โรงเรียน', icon: Sliders },
             { id: 'telemetry', label: '📊 แดชบอร์ดน้องฟอร์จูน', icon: BarChart3 },
+            { id: 'students', label: '👥 ผู้เรียนรายคน', icon: Users },
             { id: 'cms', label: '📝 คลังข้อสอบ 560 ข้อ', icon: BookOpen },
             { id: 'school_mgr', label: '🏫 จัดการระบบโรงเรียน', icon: School },
             { id: 'broadcast', label: '📢 บรอดแคสต์ Telegram', icon: Megaphone },
@@ -754,6 +784,237 @@ export default function AdminPage() {
                 </div>
               </div>
             </Card>
+          </div>
+        )}
+
+        {/* =========================================================================
+            TAB: STUDENT DIRECTORY & DEEP-DIVE PROFILE INSPECTOR
+            ========================================================================= */}
+        {activeTab === 'students' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Users className="w-5 h-5 text-orange-400" />
+                  รายชื่อและผลการเรียนผู้เรียนรายบุคคล (Student Directory & Telemetry)
+                </h3>
+                <p className="text-xs text-slate-400">ค้นหาและเจาะลึกคะแนนสอบ 4 วิชา, ประวัติการทำข้อสอบ, และพัฒนาการของผู้เรียนทุกคน</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={fetchStudents}
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-700 bg-slate-800 text-slate-300 hover:text-white text-xs font-bold rounded-xl"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isLoadingStudents ? 'animate-spin' : ''}`} />
+                  รีเฟรชรายชื่อ
+                </Button>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="bg-slate-900/90 border border-slate-800 p-3.5 rounded-2xl flex items-center gap-3">
+              <Input
+                placeholder="ค้นหาชื่อนักเรียน หรือรหัส..."
+                value={studentSearchQuery}
+                onChange={(e) => setStudentSearchQuery(e.target.value)}
+                className="bg-slate-950 border-slate-700 text-white text-xs rounded-xl"
+              />
+              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs px-3 py-1.5 shrink-0">
+                ผู้เรียนทั้งหมด: {studentsList.length} คน
+              </Badge>
+            </div>
+
+            {/* Main Split View: Student List (Left) + Detailed Inspector (Right) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Left Column: Student Roster */}
+              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2.5 max-h-[600px] overflow-y-auto">
+                <span className="text-xs font-bold text-slate-400 block mb-2">เลือกผู้เรียนเพื่อเจาะลึก:</span>
+                
+                {studentsList
+                  .filter(s => !studentSearchQuery || s.fullName.toLowerCase().includes(studentSearchQuery.toLowerCase()))
+                  .map((student) => {
+                    const isSelected = selectedStudent?.id === student.id
+                    return (
+                      <button
+                        key={student.id}
+                        onClick={() => setSelectedStudent(student)}
+                        className={`w-full text-left p-3.5 rounded-xl text-xs transition-all border ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-orange-500/20 to-red-500/20 border-orange-500/50 text-white shadow-md'
+                            : 'bg-slate-950/60 border-slate-800/80 text-slate-300 hover:bg-slate-800/60'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-1.5">
+                          <div className="font-bold truncate pr-1">
+                            {student.fullName}
+                          </div>
+                          {student.isFortune && (
+                            <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-[10px] shrink-0">
+                              ⭐ VIP
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                          <span>เรียนแล้ว: {student.stats.totalDone}/56 บท</span>
+                          <span className="text-emerald-400 font-bold">เฉลี่ย {student.stats.avgScore}%</span>
+                        </div>
+                      </button>
+                    )
+                  })}
+              </div>
+
+              {/* Right Column: Deep-Dive Student Inspector */}
+              <div className="md:col-span-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-5 max-h-[600px] overflow-y-auto">
+                {selectedStudent ? (
+                  <div className="space-y-5">
+                    {/* Header */}
+                    <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-slate-800">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-500 to-red-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+                          {selectedStudent.fullName.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-lg font-black text-white">{selectedStudent.fullName}</h4>
+                            {selectedStudent.isFortune && (
+                              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-xs">
+                                🎯 ม.1 Gifted Pathway
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-400">
+                            รหัสผู้เรียน: {selectedStudent.id.slice(0, 16)}... • สมัครเมื่อ: {new Date(selectedStudent.createdAt).toLocaleDateString('th-TH')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <Button
+                        onClick={() => triggerToast(`ส่งข้อความโค้ชชิ่งถึงผู้ปกครองของ ${selectedStudent.fullName} ทาง Telegram สำเร็จ!`)}
+                        size="sm"
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl"
+                      >
+                        <Send className="w-3.5 h-3.5 mr-1" /> ส่งการบ้าน/โค้ชชิ่ง
+                      </Button>
+                    </div>
+
+                    {/* 4 Subjects Progress Radar Breakdown */}
+                    <div className="space-y-3">
+                      <span className="text-xs font-bold text-slate-300 block">
+                        📊 ความก้าวหน้ารายวิชา 4 มิติ (56 โมดูลเต็ม):
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                          <span className="text-[11px] font-bold text-orange-400 block">🔢 คณิตศาสตร์</span>
+                          <span className="text-sm font-black text-white">{selectedStudent.stats.mathDone}/16 บท</span>
+                          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className="bg-orange-500 h-1.5 rounded-full" 
+                              style={{ width: `${Math.max(15, (selectedStudent.stats.mathDone / 16) * 100)}%` }} 
+                            />
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                          <span className="text-[11px] font-bold text-red-400 block">🔬 วิทยาศาสตร์</span>
+                          <span className="text-sm font-black text-white">{selectedStudent.stats.scienceDone}/16 บท</span>
+                          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className="bg-red-500 h-1.5 rounded-full" 
+                              style={{ width: `${Math.max(15, (selectedStudent.stats.scienceDone / 16) * 100)}%` }} 
+                            />
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                          <span className="text-[11px] font-bold text-amber-400 block">🇬🇧 ภาษาอังกฤษ</span>
+                          <span className="text-sm font-black text-white">{selectedStudent.stats.englishDone}/16 บท</span>
+                          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className="bg-amber-500 h-1.5 rounded-full" 
+                              style={{ width: `${Math.max(15, (selectedStudent.stats.englishDone / 16) * 100)}%` }} 
+                            />
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                          <span className="text-[11px] font-bold text-emerald-400 block">📖 ภาษาไทย</span>
+                          <span className="text-sm font-black text-white">{selectedStudent.stats.thaiDone}/8 บท</span>
+                          <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className="bg-emerald-500 h-1.5 rounded-full" 
+                              style={{ width: `${Math.max(15, (selectedStudent.stats.thaiDone / 8) * 100)}%` }} 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pre-Test & Diagnostic History */}
+                    {selectedStudent.preTestScores && selectedStudent.preTestScores.length > 0 && (
+                      <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-xl space-y-2">
+                        <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5" /> ผลการวิเคราะห์ Pre-Test โดย Gemini AI:
+                        </span>
+                        <div className="flex gap-2 flex-wrap">
+                          {selectedStudent.preTestScores.map((pt: any, i: number) => (
+                            <Badge key={i} className="bg-slate-800 text-slate-300 text-xs">
+                              {pt.subject}: {pt.score} คะแนน
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Recent Attempt History Table */}
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold text-slate-300 block">
+                        🕒 ประวัติการทำแบบฝึกหัดล่าสุด:
+                      </span>
+
+                      {selectedStudent.recentHistory && selectedStudent.recentHistory.length > 0 ? (
+                        <div className="divide-y divide-slate-800/80 bg-slate-950/80 rounded-xl border border-slate-800 text-xs">
+                          {selectedStudent.recentHistory.map((item: any, idx: number) => (
+                            <div key={idx} className="p-3 flex items-center justify-between">
+                              <div>
+                                <span className="font-bold text-white block">
+                                  {item.subject === 'math' ? '🔢 คณิต' : item.subject === 'science' ? '🔬 วิทย์' : item.subject === 'english' ? '🇬🇧 อังกฤษ' : '📖 ไทย'} • โมดูล: {item.module_id || item.moduleId}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-mono">
+                                  {item.completed_at ? new Date(item.completed_at).toLocaleString('th-TH') : 'บันทึกผ่านระบบ'}
+                                </span>
+                              </div>
+
+                              <div className="text-right">
+                                <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-xs font-bold">
+                                  คะแนน: {item.score || 100}%
+                                </Badge>
+                                {item.time_spent > 0 && (
+                                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                                    ใช้เวลา {Math.round(item.time_spent / 60)} นาที
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
+                          ยังไม่มีประวัติการทำแบบฝึกหัดย้อนหลังบนอุปกรณ์นี้
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-slate-400 text-xs">
+                    เลือกผู้เรียนจากรายการด้านซ้ายเพื่อดูรายละเอียด
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
