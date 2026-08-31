@@ -159,27 +159,50 @@ const MATH_MODULES_M1 = [
   }
 ]
 
+import { createClient } from '@/lib/supabase/client'
+
 export default function MathSubjectPage() {
   const [activeTrack, setActiveTrack] = useState<'p6' | 'm1'>('p6')
   const [completedModules, setCompletedModules] = useState<Record<string, number>>({})
+  const [userProfile, setUserProfile] = useState<{ email?: string; full_name?: string } | null>(null)
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('master_m1_progress')
-      if (stored) {
-        const list = JSON.parse(stored)
-        const map: Record<string, number> = {}
-        list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
-          if (item.subject === 'math' && item.completed) {
-            map[item.moduleId || item.module_id || ''] = item.score || 100
-          }
-        })
-        setCompletedModules(map)
+    async function loadData() {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).single()
+          setUserProfile({ email: user.email, full_name: profile?.full_name })
+        } else {
+          // Check localStorage backup
+          const savedName = localStorage.getItem('master_m1_user_name')
+          if (savedName) setUserProfile({ full_name: savedName })
+        }
+      } catch (e) {
+        console.warn('Auth check error:', e)
       }
-    } catch (e) {
-      console.warn('Error reading progress:', e)
+
+      try {
+        const stored = localStorage.getItem('master_m1_progress')
+        if (stored) {
+          const list = JSON.parse(stored)
+          const map: Record<string, number> = {}
+          list.forEach((item: { subject?: string; completed?: boolean; moduleId?: string; module_id?: string; score?: number }) => {
+            if (item.subject === 'math' && item.completed) {
+              map[item.moduleId || item.module_id || ''] = item.score || 100
+            }
+          })
+          setCompletedModules(map)
+        }
+      } catch (e) {
+        console.warn('Error reading progress:', e)
+      }
     }
+    loadData()
   }, [])
+
+  const isPhumrapee = userProfile?.email === 'phumrapeeft@gmail.com' || (userProfile?.full_name && userProfile.full_name.includes('ภูมิรพีร์'))
 
   const currentModules = activeTrack === 'p6' ? MATH_MODULES_P6 : MATH_MODULES_M1
 
@@ -306,24 +329,44 @@ export default function MathSubjectPage() {
           })}
         </div>
 
-        {/* Special Mentoring & Motivation Card */}
-        <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
-              <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเพื่อ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องภูมิ)
-            </Badge>
-            <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
-              🎯 ม.1 Gifted Pathway
-            </Badge>
+        {/* Special Mentoring & Motivation Card (Personalized for Nong Phoomrapee) */}
+        {isPhumrapee ? (
+          <div className="mt-8 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3 border-2 border-amber-300/30">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Heart className="w-3.5 h-3.5 fill-rose-300 text-rose-300" /> พิเศษเฉพาะ: ด.ช.ภูมิรพีร์ มากแก้ว (น้องภูมิ)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                🎯 เส้นทางสู่ห้องเรียนพิเศษ ม.1 Gifted & เภสัชกร
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;ความเก่งคณิตศาสตร์ไม่ได้เกิดจากพรสวรรค์ แต่เกิดจากการฝึกฝนสูตรลัด 3 วินาทีและความมุ่งมั่นไม่ยอมแพ้ พ่อเชื่อมั่นในศักยภาพของภูมิ 100% ก้าวสู่ห้องเรียนพิเศษ ม.1 และความฝันที่ยิ่งใหญ่ให้ได้นะลูก!&rdquo;
+            </p>
           </div>
-          <h3 className="text-xl font-black flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-200" />
-            ข้อคิดและกำลังใจจากคุณพ่อไพโรจน์ มากแก้ว
-          </h3>
-          <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
-            &ldquo;ความเก่งคณิตศาสตร์ไม่ได้เกิดจากพรสวรรค์ แต่เกิดจากการฝึกฝนสูตรลัด 3 วินาทีและความมุ่งมั่นไม่ยอมแพ้ พ่อเชื่อมั่นในศักยภาพของภูมิ 100% ก้าวสู่ห้องเรียนพิเศษ ม.1 และความฝันที่ยิ่งใหญ่ให้ได้นะลูก!&rdquo;
-          </p>
-        </div>
+        ) : (
+          <div className="mt-8 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 rounded-3xl p-6 text-white shadow-lg space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold px-3 py-1 flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-amber-200" /> เส้นทางสู่ห้องเรียนพิเศษ ม.1 (Gifted & SMP)
+              </Badge>
+              <Badge className="bg-amber-400/30 text-amber-100 border-amber-300/40 text-xs font-bold">
+                ⚡ สูตรลัด 3 วินาที
+              </Badge>
+            </div>
+            <h3 className="text-xl font-black flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              ข้อคิดและเทคนิคพิชิตคณิตศาสตร์ MASTER ม.1
+            </h3>
+            <p className="text-white/95 text-xs sm:text-sm leading-relaxed font-medium">
+              &ldquo;คณิตศาสตร์ระดับสอบเข้า ม.1 เน้นการคิดเป็นระบบและการประยุกต์ใช้สูตรลัด 3 วินาที หมั่นฝึกฝนตัดช้อยส์และดักจุดลวง สทศ. ทุกวัน แล้วความสำเร็จจะอยู่ในมือเราแน่นอน!&rdquo;
+            </p>
+          </div>
+        )}
 
         {/* AdSense Placement */}
         <div className="mt-6">
