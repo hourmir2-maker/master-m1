@@ -319,7 +319,7 @@ export default function DashboardPage() {
         </div>
 
         {/* O-NET 2570 Exam Mastery Hub Banner */}
-        <div className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 text-white rounded-3xl p-5 sm:p-6 mb-8 shadow-xl shadow-orange-600/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-orange-400/30">
+        <div className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 text-white rounded-3xl p-5 sm:p-6 mb-4 shadow-xl shadow-orange-600/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-orange-400/30">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl shrink-0 shadow-inner">
               🎯
@@ -338,6 +338,51 @@ export default function DashboardPage() {
             <Link href="/onet-exam" className="w-full sm:w-auto">
               <Button size="lg" className="bg-white text-orange-900 hover:bg-orange-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full">
                 🚀 เข้าสนามสอบ O-NET →
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* RT ป.1 & NT ป.3 National Exam Arena */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          {/* RT Card */}
+          <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white rounded-3xl p-5 shadow-lg border border-amber-300/30 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                📖
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-black text-sm sm:text-base">สนามสอบจำลอง RT ป.1</h4>
+                  <Badge className="bg-amber-300 text-amber-950 font-black text-[10px]">สพฐ.</Badge>
+                </div>
+                <p className="text-amber-100 text-xs mt-0.5">การอ่านออกเสียง & อ่านรู้เรื่องคำ-นิทาน</p>
+              </div>
+            </div>
+            <Link href="/rt-exam" className="shrink-0">
+              <Button size="sm" className="bg-white text-orange-900 hover:bg-orange-50 font-black text-xs px-4 py-4 rounded-xl shadow-md">
+                เข้าสอบ RT →
+              </Button>
+            </Link>
+          </div>
+
+          {/* NT Card */}
+          <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl p-5 shadow-lg border border-blue-300/30 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                📐
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-black text-sm sm:text-base">สนามสอบจำลอง NT ป.3</h4>
+                  <Badge className="bg-blue-300 text-blue-950 font-black text-[10px]">สพฐ.</Badge>
+                </div>
+                <p className="text-blue-100 text-xs mt-0.5">2 ด้านหลัก: คณิตศาสตร์ & ภาษาไทย</p>
+              </div>
+            </div>
+            <Link href="/nt-exam" className="shrink-0">
+              <Button size="sm" className="bg-white text-indigo-900 hover:bg-indigo-50 font-black text-xs px-4 py-4 rounded-xl shadow-md">
+                เข้าสอบ NT →
               </Button>
             </Link>
           </div>
