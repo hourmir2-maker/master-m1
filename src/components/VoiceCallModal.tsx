@@ -16,6 +16,7 @@ import {
   Zap,
   Radio
 } from 'lucide-react'
+import { speakNaturalText, stopSpeaking as stopTts, initVoiceEngine } from '@/lib/tts-engine'
 
 interface VoiceCallModalProps {
   isOpen: boolean
@@ -86,49 +87,27 @@ export default function VoiceCallModal({
     stopSpeaking()
   }
 
-  // Voice TTS (Microsoft Niwat Engine - Rule 12)
+  // Voice TTS (Microsoft Niwat Engine - Centralized Engine)
   const stopSpeaking = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
-    }
+    stopTts()
   }
 
   const speakAiResponse = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setCallStatus('listening')
-      startListening()
-      return
-    }
-
     stopSpeaking()
     setCallStatus('speaking')
     setLastAiReply(text)
 
-    const cleanText = preprocessNaturalSpeech(text)
-    const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.rate = speechSpeed
-    currentUtteranceRef.current = utterance
-
-    const voices = window.speechSynthesis.getVoices()
-    const thaiVoice = 
-      voices.find(v => v.name.includes('Niwat') || v.name.includes('นิวัฒน์')) ||
-      voices.find(v => v.name.includes('Premwadee')) ||
-      voices.find(v => v.lang === 'th-TH' || v.lang.startsWith('th')) ||
-      voices.find(v => v.lang.startsWith('en'))
-
-    if (thaiVoice) utterance.voice = thaiVoice
-
-    utterance.onend = () => {
-      setCallStatus('listening')
-      startListening()
-    }
-
-    utterance.onerror = () => {
-      setCallStatus('listening')
-      startListening()
-    }
-
-    window.speechSynthesis.speak(utterance)
+    speakNaturalText(text, {
+      rate: speechSpeed,
+      onEnd: () => {
+        setCallStatus('listening')
+        startListening()
+      },
+      onError: () => {
+        setCallStatus('listening')
+        startListening()
+      }
+    })
   }
 
   // Speech-to-Text Recognition

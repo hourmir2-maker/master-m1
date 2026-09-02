@@ -17,6 +17,8 @@ import {
   Radio
 } from 'lucide-react'
 
+import { speakNaturalText, stopSpeaking as stopTts, initVoiceEngine } from '@/lib/tts-engine'
+
 interface AudioLessonPlayerProps {
   subject: string
   moduleId: string
@@ -25,13 +27,12 @@ interface AudioLessonPlayerProps {
 export default function AudioLessonPlayer({ subject, moduleId }: AudioLessonPlayerProps) {
   const [summary, setSummary] = useState<AudioLessonSummary | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [speechSpeed, setSpeechSpeed] = useState<number>(0.78)
+  const [speechSpeed, setSpeechSpeed] = useState<number>(0.90)
   const [showTranscript, setShowTranscript] = useState(false)
-  const [activeVoiceName, setActiveVoiceName] = useState<string>('Microsoft Niwat')
-
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const [activeVoiceName, setActiveVoiceName] = useState<string>('Microsoft Niwat (Natural)')
 
   useEffect(() => {
+    initVoiceEngine()
     const data = getAudioSummaryForModule(subject, moduleId)
     setSummary(data)
     stopAudio()
@@ -44,42 +45,25 @@ export default function AudioLessonPlayer({ subject, moduleId }: AudioLessonPlay
   }, [])
 
   const stopAudio = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
-      setIsPlaying(false)
-    }
+    stopTts()
+    setIsPlaying(false)
   }
 
   const handlePlayPause = () => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !summary) return
+    if (!summary) return
 
     if (isPlaying) {
       stopAudio()
       return
     }
 
-    const cleanText = preprocessNaturalSpeech(summary.narrationScript)
-    const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.rate = speechSpeed
-
-    const voices = window.speechSynthesis.getVoices()
-    const thaiVoice = 
-      voices.find(v => v.name.includes('Niwat') || v.name.includes('นิวัฒน์')) ||
-      voices.find(v => v.name.includes('Premwadee')) ||
-      voices.find(v => v.lang === 'th-TH' || v.lang.startsWith('th')) ||
-      voices.find(v => v.lang.startsWith('en'))
-
-    if (thaiVoice) {
-      utterance.voice = thaiVoice
-      setActiveVoiceName(thaiVoice.name)
-    }
-
-    utterance.onstart = () => setIsPlaying(true)
-    utterance.onend = () => setIsPlaying(false)
-    utterance.onerror = () => setIsPlaying(false)
-
-    utteranceRef.current = utterance
-    window.speechSynthesis.speak(utterance)
+    setIsPlaying(true)
+    speakNaturalText(summary.narrationScript, {
+      rate: speechSpeed,
+      onStart: () => setIsPlaying(true),
+      onEnd: () => setIsPlaying(false),
+      onError: () => setIsPlaying(false)
+    })
   }
 
   const toggleSpeed = () => {

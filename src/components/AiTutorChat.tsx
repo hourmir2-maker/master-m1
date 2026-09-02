@@ -21,6 +21,7 @@ import {
   PhoneCall
 } from 'lucide-react'
 import VoiceCallModal from '@/components/VoiceCallModal'
+import { speakNaturalText, stopSpeaking as stopTts, initVoiceEngine } from '@/lib/tts-engine'
 
 interface Message {
   id: string
@@ -109,117 +110,27 @@ export default function AiTutorChat({ subject = 'math', moduleId = 'numbers_basi
   }
 
   const stopSpeaking = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
-      setSpeakingId(null)
-    }
+    stopTts()
+    setSpeakingId(null)
   }
 
   const speakText = (id: string, text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
-
     if (speakingId === id) {
       stopSpeaking()
       return
     }
 
-    stopSpeaking()
-
-    // 1. Clean & Format text with natural human pauses and readable grammar phonetics
-    let formattedText = text
-      .replace(/[#*_`~💡⚡🎯✨👋🤖🏆🥇🥈🥉]/g, '')
-      .replace(/\[.*?\]\(.*?\)/g, '')
-      .replace(/【วิธีคิด】/g, 'วิธีคิดครับ, ')
-      .replace(/【.*?】/g, ', ')
-      // English Grammar Phonetics for Crystal Clear Thai TTS
-      .replace(/\bV\.inf\b|\bV\.infinitive\b/gi, 'กริยาช่องเดิมไม่ผัน')
-      .replace(/\bV\.ing\b/gi, 'กริยาเติม ไอเอ็นจี')
-      .replace(/\bV\.1\b|\bV1\b/gi, 'กริยาช่องหนึ่ง')
-      .replace(/\bV\.2\b|\bV2\b/gi, 'กริยาช่องสอง')
-      .replace(/\bV\.3\b|\bV3\b/gi, 'กริยาช่องสาม')
-      .replace(/\bS\s*\+\s*/g, 'ประธาน บวก ')
-      .replace(/\bS\s*\(/g, 'ประธาน (')
-      .replace(/\bIf-Clause\b/gi, 'อิฟ คลอส')
-      .replace(/\bQuestion Tag\b/gi, 'เควสชัน แท็ก')
-      .replace(/\bQuestion Tags\b/gi, 'เควสชัน แท็กส์')
-      .replace(/\bPresent Simple\b/gi, 'เพรสเซนต์ ซิมเปิล')
-      .replace(/\bPresent Continuous\b/gi, 'เพรสเซนต์ คอนทินิวอัส')
-      .replace(/\bPast Simple\b/gi, 'พาสต์ ซิมเปิล')
-      .replace(/\bPast Continuous\b/gi, 'พาสต์ คอนทินิวอัส')
-      .replace(/\bFuture Simple\b/gi, 'ฟิวเจอร์ ซิมเปิล')
-      .replace(/\bis\/am\/are\b/gi, 'อิส แอม อาร์')
-      .replace(/\bwas\/were\b/gi, 'วอส เวิร์')
-      .replace(/√(\d+)/g, 'สแควรูท $1')
-      .replace(/√/g, 'สแควรูท ')
-      .replace(/ห\.ร\.ม\./g, 'หอรอมอ')
-      .replace(/ค\.ร\.น\./g, 'คอรอนอ')
-      // Pauses
-      .replace(/ครับ/g, 'ครับ, ')
-      .replace(/ค่ะ/g, 'ค่ะ, ')
-      .replace(/นะคร้าบ/g, 'นะคร้าบ, ')
-      .replace(/\n\s*•/g, ', และ ')
-      .replace(/\n\s*-\s*/g, ', ')
-      .replace(/\n\s*(\d+)\.\s*/g, ', ขั้นตอนที่ $1, ')
-      .replace(/\n+/g, ', ')
-      .replace(/→/g, ' จะได้ ')
-      .replace(/:/g, ' คือ ')
-      .replace(/\s{2,}/g, ' ')
-      .trim()
-
-    const utterance = new SpeechSynthesisUtterance(formattedText)
-    
-    // 2. Select language and find best natural sounding voice
-    const hasThai = /[ก-๙]/.test(formattedText)
-    utterance.lang = hasThai ? 'th-TH' : 'en-US'
-    
-    // Set calm, gentle tutor speed
-    utterance.rate = speechSpeed // Use user-selected or default calm speed (0.78)
-    utterance.pitch = 1.0
-
-    // Try to pick Microsoft Niwat (Top Priority) or high-quality natural voices available on user's system
-    const voices = window.speechSynthesis.getVoices()
-    if (voices && voices.length > 0) {
-      if (hasThai) {
-        // 1. Search for Microsoft Niwat (Natural male tutor voice)
-        const niwatVoice = voices.find(v => 
-          (v.lang.startsWith('th') || v.lang === 'th-TH' || v.lang === 'th_TH') && 
-          (v.name.toLowerCase().includes('niwat') || v.name.includes('นิวัฒน์'))
-        )
-
-        // 2. Search for other premium natural voices (Premwadee, Google, Natural, Kanya, Narisa)
-        const otherNaturalVoice = voices.find(v => 
-          (v.lang.startsWith('th') || v.lang === 'th-TH' || v.lang === 'th_TH') && 
-          (v.name.includes('Premwadee') || v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Kanya') || v.name.includes('Narisa'))
-        ) || voices.find(v => v.lang.startsWith('th'))
-
-        const selectedVoice = niwatVoice || otherNaturalVoice
-        if (selectedVoice) {
-          utterance.voice = selectedVoice
-        }
-      } else {
-        const bestEnVoice = voices.find(v => 
-          v.lang.startsWith('en') && 
-          (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Jenny'))
-        )
-        if (bestEnVoice) {
-          utterance.voice = bestEnVoice
-        }
-      }
-    }
-
-    utterance.onend = () => {
-      setSpeakingId(null)
-    }
-
-    utterance.onerror = () => {
-      setSpeakingId(null)
-    }
-
     setSpeakingId(id)
-    window.speechSynthesis.speak(utterance)
+    speakNaturalText(text, {
+      rate: speechSpeed,
+      onStart: () => setSpeakingId(id),
+      onEnd: () => setSpeakingId(null),
+      onError: () => setSpeakingId(null)
+    })
   }
 
   useEffect(() => {
+    initVoiceEngine()
     return () => {
       stopSpeaking()
     }
