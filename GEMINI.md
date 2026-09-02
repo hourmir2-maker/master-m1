@@ -147,6 +147,20 @@
 - **Real-Data Only**: ห้ามรันสคริปต์ส่ง mock score หรือจำลองผลสอบปลอมเข้าสู่ Production Database หรือ Telegram เด็ดขาด
 - **Authentic Student Telemetry**: สถิติคะแนน, ประวัติการทำแบบฝึกหัด, และการแจ้งเตือนความก้าวหน้าทั้งหมดต้องเกิดขึ้นจากการเรียนจริงของผู้เรียน (ด.ช.ภูมิรพีร์ มากแก้ว / ผู้เรียนในระบบ) เท่านั้น 100%
 
+### Rule 26 — User-Scoped Local Storage & Multi-Account Isolation Standard
+- **User-Scoped Caching**: การบันทึกข้อมูล `localStorage` ทุกชนิด (เช่น ความคืบหน้าการเรียน, คิว Spaced Repetition) ต้องใช้คีย์ที่ผูกกับ User ID เสมอ เช่น `master_m1_progress_${userId}` เพื่อป้องกันการดึงคะแนนเก่าข้ามบัญชีเมื่อมีการสลับบัญชีล็อกอินในเบราว์เซอร์เดียวกัน
+- **Zero Static Fallback Identity**: การแสดงชื่อ, อีเมล, และเป้าหมายโรงเรียนในทุกหน้าและคอมโพเนนต์ ต้องดึงจาก Session Profile จริงของผู้ใช้ที่ล็อกอินอยู่เท่านั้น ห้ามใส่ชื่อหรืออีเมล Fallback แบบ Hardcode ในคอมโพเนนต์ UI เด็ดขาด
+
+### Rule 27 — Centralized Natural AI Voice Speech Engine Standard
+- **Single Source of Truth**: ทุกคอมโพเนนต์ที่ใช้เสียง (แชทติวเตอร์, โทรคุยสด, บรรยายสรุปบทเรียน, Flashcards) ต้องเรียกใช้ `speakNaturalText` จาก `src/lib/tts-engine.ts` เท่านั้น
+- **Continuous Sentence Streaming**: ต้องแบ่งประโยคย่อย (Sentence Chunking $\le 120$ ตัวอักษร) และพูดต่อเนื่องพร้อมเว้นจังหวะลมหายใจ 150ms เพื่อป้องกันบั๊กเบราว์เซอร์ตัดเสียงหลัง 15 วินาที
+- **Voice Preference Hierarchy**: จัดลำดับเสียงพรีเมียมอันดับ 1 คือ `Microsoft Niwat Online (Natural)`, อันดับ 2 คือ `Microsoft Premwadee Online (Natural)`, และอันดับ 3 คือ `Google ภาษาไทย`
+- **Comprehensive Phonetics Preprocessor**: ต้องแปลงสัญลักษณ์คณิตศาสตร์ ($\Delta t$, $Q=mc\Delta t$, $a^2$, ห.ร.ม., ค.ร.น.) และไวยากรณ์ภาษาอังกฤษ (`V.1`, `V.2`, `S + V`) เป็นคำอ่านภาษาไทยที่ถูกต้อง โดยไม่ใส่เครื่องหมายจุลภาคพร่ำเพรื่อเพื่อไม่ให้เกิดเสียงกระตุก
+
+### Rule 28 — Merit-Based VIP Unlock & Adaptive Exam Assistant Standard
+- **Dual VIP Pathway**: นักเรียนสามารถเข้าถึงคลังสูตรลัดมหาเทพ 3 วินาที (VIP Vault) ได้จาก 2 ช่องทาง: 1) แอดมินปรับสิทธิ์ในหน้า `/admin` หรือ 2) ทำคะแนนแบบฝึกหัดท้ายบทได้ $\ge 90\%$ (Auto-Unlock ผ่าน `/api/progress`)
+- **Exam Assistance Tools**: หน้าทำแบบฝึกหัดและสนามสอบจำลอง (O-NET, Mock Exam, NT, RT) ต้องติดตั้ง `<DigitalScratchpad />` สำหรับทดเลข และ `<PaceCoach />` ช่วยฝึกการบริหารเวลา $\le 90$ วินาที/ข้อ เสมอ
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
