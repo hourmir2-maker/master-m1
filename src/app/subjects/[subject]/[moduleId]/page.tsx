@@ -19,6 +19,7 @@ import {
 import ReportModal from '@/components/ReportModal'
 import AiTutorChat from '@/components/AiTutorChat'
 import AudioLessonPlayer from '@/components/AudioLessonPlayer'
+import PaceCoach from '@/components/PaceCoach'
 import Footer from '@/components/Footer'
 import { soundFX } from '@/lib/sound-fx'
 import { 
@@ -540,6 +541,15 @@ export default function LessonDetailPage() {
                 )}
               </Button>
             </div>
+
+            {/* Pace Coach (Time Allocation Assistant) */}
+            {!submittedQuiz && (
+              <PaceCoach
+                currentQuestionIndex={Object.keys(selectedAnswers).length}
+                totalQuestions={questions.length}
+                recommendedSecondsPerQuestion={90}
+              />
+            )}
 
             {questions.map((q, qIndex) => {
               const isSelected = selectedAnswers[q.id]

@@ -15,6 +15,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import ReportModal from '@/components/ReportModal'
+import PaceCoach from '@/components/PaceCoach'
 import Footer from '@/components/Footer'
 import { MOCK_EXAM_QUESTIONS, MockExamQuestion, evaluateMockExam, MockExamResult } from '@/lib/mock-exam-pool'
 import { saveMistakeQuestion } from '@/lib/flashcards-data'
@@ -320,6 +321,16 @@ export default function MockExamPage() {
             </CardHeader>
 
             <CardContent className="pt-4 space-y-3">
+              {/* Pace Coach */}
+              {!isSubmitted && (
+                <div className="mb-3">
+                  <PaceCoach
+                    currentQuestionIndex={currentIdx}
+                    totalQuestions={totalCount}
+                    recommendedSecondsPerQuestion={90}
+                  />
+                </div>
+              )}
               {currentQ.options.map((opt, oIdx) => {
                 const isSelected = selectedAnswers[currentQ.id] === opt
                 const isCorrect = currentQ.correctAnswer === opt

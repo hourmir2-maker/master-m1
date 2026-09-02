@@ -4,6 +4,7 @@ import './globals.css'
 import SmartBreakReminder from '@/components/SmartBreakReminder'
 import AdsenseScript from '@/components/AdsenseScript'
 import PwaInstallPrompt from '@/components/PwaInstallPrompt'
+import DigitalScratchpad from '@/components/DigitalScratchpad'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <SmartBreakReminder />
         <PwaInstallPrompt />
+        <DigitalScratchpad />
       </body>
     </html>
   )

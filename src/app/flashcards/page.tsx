@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import Footer from '@/components/Footer'
 import { CORE_FLASHCARDS, getMistakeFlashcards, Flashcard } from '@/lib/flashcards-data'
 import { awardBadge } from '@/lib/gamification'
+import MicroCelebrationModal from '@/components/MicroCelebrationModal'
 import { 
   ArrowLeft, 
   RotateCw, 
@@ -52,6 +53,7 @@ export default function FlashcardsPage() {
   const [mistakeCards, setMistakeCards] = useState<Flashcard[]>([])
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [unlockedToast, setUnlockedToast] = useState<string | null>(null)
+  const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
     // Load mastered cards from localStorage
@@ -90,6 +92,10 @@ export default function FlashcardsPage() {
       next = masteredIds.filter(id => id !== cardId)
     } else {
       next = [...masteredIds, cardId]
+      // Trigger Micro-Celebration at milestones
+      if (next.length % 5 === 0 || next.length >= allCards.length) {
+        setShowCelebration(true)
+      }
       // Check Badge Unlock
       if (next.length >= 10) {
         const { newlyUnlocked } = awardBadge('flashcard_master')
@@ -381,6 +387,17 @@ export default function FlashcardsPage() {
           </Button>
         </div>
       </main>
+
+      {/* Daily Micro-Celebration Popup */}
+      <MicroCelebrationModal
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        title="สุดยอดมาก! พิชิตการทบทวนสำเร็จ 🎉"
+        subtitle="คุณจำสูตรลับและจุดลวงได้แม่นยำขึ้นอีกขั้น พลังความพยายามคือพลังที่ยิ่งใหญ่ที่สุด!"
+        earnedXp={150}
+        streakDays={1}
+        achievementType="spaced_repetition"
+      />
 
       <Footer />
     </div>

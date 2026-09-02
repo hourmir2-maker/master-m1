@@ -17,6 +17,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import ReportModal from '@/components/ReportModal'
+import PaceCoach from '@/components/PaceCoach'
 import Footer from '@/components/Footer'
 import { 
   ONetSubject, 
@@ -451,6 +452,15 @@ export default function ONetExamPage() {
                   </CardHeader>
 
                   <CardContent className="p-6 space-y-6">
+                    {/* Time Allocation Pace Coach */}
+                    {!isSubmitted && (
+                      <PaceCoach
+                        currentQuestionIndex={currentIdx}
+                        totalQuestions={currentQuestions.length}
+                        recommendedSecondsPerQuestion={90}
+                      />
+                    )}
+
                     {/* Question Topic & Text */}
                     <div>
                       <div className="text-xs font-bold text-orange-600 mb-1">
