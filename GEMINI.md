@@ -175,6 +175,27 @@
 - **Video-to-Audio Looping**: เมื่อวิดีโอต้นฉบับสั้นกว่าเพลง ให้ใช้เทคนิค `-stream_loop -1` และ `-shortest` เพื่อวนลูปภาพต่อเนื่องแบบ Seamless Loop จนจบเพลงพอดี
 - **Automated Public Sync**: ไฟล์วิดีโอและเพลงที่เรนเดอร์เสร็จสมบูรณ์ ต้องจัดเก็บสำรองไว้ที่ `C:\Users\bkky9\master_m1_media\` และทำสำเนาเข้าสู่ `public/media/` ของโปรเจกต์ พร้อมเพิ่มใน `.gitignore` เพื่อป้องกัน Repository บวม
 
+### Rule 31 — Account Authority, Studio Assets & Local Picker Architecture
+- **Strict Account Authority Invariant**: 
+  - บัญชีหลักอย่างเป็นทางการที่ผูกกับ **Google AdSense (`pub-7280055452989562`)** และเพจ Facebook คือ **`pairote05@hotmail.com`** (ช่องหลัก `@dart2u` / Brand Channel `@MASTERม.1`)
+  - ห้ามระบบอัตโนมัติหรือบอทอัปโหลดสื่อหรือสร้างช่องในบัญชีจำลอง/บัญชีสำรองอื่นเด็ดขาด
+- **Local Media & Desktop Hub Structure**:
+  - สื่อวิดีโอและกราฟิกที่พร้อมเผยแพร่ ต้องจัดเก็บในโครงสร้างโฟลเดอร์ภาษาไทยที่ชัดเจน ค้นหาง่าย และเข้าถึงได้ทันทีจาก Windows File Dialog:
+    1. `C:\Users\bkky9\master_m1_media\` (คลังไฟล์ต้นฉบับและเรนเดอร์)
+    2. `Desktop ➔ คลิปสำหรับลง_YouTube` (โฟลเดอร์สำหรับผู้ใช้คลิกเลือกอัปโหลดบนหน้าจอ)
+    3. `public/media/` (ไฟล์บนเว็บไซต์ MASTER ม.1)
+  - ต้องมีไฟล์ `ข้อความสำหรับโพสต์_YouTube.txt` กำกับในทุกโฟลเดอร์ รวบรวมชื่อคลิป (Title), คำอธิบาย (Description), ลิงก์เว็บ, และแฮชแท็กครบทุกคลิป
+- **Branding Assets Specification**:
+  - ภาพปกเพจ Facebook และภาพแบนเนอร์ YouTube ต้องใช้สัดส่วน 16:9 สไตล์ 3D Pixar คุณภาพสูง มีตัวอักษร 3D `MASTER ม.1` เด่นชัดตรงกลาง พร้อม Safe Zone รองรับการแสดงผลทั้งบนสมาร์ตโฟนและเดสก์ท็อป
+
+### Rule 32 — Synchronized Cross-Platform Scheduling & AI Content Safety Invariant
+- **Cross-Platform Scheduling Invariant**:
+  - เมื่อมีการตั้งเวลาเผยแพร่วิดีโอบน YouTube (Schedule Release) ระบบต้องใช้ **Meta Graph API** (`/v21.0/{page_id}/feed`) ตั้งค่า `published=false` พร้อมส่งค่า `scheduled_publish_time` (UNIX Timestamp) เพื่อให้โพสต์บน Facebook เผยแพร่อัตโนมัติในวินาทีเดียวกันกับวิดีโอบน YouTube เสมอ
+  - ทุกโพสต์ต้องแนบลิงก์คลิปวิดีโอ คำอธิบายสูตรลัด และลิงก์นำทางกลับสู่แพลตฟอร์ม [master-m1.vercel.app](https://master-m1.vercel.app)
+- **Video AI Prompt Safety Filter Standard (BytePlus / Seedance 2.0 Mini)**:
+  - หลีกเลี่ยงคำที่สุ่มเสี่ยงต่อระบบคัดกรองความปลอดภัย (Safety Filter) เช่น `hero student`, `anime`, `celebrity`, หรือตัวละครที่มีลิขสิทธิ์
+  - ให้ใช้คำบรรยายสถานการณ์เชิงวิทยาศาสตร์และคณิตศาสตร์อย่างเป็นกลาง เช่น `glowing mathematical laboratory`, `geometric 3D right triangles`, `educational diagrams showing formulas a² + b² = c²` เพื่อให้สร้างคลิปวิดีโอ 3D ผ่านฉลุย 100%
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
