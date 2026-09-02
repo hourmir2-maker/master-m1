@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import { CORE_FLASHCARDS, getMistakeFlashcards, Flashcard } from '@/lib/flashcards-data'
 import { awardBadge } from '@/lib/gamification'
 import MicroCelebrationModal from '@/components/MicroCelebrationModal'
+import MemorySongPlayer from '@/components/MemorySongPlayer'
 import { 
   ArrowLeft, 
   RotateCw, 
@@ -385,6 +386,11 @@ export default function FlashcardsPage() {
           >
             ถัดไป <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
+        </div>
+
+        {/* AI Memory Songs & Formula Rhymes Section */}
+        <div className="w-full mt-10">
+          <MemorySongPlayer initialSubject={selectedSubject === 'mistakes' ? 'all' : selectedSubject} />
         </div>
       </main>
 
