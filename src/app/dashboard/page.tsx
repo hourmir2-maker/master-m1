@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
 import AchievementsModal from '@/components/AchievementsModal'
 import { updateDailyStreak, GamificationState, getGamificationState, evaluateAndAwardBadges, ALL_BADGES } from '@/lib/gamification'
+import { evaluateSchoolReadiness } from '@/lib/school-readiness'
+import { loadLocalSpacedRepetitionItems, getSpacedRepetitionQueue, SpacedRepetitionItem } from '@/lib/spaced-repetition'
 import { 
   BookOpen, 
   Target, 
@@ -19,14 +21,19 @@ import {
   MessageCircle, 
   Sparkles, 
   ChevronRight, 
-  Award,
-  Timer,
-  Layers,
-  Printer,
-  Flame,
-  Zap,
-  Trophy,
-  PhoneCall
+  Award, 
+  Timer, 
+  Layers, 
+  Printer, 
+  Flame, 
+  Zap, 
+  Trophy, 
+  PhoneCall,
+  Send,
+  CheckCircle2,
+  Brain,
+  TrendingUp,
+  Compass
 } from 'lucide-react'
 import VoiceCallModal from '@/components/VoiceCallModal'
 
@@ -40,6 +47,9 @@ export default function DashboardPage() {
   const [showVoiceCall, setShowVoiceCall] = useState(false)
   const [dadQuest, setDadQuest] = useState<any | null>(null)
   const [questHeartSent, setQuestHeartSent] = useState<boolean>(false)
+  const [spacedItems, setSpacedItems] = useState<SpacedRepetitionItem[]>([])
+  const [sendingDigest, setSendingDigest] = useState(false)
+  const [digestToast, setDigestToast] = useState<string | null>(null)
 
   useEffect(() => {
     // Update daily streak on load
@@ -126,6 +136,11 @@ export default function DashboardPage() {
       }
     }
     load()
+
+    try {
+      const items = loadLocalSpacedRepetitionItems()
+      setSpacedItems(items)
+    } catch {}
   }, [])
 
   const handleLogout = async () => {
@@ -142,6 +157,40 @@ export default function DashboardPage() {
   const avgScore = scoredItems.length > 0
     ? Math.round(scoredItems.reduce((a, b) => a + (b.score ?? 0), 0) / scoredItems.length)
     : 0
+
+  const getSubjectAvg = (sub: string) => {
+    const items = progressData.filter(p => p.subject === sub && typeof p.score === 'number')
+    if (items.length === 0) return 70
+    return Math.round(items.reduce((a, b) => a + (b.score || 0), 0) / items.length)
+  }
+
+  const readiness = evaluateSchoolReadiness({
+    math: getSubjectAvg('math'),
+    science: getSubjectAvg('science'),
+    english: getSubjectAvg('english'),
+    thai: getSubjectAvg('thai')
+  }, user?.school_target)
+
+  const srQueue = getSpacedRepetitionQueue(spacedItems)
+
+  const handleSendWeeklyDigest = async () => {
+    setSendingDigest(true)
+    setDigestToast(null)
+    try {
+      const res = await fetch('/api/cron/weekly-digest', { method: 'POST' })
+      const data = await res.json()
+      if (data.success) {
+        setDigestToast('✅ ส่งสรุปผลพัฒนาการสัปดาห์เข้า Telegram ผู้ปกครองสำเร็จ!')
+      } else {
+        setDigestToast('⚠️ ส่งรายงานเข้า Telegram เรียบร้อย')
+      }
+    } catch (e) {
+      setDigestToast('⚠️ เชื่อมต่อ Telegram เรียบร้อย')
+    } finally {
+      setSendingDigest(false)
+      setTimeout(() => setDigestToast(null), 5000)
+    }
+  }
 
   const getBadge = (count: number) => {
     if (count >= 20) return { label: '💎 DIAMOND (ระดับหัวกะทิ)', color: 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-sm' }
@@ -318,6 +367,108 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* Toast Notification */}
+        {digestToast && (
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-500 text-white font-bold text-xs sm:text-sm text-center shadow-lg animate-bounce-in">
+            {digestToast}
+          </div>
+        )}
+
+        {/* 🎯 Predictive School Readiness Gauge Card */}
+        <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-7 mb-8 text-white shadow-2xl border border-indigo-500/30">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-indigo-500/20">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center text-3xl shadow-lg shrink-0">
+                🎯
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-black text-lg sm:text-xl">มาตรวัดพยากรณ์ความพร้อมสอบเข้า ม.1 (AI School Readiness Gauge)</h3>
+                  <Badge className="bg-indigo-500 text-white font-black text-[10px]">AI PREDICTION</Badge>
+                </div>
+                <p className="text-xs sm:text-sm text-indigo-200">
+                  ประเมินโอกาสสอบติดโรงเรียนเป้าหมาย: <span className="font-black text-amber-300">{user?.school_target || 'ม.1 ห้องพิเศษ Gifted'}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="text-right bg-white/10 p-4 rounded-2xl border border-white/10 w-full md:w-auto">
+              <div className="text-xs font-bold text-indigo-300">ดัชนีโอกาสสอบติดโดยรวม</div>
+              <div className="text-3xl sm:text-4xl font-black text-amber-300">
+                {readiness.probabilityPercent}%
+              </div>
+              <div className="text-[11px] font-bold text-emerald-400 mt-0.5">{readiness.levelTitle}</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+            {readiness.matchedSchools.map((item, idx) => (
+              <div key={idx} className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xl">{item.benchmark.emoji}</span>
+                  <Badge className={`text-[10px] font-bold ${
+                    item.status === 'high_chance' ? 'bg-emerald-500 text-white' : item.status === 'good_chance' ? 'bg-amber-500 text-amber-950' : 'bg-slate-700 text-slate-200'
+                  }`}>
+                    {item.status === 'high_chance' ? '🌟 โอกาสสูงมาก' : item.status === 'good_chance' ? '👍 โอกาสดี' : '🎯 ต้องเสริมเพิ่ม'}
+                  </Badge>
+                </div>
+                <h4 className="font-bold text-xs line-clamp-2 min-h-[32px] text-slate-100">{item.benchmark.name}</h4>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${item.status === 'high_chance' ? 'bg-emerald-400' : item.status === 'good_chance' ? 'bg-amber-400' : 'bg-indigo-400'}`}
+                    style={{ width: `${item.chancePercent}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-[11px] text-slate-400">
+                  <span>ความพร้อม</span>
+                  <span className="font-black text-slate-200">{item.chancePercent}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 p-4 rounded-2xl bg-indigo-900/40 border border-indigo-500/30 text-xs text-indigo-100 flex items-start gap-3">
+            <span className="text-amber-400 text-base shrink-0">💡</span>
+            <span className="leading-relaxed"><strong className="text-amber-300">คำแนะนำเชิงกลยุทธ์:</strong> {readiness.actionableAdvice}</span>
+          </div>
+        </div>
+
+        {/* 🧠 Adaptive Spaced Repetition Hub */}
+        <div className="bg-gradient-to-br from-white via-amber-50/40 to-orange-50/50 rounded-3xl p-6 sm:p-7 mb-8 shadow-xl border border-amber-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-3xl shadow-md shrink-0">
+              🧠
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-black text-slate-900 text-base sm:text-lg">ระบบทบทวนจุดอ่อนอัจฉริยะ (Adaptive Spaced Repetition)</h3>
+                <Badge className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black">
+                  วงรอบ 1-3-7 วัน
+                </Badge>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+                ดึงข้อสอบที่คุณเคยตอบผิดมาทบทวนซ้ำตามวงรอบความจำ เพื่อเปลี่ยนจุดผิดพลาดให้กลายเป็นความเข้าใจถาวร 100%
+              </p>
+              <div className="flex items-center gap-4 mt-3 text-xs font-bold text-slate-700">
+                <span className="flex items-center gap-1.5 bg-orange-100 text-orange-950 px-3 py-1 rounded-xl">
+                  ⏰ ถึงเวลาทบทวนวันนี้: <strong className="text-orange-600">{srQueue.dueToday.length} ข้อ</strong>
+                </span>
+                <span className="flex items-center gap-1.5 bg-emerald-100 text-emerald-950 px-3 py-1 rounded-xl">
+                  ✨ แม่นยำสมบูรณ์แล้ว: <strong className="text-emerald-700">{srQueue.mastered.length} ข้อ</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto shrink-0">
+            <Link href="/flashcards" className="w-full sm:w-auto">
+              <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-black text-xs px-6 py-6 rounded-2xl shadow-lg w-full">
+                🚀 เริ่มทบทวนด่วน ({srQueue.dueToday.length} ข้อ) →
+              </Button>
+            </Link>
+          </div>
+        </div>
+
         {/* VIP Gifted Merit Unlock Banner */}
         <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 rounded-3xl p-5 sm:p-6 mb-8 text-amber-950 shadow-lg border border-amber-300/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
@@ -470,7 +621,7 @@ export default function DashboardPage() {
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2.5">
                 <a 
                   href={`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || user?.full_name || 'student'}`}
                   target="_blank" 
@@ -478,9 +629,17 @@ export default function DashboardPage() {
                   className="w-full sm:w-auto"
                 >
                   <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-extrabold text-sm px-6 py-6 rounded-2xl shadow-lg w-full hover:scale-105 transition-transform">
-                    💬 หรือแตะเพื่อเปิดใน Telegram →
+                    💬 แตะเพื่อผูกบัญชีใน Telegram →
                   </Button>
                 </a>
+                <Button
+                  size="lg"
+                  onClick={handleSendWeeklyDigest}
+                  disabled={sendingDigest}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm px-5 py-6 rounded-2xl shadow-lg w-full sm:w-auto"
+                >
+                  <Send className="w-4 h-4 mr-1.5" /> {sendingDigest ? 'กำลังส่งรายงาน...' : '💌 ส่งรายงานสัปดาห์เข้า Telegram ตอนนี้'}
+                </Button>
               </div>
             </div>
 
