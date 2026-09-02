@@ -44,6 +44,17 @@ export async function POST(req: NextRequest) {
         console.warn('Progress insert warning:', error.message)
       }
 
+      // Auto-unlock VIP status if student achieves >= 90%
+      let isVipUnlocked = false
+      if (currentScore >= 90) {
+        isVipUnlocked = true
+        try {
+          await supabase.from('profiles').update({ school_target: 'vip' }).eq('id', userId)
+        } catch (vipErr) {
+          console.warn('Auto VIP update warning:', vipErr)
+        }
+      }
+
       // 3. Trigger Automated Parent Telegram Notification with Growth Delta & Authentic Identity
       try {
         const { sendParentTelegramNotification } = await import('@/lib/telegram-notify')

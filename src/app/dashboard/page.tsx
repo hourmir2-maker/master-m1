@@ -300,7 +300,7 @@ export default function DashboardPage() {
         )}
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {[
             { label: 'บทเรียนที่ผ่านแล้ว', value: `${totalCompleted} / 56`, color: 'text-orange-600', bg: 'bg-white border-orange-100' },
             { label: 'คะแนนเฉลี่ยรวม', value: `${avgScore}%`, color: 'text-red-600', bg: 'bg-white border-orange-100' },
@@ -316,6 +316,33 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* VIP Gifted Merit Unlock Banner */}
+        <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 rounded-3xl p-5 sm:p-6 mb-8 text-amber-950 shadow-lg border border-amber-300/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-950/10 flex items-center justify-center text-3xl shrink-0 shadow-inner">
+              👑
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-0.5">
+                <h3 className="font-black text-base sm:text-lg">ระบบสะสมคะแนนปลดล็อกสิทธิ์ VIP Gifted (90%+)</h3>
+                <Badge className="bg-amber-950 text-amber-200 font-black text-[10px]">
+                  {avgScore >= 90 || user?.school_target === 'vip' ? '👑 ปลดล็อกแล้ว' : '🔒 ทำคะแนน ≥ 90%'}
+                </Badge>
+              </div>
+              <p className="text-amber-900 text-xs sm:text-sm font-semibold">
+                {avgScore >= 90 || user?.school_target === 'vip'
+                  ? '🎉 คุณได้รับสิทธิ์ VIP Gifted แล้ว! เข้าถึงคลังสูตรลัด 3 วินาทีและข้อสอบระดับแข่งขันฟรีทุกวิชา'
+                  : `💡 ทำแบบฝึกหัดวิชาใดก็ได้ให้ได้คะแนน 90% ขึ้นไป เพื่อปลดล็อกคลังสูตรลัดมหาเทพ 3 วินาที (คะแนนเฉลี่ยปัจจุบัน: ${avgScore}%)`}
+              </p>
+            </div>
+          </div>
+          <Link href="/subjects/math" className="shrink-0 w-full sm:w-auto">
+            <Button size="sm" className="bg-amber-950 text-amber-100 hover:bg-amber-900 font-black text-xs px-5 py-5 rounded-xl shadow-md w-full sm:w-auto">
+              เข้าเรียน & ปลดล็อก VIP →
+            </Button>
+          </Link>
         </div>
 
         {/* O-NET 2570 Exam Mastery Hub Banner */}

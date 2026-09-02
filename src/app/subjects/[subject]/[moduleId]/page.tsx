@@ -78,15 +78,50 @@ export default function LessonDetailPage() {
   const [reportQuestionId, setReportQuestionId] = useState<string | undefined>(undefined)
   const [reportContextTitle, setReportContextTitle] = useState<string | undefined>(undefined)
 
-  // VIP Gifted Mode
-  const [isVipMode, setIsVipMode] = useState<boolean>(true)
+  // VIP Gifted Mode & 90%+ Merit Unlock System
+  const [isVipUnlocked, setIsVipUnlocked] = useState<boolean>(false)
+  const [highestScore, setHighestScore] = useState<number>(0)
+  const [showVipCelebration, setShowVipCelebration] = useState<boolean>(false)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       if (data.user) {
         setUserId(data.user.id)
+        try {
+          const { data: profile } = await supabase.from('profiles').select('school_target, is_vip').eq('id', data.user.id).maybeSingle()
+          if (profile?.school_target === 'vip' || (profile as any)?.is_vip === true) {
+            setIsVipUnlocked(true)
+          }
+          const { data: prog } = await supabase.from('progress').select('score').eq('user_id', data.user.id).eq('subject', subject)
+          if (prog && prog.length > 0) {
+            const maxS = Math.max(...prog.map((p: any) => p.score || 0))
+            setHighestScore(maxS)
+            if (maxS >= 90) setIsVipUnlocked(true)
+          }
+        } catch (err) {
+          console.warn('VIP check warning:', err)
+        }
       }
     })
+
+    // Local Storage check for offline / immediate VIP unlock
+    try {
+      const localVip = localStorage.getItem(`master_m1_vip_unlocked_${subject}`) || localStorage.getItem('master_m1_is_vip')
+      if (localVip === 'true') setIsVipUnlocked(true)
+      const storedProg = localStorage.getItem('master_m1_progress')
+      if (storedProg) {
+        const list: any[] = JSON.parse(storedProg)
+        const subList = list.filter((p: any) => p.subject === subject)
+        if (subList.length > 0) {
+          const maxS = Math.max(...subList.map((p: any) => p.score || 0))
+          setHighestScore(prev => Math.max(prev, maxS))
+          if (maxS >= 90) setIsVipUnlocked(true)
+        }
+      }
+    } catch (e) {
+      console.warn('Local VIP check warning:', e)
+    }
+
     if (lesson) {
       const extraSets = DYNAMIC_QUESTION_POOL[subject]?.[moduleId] || []
       const setB = extraSets[0] || []
@@ -152,7 +187,18 @@ export default function LessonDetailPage() {
     setSubmittedQuiz(true)
     setShowScoreModal(true)
     const scoreObj = calculateScore()
-    if (scoreObj.percentage >= 70) {
+    setHighestScore(prev => Math.max(prev, scoreObj.percentage))
+
+    // 🌟 Check 90%+ Merit VIP Unlock
+    if (scoreObj.percentage >= 90) {
+      setIsVipUnlocked(true)
+      setShowVipCelebration(true)
+      try {
+        localStorage.setItem(`master_m1_vip_unlocked_${subject}`, 'true')
+        localStorage.setItem('master_m1_is_vip', 'true')
+      } catch (e) {}
+      soundFX.playFanfare()
+    } else if (scoreObj.percentage >= 70) {
       soundFX.playFanfare()
     } else {
       soundFX.playCorrect()
@@ -321,37 +367,81 @@ export default function LessonDetailPage() {
             {/* Audio Lesson Masterclass Player */}
             <AudioLessonPlayer subject={subject} moduleId={moduleId} />
 
-            {/* VIP Gifted Mastery Vault (if available) */}
+            {/* VIP Gifted Mastery Vault (Unlocked vs Locked based on 90%+ Merit) */}
             {lesson.vipTricks && lesson.vipTricks.length > 0 && (
-              <Card className="border-2 border-amber-400 shadow-xl bg-gradient-to-br from-amber-500/10 via-amber-100/30 to-orange-50/50 rounded-3xl overflow-hidden">
-                <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 p-1.5" />
-                <CardHeader className="pb-2 pt-6 px-6">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <CardTitle className="flex items-center gap-2 text-amber-950 font-black text-lg sm:text-xl">
-                      <div className="bg-gradient-to-tr from-amber-500 to-yellow-500 text-white p-2 rounded-xl shadow-md text-lg">
-                        👑
+              isVipUnlocked ? (
+                <Card className="border-2 border-amber-400 shadow-xl bg-gradient-to-br from-amber-500/10 via-amber-100/30 to-orange-50/50 rounded-3xl overflow-hidden animate-fade-in">
+                  <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 p-1.5" />
+                  <CardHeader className="pb-2 pt-6 px-6">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <CardTitle className="flex items-center gap-2 text-amber-950 font-black text-lg sm:text-xl">
+                        <div className="bg-gradient-to-tr from-amber-500 to-yellow-500 text-white p-2 rounded-xl shadow-md text-lg">
+                          👑
+                        </div>
+                        คลังเทคนิคขั้นเทพ & สูตรลัด สสวท. (VIP Gifted Track)
+                      </CardTitle>
+                      <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-amber-950 font-black text-[11px] px-3 py-1 shadow-xs border border-amber-300">
+                        👑 VIP UNLOCKED (สิทธิ์พิเศษ)
+                      </Badge>
+                    </div>
+                    <div className="text-amber-900 text-xs sm:text-sm font-semibold mt-1 bg-white/90 p-3 rounded-xl border border-amber-200 flex items-center justify-between flex-wrap gap-2">
+                      <span>💎 สูตรลัดและความรู้เกินหลักสูตรระดับ ม.ต้น สำหรับเตรียมสอบเข้าห้องพิเศษ Gifted & สสวท.</span>
+                      <span className="text-amber-700 text-xs font-black bg-amber-100 px-2.5 py-1 rounded-lg">✨ ปลดล็อกแล้วด้วยคะแนน ≥ 90%</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-6 pb-6">
+                    <div className="space-y-3 mt-1">
+                      {lesson.vipTricks.map((trick, idx) => (
+                        <div key={idx} className="bg-white/95 p-4 rounded-2xl border border-amber-300 shadow-xs text-xs sm:text-sm text-slate-800 font-medium leading-relaxed flex items-start gap-3">
+                          <span className="text-amber-600 text-base shrink-0">⚡</span>
+                          <span>{trick}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="border-2 border-dashed border-amber-400/80 shadow-md bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-white rounded-3xl overflow-hidden p-6 sm:p-7">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl shrink-0 border border-amber-300 shadow-xs">
+                        🔒
                       </div>
-                      คลังเทคนิคขั้นเทพ & สูตรลัด สสวท. (VIP Gifted Track)
-                    </CardTitle>
-                    <Badge className="bg-amber-400 text-amber-950 font-black text-[11px] px-3 py-1 shadow-xs">
-                      👑 VIP EXCLUSIVE
-                    </Badge>
-                  </div>
-                  <p className="text-amber-900 text-xs sm:text-sm font-semibold mt-1 bg-white/80 p-3 rounded-xl border border-amber-200">
-                    💎 สูตรลัดและความรู้เกินหลักสูตรระดับ ม.ต้น สำหรับเตรียมสอบเข้าห้องพิเศษ Gifted & สสวท.
-                  </p>
-                </CardHeader>
-                <CardContent className="px-6 pb-6">
-                  <div className="space-y-3 mt-1">
-                    {lesson.vipTricks.map((trick, idx) => (
-                      <div key={idx} className="bg-white/90 p-4 rounded-2xl border border-amber-300 shadow-xs text-xs sm:text-sm text-slate-800 font-medium leading-relaxed flex items-start gap-3">
-                        <span className="text-amber-600 text-base shrink-0">⚡</span>
-                        <span>{trick}</span>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-black text-slate-900 text-base sm:text-lg">
+                            คลังสูตรลัดมหาเทพ 3 วินาที (VIP Gifted Vault)
+                          </h4>
+                          <Badge className="bg-amber-200 text-amber-900 font-black text-[10px]">
+                            🔒 ล็อกอยู่
+                          </Badge>
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                          ปลดล็อกสูตรลัด 3 วินาที และข้อสอบแข่งขัน สสวท. ฟรี! เพียงทำคะแนนแบบฝึกหัดท้ายบทให้ได้ <span className="font-black text-amber-700">90% ขึ้นไป</span>
+                        </p>
+                        <div className="mt-2.5 flex items-center gap-2">
+                          <div className="w-36 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-500"
+                              style={{ width: `${Math.min(100, (highestScore / 90) * 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold text-amber-900">
+                            คะแนนสูงสุด: {highestScore}% / 90%
+                          </span>
+                        </div>
                       </div>
-                    ))}
+                    </div>
+
+                    <Button
+                      onClick={() => setCurrentTab('quiz')}
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 text-white font-black text-xs px-5 py-5 rounded-xl shadow-md shrink-0 w-full sm:w-auto"
+                    >
+                      🚀 ไปทำแบบฝึกหัดเพื่อปลดล็อก VIP →
+                    </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </Card>
+              )
             )}
 
             {/* Secret Formula Box */}
@@ -702,10 +792,18 @@ export default function LessonDetailPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="my-4 p-4 rounded-2xl bg-orange-50 border border-orange-100 text-xs text-orange-950 font-medium leading-relaxed">
-            {scoreResult.percentage >= 80
-              ? '🎉 ความรู้ของคุณแน่นมาก พร้อมลุยข้อสอบบทต่อไปหรือสุ่มโจทย์ท้าทายเพิ่มได้เลย!'
-              : '💡 ลองดูเฉลยละเอียดและเทคนิคคิดลัดด้านล่าง เพื่ออุดจุดที่พลาดแล้วลองทำใหม่อีกครั้งนะ!'}
+          <div className="my-4 p-4 rounded-2xl bg-orange-50 border border-orange-100 text-xs text-orange-950 font-medium leading-relaxed space-y-2">
+            {scoreResult.percentage >= 90 && (
+              <div className="p-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-amber-950 rounded-xl font-black text-xs flex items-center justify-center gap-2 shadow-sm animate-pulse">
+                <span>👑</span>
+                <span>ยินดีด้วย! ปลดล็อกสิทธิ์ VIP Gifted & คลังสูตรลัด 3 วิ สำเร็จแล้ว!</span>
+              </div>
+            )}
+            <p>
+              {scoreResult.percentage >= 80
+                ? '🎉 ความรู้ของคุณแน่นมาก พร้อมลุยข้อสอบบทต่อไปหรือสุ่มโจทย์ท้าทายเพิ่มได้เลย!'
+                : '💡 ลองดูเฉลยละเอียดและเทคนิคคิดลัดด้านล่าง เพื่ออุดจุดที่พลาดแล้วลองทำใหม่อีกครั้งนะ!'}
+            </p>
           </div>
 
           <div className="flex flex-col gap-2.5 mt-2">
