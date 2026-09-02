@@ -56,14 +56,6 @@ export default function DashboardPage() {
     const updatedGame = updateDailyStreak()
     setGameState(updatedGame)
 
-    // Load active Dad Quest if available
-    try {
-      const storedQuest = localStorage.getItem('master_m1_dad_active_quest')
-      if (storedQuest) {
-        setDadQuest(JSON.parse(storedQuest))
-      }
-    } catch {}
-
     const load = async () => {
       try {
         const { data: authData } = await supabase.auth.getUser()
@@ -72,27 +64,50 @@ export default function DashboardPage() {
         // Use maybeSingle to prevent 406 Not Acceptable error
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).maybeSingle()
         
-        let resolvedName = profile?.full_name || authData.user.user_metadata?.full_name || 'นักเรียน'
-        if (resolvedName === 'ทดสอบ' || resolvedName === 'นักเรียน') {
-          if (authData.user.email === 'phumrapeeft@gmail.com' || profile?.email === 'phumrapeeft@gmail.com') {
+        const userEmail = authData.user.email || profile?.email || ''
+        let resolvedName = profile?.full_name || authData.user.user_metadata?.full_name
+        if (!resolvedName || resolvedName === 'ทดสอบ' || resolvedName === 'นักเรียน') {
+          if (userEmail === 'phumrapeeft@gmail.com' || profile?.email === 'phumrapeeft@gmail.com') {
             resolvedName = 'ด.ช.ภูมิรพีร์ มากแก้ว'
+          } else if (userEmail === 'hourmir2@gmail.com') {
+            resolvedName = 'คุณไพโรจน์ มากแก้ว (Admin)'
+          } else if (userEmail) {
+            resolvedName = userEmail.split('@')[0]
+          } else {
+            resolvedName = 'นักเรียน'
           }
         }
 
         setUser({
           full_name: resolvedName,
-          email: authData.user.email || profile?.email || 'phumrapeeft@gmail.com',
-          school_target: profile?.school_target || authData.user.user_metadata?.school_target || 'ห้องพิเศษ Gifted วิทย์-คณิต'
+          email: userEmail,
+          school_target: profile?.school_target || authData.user.user_metadata?.school_target || 'เตรียมสอบเข้า ม.1 โรงเรียนชั้นนำ'
         })
+
+        // Check if dadQuest belongs to current user
+        try {
+          const storedQuest = localStorage.getItem('master_m1_dad_active_quest')
+          if (storedQuest) {
+            const q = JSON.parse(storedQuest)
+            if (userEmail === 'phumrapeeft@gmail.com' || q.targetEmail === userEmail || !q.targetEmail) {
+              setDadQuest(q)
+            }
+          }
+        } catch {}
 
         // Fetch Supabase cloud progress
         const { data: prog } = await supabase.from('progress').select('*').eq('user_id', authData.user.id)
         const cloudProgress = prog || []
 
-        // Fetch LocalStorage offline progress
+        // Fetch LocalStorage offline progress (Scoped by user ID to prevent account bleed)
         let localProgress: Array<{ subject: string; moduleId?: string; module_id?: string; completed: boolean; score?: number }> = []
         try {
-          const stored = localStorage.getItem('master_m1_progress')
+          const userKey = `master_m1_progress_${authData.user.id}`
+          let stored = localStorage.getItem(userKey)
+          // Backward compatibility for Fortune
+          if (!stored && (userEmail === 'phumrapeeft@gmail.com' || profile?.email === 'phumrapeeft@gmail.com')) {
+            stored = localStorage.getItem('master_m1_progress')
+          }
           if (stored) {
             localProgress = JSON.parse(stored).map((item: any) => ({
               subject: item.subject,
@@ -647,7 +662,7 @@ export default function DashboardPage() {
             <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex flex-col items-center justify-center shrink-0 w-full sm:w-auto text-center shadow-lg">
               <div className="bg-white p-2.5 rounded-xl shadow-md mb-2">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || 'phumrapeeft@gmail.com'}`)}`} 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://t.me/MasterM1_Parent_bot?start=link_${user?.email || 'student'}`)}`} 
                   alt="QR Code สำหรับผู้ปกครองผูกบัญชี Telegram" 
                   className="w-32 h-32 object-contain rounded-lg"
                 />

@@ -112,10 +112,16 @@ export default function LearningPathPage() {
         setUserEmail(authData.user.email || '')
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', authData.user.id).maybeSingle()
         
-        let resolvedName = profile?.full_name || authData.user.user_metadata?.full_name || 'นักเรียน'
-        if (resolvedName === 'ทดสอบ' || resolvedName === 'นักเรียน') {
+        let resolvedName = profile?.full_name || authData.user.user_metadata?.full_name
+        if (!resolvedName || resolvedName === 'ทดสอบ' || resolvedName === 'นักเรียน') {
           if (authData.user.email === 'phumrapeeft@gmail.com' || profile?.email === 'phumrapeeft@gmail.com') {
             resolvedName = 'ด.ช.ภูมิรพีร์ มากแก้ว'
+          } else if (authData.user.email === 'hourmir2@gmail.com') {
+            resolvedName = 'คุณไพโรจน์ มากแก้ว (Admin)'
+          } else if (authData.user.email) {
+            resolvedName = authData.user.email.split('@')[0]
+          } else {
+            resolvedName = 'นักเรียน'
           }
         }
         setUserName(resolvedName)
