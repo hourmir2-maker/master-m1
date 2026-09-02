@@ -13,3 +13,4 @@ token.json
 bot/node_modules/
 bot/*.db
 bot/.env
+public/media/*.mp4

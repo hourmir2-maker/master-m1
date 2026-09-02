@@ -161,6 +161,20 @@
 - **Dual VIP Pathway**: นักเรียนสามารถเข้าถึงคลังสูตรลัดมหาเทพ 3 วินาที (VIP Vault) ได้จาก 2 ช่องทาง: 1) แอดมินปรับสิทธิ์ในหน้า `/admin` หรือ 2) ทำคะแนนแบบฝึกหัดท้ายบทได้ $\ge 90\%$ (Auto-Unlock ผ่าน `/api/progress`)
 - **Exam Assistance Tools**: หน้าทำแบบฝึกหัดและสนามสอบจำลอง (O-NET, Mock Exam, NT, RT) ต้องติดตั้ง `<DigitalScratchpad />` สำหรับทดเลข และ `<PaceCoach />` ช่วยฝึกการบริหารเวลา $\le 90$ วินาที/ข้อ เสมอ
 
+### Rule 29 — Audio-Video Synchronization & AI Lyric Alignment Standard
+- **Zero-Guessing Lyric Timestamps**: ห้ามใช้เวลาคาดคะเน (Estimated Timestamps) ในการทำซับไตเติลเพลงเด็ดขาด เนื่องจากเพลงที่สังเคราะห์ด้วย AI (เช่น Lyria 3 Pro) มีความยาวช่วง Intro (10-15 วินาที) และการเว้นวรรคจังหวะดนตรีที่ไม่คงที่
+- **AI Waveform Ingestion & Alignment**: ก่อนทำซับไตเติล ต้องส่งไฟล์เสียง (`.mp3`) ให้ Gemini Audio Engine (`gemini-3.6-flash` / API) ฟังคลื่นเสียงจริงและวิเคราะห์หาเวลาเริ่ม-จบที่แท้จริงระดับมิลลิวินาที (Exact Millisecond Timestamps) เสมอ
+- **Thai Typography & Formula Highlighting**:
+  1. ใช้ฟอนต์ไทยสากลมาตรฐาน Windows: `Tahoma Bold` หรือ `Leelawadee UI Bold`
+  2. กำหนดขนาด 24-27px พร้อมเส้นขอบสีดำหนา (Outline 2.5-3.5px) เพื่อให้อ่านออกชัดเจนบนทุกพื้นหลังภาพ
+  3. แยกสไตล์ `HighlightStyle` (สีทอง/เหลืองสด `&H002BF7FF` หรือ `&H0000FFFF`) สำหรับท่อนสูตรลัดและจุดลวง สทศ. เพื่อกระตุ้นความจำ
+- **Hardsub Re-encoding**: เรนเดอร์ฝังซับไตเติลลงในวิดีโอด้วย `ffmpeg -vf ass='...'` เสมอ เพื่อให้สามารถเล่นบนทุกอุปกรณ์ (มือถือ, แท็บเล็ต, เว็บ, โซเชียล) ได้อย่างสมบูรณ์แบบโดยไม่ต้องพึ่งพาตัวเล่นภายนอก
+
+### Rule 30 — AiPASS Multi-Modal Pipeline & Multi-Angle Video Assembly Standard
+- **Topic-Aware Multi-Clip Concatenation**: เมื่อมีการสร้างคลิปวิดีโอมากกว่า 1 คลิปสำหรับวิชา/เพลงเดียวกัน ให้ตรวจสอบความสอดคล้องของ Prompt และนำคลิปมาร้อยเรียงต่อกัน (Concatenate via FFmpeg) สลับมุมกล้องและฉาก เพื่อสร้างความหลากหลายทางภาพ ไม่ให้นำคลิปไปจับคู่ผิดวิชาเด็ดขาด
+- **Video-to-Audio Looping**: เมื่อวิดีโอต้นฉบับสั้นกว่าเพลง ให้ใช้เทคนิค `-stream_loop -1` และ `-shortest` เพื่อวนลูปภาพต่อเนื่องแบบ Seamless Loop จนจบเพลงพอดี
+- **Automated Public Sync**: ไฟล์วิดีโอและเพลงที่เรนเดอร์เสร็จสมบูรณ์ ต้องจัดเก็บสำรองไว้ที่ `C:\Users\bkky9\master_m1_media\` และทำสำเนาเข้าสู่ `public/media/` ของโปรเจกต์ พร้อมเพิ่มใน `.gitignore` เพื่อป้องกัน Repository บวม
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)
