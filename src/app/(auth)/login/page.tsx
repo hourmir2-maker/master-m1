@@ -76,6 +76,9 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <Label htmlFor="password" className="text-slate-700 font-semibold text-xs">รหัสผ่าน</Label>
+                <Link href="/forgot-password" className="text-xs text-orange-600 hover:text-orange-700 font-semibold hover:underline">
+                  ลืมรหัสผ่าน?
+                </Link>
               </div>
               <Input 
                 id="password" 

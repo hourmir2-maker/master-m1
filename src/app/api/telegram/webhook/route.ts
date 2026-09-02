@@ -5,6 +5,7 @@ import { LESSONS_DATA } from '@/lib/lessons-data'
 /**
  * MASTER ม.1 — Universal Multi-Parent Telegram Bot Webhook
  * รองรับผู้ปกครองนักเรียนทุกคน สามารถดูคะแนน Pre-Test, รายงานผลสอบ, และความก้าวหน้า 24 ชม.
+ * รองรับทั้ง Text Messages และ Inline Keyboard Callback Queries
  */
 
 // In-Memory Multi-Parent Map (ChatId -> StudentId) for fast resolution
@@ -12,27 +13,72 @@ const PARENT_MAP: Record<string, string> = {
   '7864027458': '4ec823eb-be30-4e1c-a709-a3382ee85491' // คุณพ่อของน้องภูมิรพีร์
 }
 
+// Default Inline Keyboard for quick navigation
+const DEFAULT_INLINE_KEYBOARD = {
+  inline_keyboard: [
+    [
+      { text: '🧪 ผล Pre-Test', callback_data: '/pretest' },
+      { text: '📊 รายงานผล', callback_data: '/report' },
+      { text: '📈 ประวัติคะแนน', callback_data: '/history' }
+    ],
+    [
+      { text: '🔢 คณิต', callback_data: '/math' },
+      { text: '🔬 วิทย์', callback_data: '/science' },
+      { text: '🗣️ อังกฤษ', callback_data: '/english' },
+      { text: '🇹🇭 ไทย', callback_data: '/thai' }
+    ],
+    [
+      { text: '🎯 O-NET 2570', callback_data: '/onet' },
+      { text: '🌐 เข้าหน้าเว็บ MASTER ม.1', url: 'https://master-m1.vercel.app' }
+    ]
+  ]
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const message = body.message || body.channel_post
-    if (!message || !message.text) {
+    const callbackQuery = body.callback_query
+    const message = body.message || body.channel_post || callbackQuery?.message
+
+    if (!message) {
       return NextResponse.json({ ok: true })
     }
 
-    const chatId = String(message.chat.id)
-    const rawText = (message.text || '').trim()
-    const text = rawText.toLowerCase()
-    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
+    const chatId = String(message.chat?.id || callbackQuery?.from?.id || '')
+    if (!chatId) {
+      return NextResponse.json({ ok: true })
+    }
 
-    const sendReply = async (replyText: string) => {
+    const rawText = (callbackQuery ? callbackQuery.data : message.text || '').trim()
+    if (!rawText) {
+      return NextResponse.json({ ok: true })
+    }
+
+    const text = rawText.toLowerCase()
+    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+    if (!botToken) {
+      console.warn('[Telegram Webhook] PARENT_TELEGRAM_BOT_TOKEN is not set.')
+      return NextResponse.json({ ok: false, error: 'Bot token missing' }, { status: 500 })
+    }
+
+    // Acknowledge Telegram callback query immediately so button loading spinner stops
+    if (callbackQuery?.id) {
+      await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ callback_query_id: callbackQuery.id })
+      }).catch(err => console.error('[Telegram Webhook] answerCallbackQuery error:', err))
+    }
+
+    const sendReply = async (replyText: string, replyMarkup?: any) => {
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
           text: replyText,
-          parse_mode: 'HTML'
+          parse_mode: 'HTML',
+          reply_markup: replyMarkup !== undefined ? replyMarkup : DEFAULT_INLINE_KEYBOARD
         })
       })
     }
@@ -41,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Check if user is linking a new student account (/link email_or_id or /start link_xxx)
     if (text.startsWith('/link') || text.startsWith('/start link_')) {
-      let queryParam = text.replace('/link', '').replace('/start link_', '').trim()
+      let queryParam = rawText.replace(/\/link/i, '').replace(/\/start link_/i, '').trim()
       
       if (!queryParam) {
         await sendReply(`ℹ️ <b>วิธีผูกบัญชีติดตามบุตรหลาน:</b>\nกรุณาพิมพ์: <code>/link &lt;อีเมลของน้อง&gt;</code>\nตัวอย่าง: <code>/link student@gmail.com</code>`)
@@ -58,7 +104,7 @@ export async function POST(req: NextRequest) {
 
       if (matchedUser) {
         PARENT_MAP[chatId] = matchedUser.id
-        await sendReply(`✅ <b>เชื่อมต่อบัญชีสำเร็จเรียบร้อยครับ!</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\n👦 <b>นักเรียน:</b> ${matchedUser.full_name}\n📧 <b>อีเมล:</b> ${matchedUser.email}\n🎯 <b>ระดับชั้น:</b> ${matchedUser.grade_target || 'ม.1'}\n━━━━━━━━━━━━━━━━━━━━\n🔔 <i>ระบบจะส่งแจ้งเตือนผลสอบและคะแนนแบบฝึกหัดของน้องเข้าแชทนี้อัตโนมัติทันทีที่น้องทำเสร็จครับ!</i>\n\nกดพิมพ์ <b>/pretest</b> เพื่อดูผลสอบก่อนเรียน หรือ <b>/report</b> เพื่อดูผลการเรียนล่าสุดได้เลยครับ`)
+        await sendReply(`✅ <b>เชื่อมต่อบัญชีสำเร็จเรียบร้อยครับ!</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\n👦 <b>นักเรียน:</b> ${matchedUser.full_name}\n📧 <b>อีเมล:</b> ${matchedUser.email}\n🎯 <b>ระดับชั้น:</b> ${matchedUser.grade_target || 'ม.1'}\n━━━━━━━━━━━━━━━━━━━━\n🔔 <i>ระบบจะส่งแจ้งเตือนผลสอบและคะแนนแบบฝึกหัดของน้องเข้าแชทนี้อัตโนมัติทันทีที่น้องทำเสร็จครับ!</i>\n\nกดเลือกเมนูด้านล่าง หรือพิมพ์ <b>/pretest</b> เพื่อดูผลสอบก่อนเรียน ได้เลยครับ`)
         return NextResponse.json({ ok: true })
       } else {
         await sendReply(`⚠️ <b>ไม่พบข้อมูลนักเรียน:</b> "${queryParam}"\nกรุณาตรวจสอบอีเมลหรือชื่อที่น้องใช้สมัครในเว็บ https://master-m1.vercel.app อีกครั้งครับ`)
@@ -104,12 +150,12 @@ export async function POST(req: NextRequest) {
     const thaiPassed = prog.filter(p => p.subject === 'thai' && p.completed)
 
     if (text === '/start' || text === '/help') {
-      const welcomeMsg = `👋 <b>สวัสดีครับคุณพ่อคุณแม่! ยินดีต้อนรับสู่ \"ครูพี่ MASTER AI\"</b> 🎓
+      const welcomeMsg = `👋 <b>สวัสดีครับคุณพ่อคุณแม่! ยินดีต้อนรับสู่ "ครูพี่ MASTER AI"</b> 🎓
 
 👦 <b>นักเรียนในความดูแล:</b> ${studentName}
 🎯 <b>เป้าหมาย:</b> ${studentTarget}
 
-📲 <b>คำสั่งด่วนสำหรับผู้ปกครอง (พิมพ์ได้ 24 ชม.):</b>
+📲 <b>คำสั่งด่วนสำหรับผู้ปกครอง (แตะปุ่มกด หรือพิมพ์ได้ 24 ชม.):</b>
 • <b>/pretest</b> — 🧪 ดูผลการสอบวัดระดับก่อนเรียน (Pre-Test)
 • <b>/report</b> — 📊 ดูรายงานสรุปคะแนนและพัฒนาการทุกวิชา
 • <b>/history</b> — 📈 ดูประวัติและพัฒนาการคะแนนทุกบท
@@ -295,7 +341,7 @@ ${engPassed.map(p => `✅ ${LESSONS_DATA.english?.[p.module_id]?.title || p.modu
       return NextResponse.json({ ok: true })
     }
 
-    // Default: แสดงเมนูคำสั่งทั้งหมด
+    // Default: แสดงเมนูคำสั่งทั้งหมดพร้อมปุ่มกด
     await sendReply(`📋 <b>คำสั่งที่ใช้ได้ทั้งหมดครับ (ครูพี่ MASTER AI):</b>
 ━━━━━━━━━━━━━━━━━━━━
 🧪 <b>/pretest</b> — ดูผลสอบวัดระดับก่อนเรียน (Pre-Test)

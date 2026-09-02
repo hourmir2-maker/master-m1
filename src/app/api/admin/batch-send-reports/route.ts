@@ -8,9 +8,14 @@ const PARENT_MAP: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
-    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
-    const defaultParentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+    const defaultParentChatId = process.env.PARENT_TELEGRAM_CHAT_ID
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://master-m1.vercel.app'
+
+    if (!botToken || !defaultParentChatId) {
+      console.warn('[Telegram Batch Reports] Missing bot token or parent chat id environment variables.')
+      return NextResponse.json({ ok: false, error: 'Telegram configuration missing' }, { status: 500 })
+    }
 
     const supabase = await createClient()
 

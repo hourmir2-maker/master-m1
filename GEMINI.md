@@ -81,7 +81,8 @@
 - เมื่อมีการเพิ่ม Environment Variables สำหรับระบบ Automation ใน `.env.local` ต้องเพิ่มขึ้น Vercel Production เสมอ (`FB_PAGE_TOKEN`, `FB_PAGE_ID`, `BLOGGER_CLIENT_ID`, `BLOGGER_CLIENT_SECRET`, `BLOGGER_REFRESH_TOKEN`, `BLOGGER_BLOG_ID`, `PARENT_TELEGRAM_BOT_TOKEN`, `PARENT_TELEGRAM_CHAT_ID`)
 
 ### Rule 15 — Universal Multi-Parent Telegram Monitoring & PostgREST Invariant
-- **Dedicated Bot Token**: ใช้บอท "ครูพี่ MASTER AI" (`@MasterM1_Parent_bot` / Token: `8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg`) ผ่าน Webhook `/api/telegram/webhook`
+- **Dedicated Bot Token**: ใช้บอท "ครูพี่ MASTER AI" (`@MasterM1_Parent_bot`) ผ่าน Webhook `/api/telegram/webhook` และ Environment Variable `PARENT_TELEGRAM_BOT_TOKEN`
+- **Zero Hardcoded Secrets Invariant**: ห้ามใส่ String ค่า Fallback สำหรับ API Key / Bot Token ในซอร์สโค้ดเด็ดขาด (`const botToken = process.env.TOKEN || 'hardcoded_key'`) ให้ใช้เฉพาะ `process.env.<VAR>` พร้อมระบบ Null Safety Check เพื่อป้องกันคีย์รั่วไหลไปสู่ภายนอก 100%
 - **PostgREST Query Invariant**: ห้ามใช้ `.ilike` บนคอลัมน์ UUID (เช่น `id`) ใน Supabase `.or(...)` filter เด็ดขาด ให้ค้นหาเฉพาะ `email.ilike.%...%` และ `full_name.ilike.%...%` เพื่อป้องกัน PostgreSQL Type Error 42883
 - **Attempt History & Score Growth**: ทุกการทำแบบฝึกหัดใน `/api/progress` ต้องบันทึกประวัติทุกรอบ (Attempt count) และคำนวณผลต่างคะแนน (+% Growth) ส่งแจ้งเตือน Real-time เข้า Telegram ผู้ปกครอง
 - **Dynamic Zero-Typing QR Code**: หน้า Dashboard ต้องสร้าง Dynamic QR Code สู่ `https://t.me/MasterM1_Parent_bot?start=link_<email>` ตามบัญชีที่ล็อกอิน เพื่อให้ผู้ปกครองสแกนแล้วผูกบัญชีได้ทันที

@@ -5,8 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const { studentName, targetSchool } = await req.json().catch(() => ({}))
 
-    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
-    const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+    const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID
+
+    if (!botToken || !parentChatId) {
+      console.warn('[Telegram Report] Missing bot token or parent chat id environment variables.')
+      return NextResponse.json({ ok: false, error: 'Telegram configuration missing' }, { status: 500 })
+    }
 
     const supabase = await createClient()
 

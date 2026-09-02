@@ -33,8 +33,8 @@ export async function sendParentTelegramNotification({
   attemptCount = 1,
   prevScore = 0
 }: ProgressNotificationParams): Promise<boolean> {
-  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
-  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID
 
   if (!botToken) {
     console.warn('[TelegramNotify] Missing TELEGRAM_BOT_TOKEN')
@@ -129,8 +129,8 @@ export async function sendAiDiagnosticTelegramNotification(analysis: {
   giftedRecommendation: string
   parentCoachingTip: string
 }): Promise<boolean> {
-  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
-  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+  const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+  const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID
 
   if (!botToken || !parentChatId) return false
 

@@ -12,9 +12,14 @@ export async function POST(req: NextRequest) {
       studentTelegramId = ''
     } = await req.json()
 
-    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN || '8246219426:AAHB8IdCFMwgXG0pf3VAlAncfjp2WM_43kg'
-    const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID || '7864027458'
+    const botToken = process.env.PARENT_TELEGRAM_BOT_TOKEN
+    const parentChatId = process.env.PARENT_TELEGRAM_CHAT_ID
     const studentChatId = studentTelegramId || process.env.STUDENT_TELEGRAM_CHAT_ID || ''
+
+    if (!botToken || !parentChatId) {
+      console.warn('[Telegram Coaching] Missing bot token or parent chat id environment variables.')
+      return NextResponse.json({ ok: false, error: 'Telegram configuration missing' }, { status: 500 })
+    }
 
     const now = new Date()
     const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
