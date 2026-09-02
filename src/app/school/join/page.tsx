@@ -11,8 +11,10 @@ import Footer from '@/components/Footer'
 import { 
   SAMPLE_CLASSROOMS, 
   SAMPLE_ASSIGNMENTS, 
+  SAMPLE_ROSTERS,
   ClassroomInfo, 
-  SchoolAssignment 
+  SchoolAssignment,
+  StudentRosterItem
 } from '@/lib/school-portal-data'
 import { 
   Building2, 
@@ -23,7 +25,9 @@ import {
   Timer, 
   BookOpen, 
   Sparkles,
-  School
+  School,
+  Users,
+  Search
 } from 'lucide-react'
 
 import { getAdminSettings } from '@/lib/admin-settings'
@@ -39,6 +43,7 @@ function SchoolJoinContent() {
   const [studentName, setStudentName] = useState('')
   const [isJoined, setIsJoined] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [rosterList, setRosterList] = useState<StudentRosterItem[]>([])
   const [adminSettings, setAdminSettings] = useState(getAdminSettings())
 
   useEffect(() => {
@@ -70,15 +75,58 @@ function SchoolJoinContent() {
     )
   }
 
+  // Find class & load roster
+  const loadClassroomAndRoster = (codeToFind: string) => {
+    const clean = codeToFind.trim().toUpperCase()
+    let match: ClassroomInfo | null = null
+
+    // Check stored classrooms
+    try {
+      const stored = localStorage.getItem('master_m1_classrooms')
+      if (stored) {
+        const list: ClassroomInfo[] = JSON.parse(stored)
+        match = list.find(c => c.classCode.toUpperCase() === clean) || null
+      }
+    } catch {}
+
+    if (!match) {
+      match = SAMPLE_CLASSROOMS.find(c => c.classCode.toUpperCase() === clean) || null
+    }
+
+    if (match) {
+      setSelectedClass(match)
+      // Load roster
+      try {
+        const storedRosters = localStorage.getItem('master_m1_rosters')
+        if (storedRosters) {
+          const rMap = JSON.parse(storedRosters)
+          if (rMap[match.id] && rMap[match.id].length > 0) {
+            setRosterList(rMap[match.id])
+            return
+          }
+        }
+      } catch {}
+      setRosterList(SAMPLE_ROSTERS[match.id] || [])
+    } else {
+      // Custom virtual class
+      const vClass: ClassroomInfo = {
+        id: `cls_${clean}`,
+        schoolId: 'school_demo_1',
+        classCode: clean,
+        gradeLevel: 'p6',
+        gradeNameTh: 'ประถมศึกษาปีที่ 6',
+        roomName: `ห้องเรียนรหัส ${clean}`,
+        teacherName: 'คุณครูประจำวิชา',
+        studentCount: 30
+      }
+      setSelectedClass(vClass)
+      setRosterList([])
+    }
+  }
+
   useEffect(() => {
     if (initialCode) {
-      const match = SAMPLE_CLASSROOMS.find(c => c.classCode.toLowerCase() === initialCode.trim().toLowerCase())
-      if (match) {
-        setSelectedClass(match)
-      } else {
-        // Fallback demo classroom
-        setSelectedClass(SAMPLE_CLASSROOMS[0])
-      }
+      loadClassroomAndRoster(initialCode)
     }
   }, [initialCode])
 
@@ -88,24 +136,14 @@ function SchoolJoinContent() {
       setErrorMessage('กรุณาระบุรหัสห้องเรียน')
       return
     }
-    const match = SAMPLE_CLASSROOMS.find(c => c.classCode.toLowerCase() === classCode.trim().toLowerCase())
-    if (match) {
-      setSelectedClass(match)
-      setErrorMessage('')
-    } else {
-      // Create a virtual match for demo
-      setSelectedClass({
-        id: 'cls_custom',
-        schoolId: 'school_demo_1',
-        classCode: classCode.toUpperCase(),
-        gradeLevel: 'p6',
-        gradeNameTh: 'ประถมศึกษาปีที่ 6',
-        roomName: `ห้องเรียนรหัส ${classCode.toUpperCase()}`,
-        teacherName: 'คุณครูประจำวิชา',
-        studentCount: 30
-      })
-      setErrorMessage('')
-    }
+    setErrorMessage('')
+    loadClassroomAndRoster(classCode)
+  }
+
+  const handleSelectStudentFromRoster = (r: StudentRosterItem) => {
+    setStudentNumber(r.studentNumber.toString())
+    setStudentName(r.studentName)
+    setErrorMessage('')
   }
 
   const handleStartSession = (e: React.FormEvent) => {
@@ -176,7 +214,7 @@ function SchoolJoinContent() {
             </form>
           </Card>
         ) : !isJoined ? (
-          /* Step 2: Student Identity (เลขที่ + ชื่อ) */
+          /* Step 2: Student Identity (เลือกจากรายชื่อ หรือพิมพ์เอง) */
           <Card className="border-2 border-blue-100 bg-white rounded-3xl p-6 sm:p-8 shadow-lg space-y-6">
             <div className="p-4 bg-blue-50/80 rounded-2xl border border-blue-100 flex items-center justify-between">
               <div>
@@ -196,8 +234,42 @@ function SchoolJoinContent() {
 
             <div className="text-left space-y-1">
               <h2 className="text-lg font-black text-slate-900">ระบุข้อมูลนักเรียนเพื่อเข้าสอบ</h2>
-              <p className="text-xs text-slate-500">คะแนนจะถูกส่งไปยังรายงานของคุณครูผู้สอนโดยอัตโนมัติ</p>
+              <p className="text-xs text-slate-500">
+                {rosterList.length > 0 
+                  ? 'แตะเลือกชื่อของน้องจากรายชื่อด้านล่าง หรือพิมพ์เลขที่ได้ทันทีครับ' 
+                  : 'คะแนนจะถูกส่งไปยังรายงานของคุณครูผู้สอนโดยอัตโนมัติ'}
+              </p>
             </div>
+
+            {/* Quick Roster Selector (if available) */}
+            {rosterList.length > 0 && (
+              <div className="space-y-2 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-blue-600" /> เลือกชื่อนักเรียนจากรายชื่อในห้อง ({rosterList.length} คน):
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
+                  {rosterList.map(r => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => handleSelectStudentFromRoster(r)}
+                      className={`p-2.5 rounded-xl text-left text-xs font-semibold flex items-center gap-2.5 transition-all ${
+                        studentNumber === r.studentNumber.toString()
+                          ? 'bg-blue-600 text-white shadow-xs font-bold'
+                          : 'bg-white text-slate-700 hover:bg-blue-50 border border-slate-200'
+                      }`}
+                    >
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center font-mono font-bold text-[10px] shrink-0 ${
+                        studentNumber === r.studentNumber.toString() ? 'bg-white text-blue-800' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {r.studentNumber}
+                      </span>
+                      <span className="truncate">{r.studentName}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleStartSession} className="space-y-4">
               <div className="grid grid-cols-3 gap-3">
@@ -209,7 +281,12 @@ function SchoolJoinContent() {
                     max={99}
                     placeholder="เช่น 1"
                     value={studentNumber}
-                    onChange={e => setStudentNumber(e.target.value)}
+                    onChange={e => {
+                      const val = e.target.value
+                      setStudentNumber(val)
+                      const matched = rosterList.find(r => r.studentNumber.toString() === val)
+                      if (matched) setStudentName(matched.studentName)
+                    }}
                     className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-mono text-center text-base font-bold text-slate-900 outline-hidden focus:border-blue-500"
                   />
                 </div>
@@ -272,7 +349,7 @@ function SchoolJoinContent() {
                       </p>
                     </div>
 
-                    <Link href={`/onet-exam?classroom=${selectedClass.classCode}&student=${studentNumber}`}>
+                    <Link href={`/onet-exam?classroom=${selectedClass.classCode}&student=${studentNumber}&name=${encodeURIComponent(studentName)}`}>
                       <Button className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 text-white font-bold text-xs px-6 rounded-xl shadow-xs">
                         <Play className="w-3.5 h-3.5 mr-1 fill-white" /> เริ่มทำข้อสอบ
                       </Button>
@@ -292,7 +369,7 @@ function SchoolJoinContent() {
 
 export default function SchoolJoinPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลด...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500">กำลังโหลดห้องเรียน...</div>}>
       <SchoolJoinContent />
     </Suspense>
   )

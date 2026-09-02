@@ -187,3 +187,77 @@ export const SAMPLE_SUBMISSIONS: StudentSubmission[] = [
     indicatorDeficiencies: ['ค 2.1 ป.6/1 (ปริมาตร)']
   }
 ]
+
+export interface StudentRosterItem {
+  id: string
+  classroomId: string
+  studentNumber: number
+  studentName: string
+  studentCode?: string
+}
+
+export const SAMPLE_ROSTERS: Record<string, StudentRosterItem[]> = {
+  cls_p6_1: [
+    { id: 'r_1', classroomId: 'cls_p6_1', studentNumber: 1, studentName: 'เด็กชายกิตติศักดิ์ พรหมดี', studentCode: '6901' },
+    { id: 'r_2', classroomId: 'cls_p6_1', studentNumber: 2, studentName: 'เด็กหญิงชลธิชา สิทธิโชค', studentCode: '6902' },
+    { id: 'r_3', classroomId: 'cls_p6_1', studentNumber: 3, studentName: 'เด็กชายนพรัตน์ วงศ์สุวรรณ', studentCode: '6903' },
+    { id: 'r_4', classroomId: 'cls_p6_1', studentNumber: 4, studentName: 'เด็กหญิงปานรวี แก้วมณี', studentCode: '6904' },
+    { id: 'r_5', classroomId: 'cls_p6_1', studentNumber: 5, studentName: 'เด็กชายภูมิรพีร์ มากแก้ว', studentCode: '6905' }
+  ]
+}
+
+/**
+ * ตัวแปลงข้อความ/CSV นำเข้ารายชื่อนักเรียนแบบยืดหยุ่นสูง
+ */
+export function parseRosterText(rawText: string, classroomId: string): StudentRosterItem[] {
+  const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean)
+  const items: StudentRosterItem[] = []
+
+  lines.forEach((line, idx) => {
+    // Skip header row if present
+    if (line.includes('เลขที่') || line.includes('ชื่อ-นามสกุล') || line.toLowerCase().includes('student')) {
+      return
+    }
+
+    // 1. Check comma / tab CSV split
+    const parts = line.split(/[,\t]/).map(p => p.trim().replace(/^["']|["']$/g, ''))
+    if (parts.length >= 2 && !isNaN(Number(parts[0]))) {
+      const num = parseInt(parts[0], 10)
+      const name = parts[1]
+      if (name) {
+        items.push({
+          id: `st_${Date.now()}_${idx}`,
+          classroomId,
+          studentNumber: num,
+          studentName: name,
+          studentCode: parts[2] || undefined
+        })
+        return
+      }
+    }
+
+    // 2. Check regex: "1. ด.ช.สมชาย" or "1 ด.ช.สมชาย"
+    const match = line.match(/^(\d+)[\.\s\:\-\)]*\s*(.+)$/)
+    if (match) {
+      const num = parseInt(match[1], 10)
+      const name = match[2].trim()
+      items.push({
+        id: `st_${Date.now()}_${idx}`,
+        classroomId,
+        studentNumber: num,
+        studentName: name
+      })
+    } else {
+      // 3. Raw name without leading number
+      items.push({
+        id: `st_${Date.now()}_${idx}`,
+        classroomId,
+        studentNumber: items.length + 1,
+        studentName: line
+      })
+    }
+  })
+
+  return items.sort((a, b) => a.studentNumber - b.studentNumber)
+}
+

@@ -13,10 +13,13 @@ import {
   SAMPLE_CLASSROOMS, 
   SAMPLE_ASSIGNMENTS, 
   SAMPLE_SUBMISSIONS, 
+  SAMPLE_ROSTERS,
   ClassroomInfo, 
   SchoolAssignment,
   StudentSubmission,
-  SchoolInfo
+  StudentRosterItem,
+  SchoolInfo,
+  parseRosterText
 } from '@/lib/school-portal-data'
 import { 
   Building2, 
@@ -35,7 +38,11 @@ import {
   FileSpreadsheet,
   Copy,
   Edit3,
-  Loader2
+  Loader2,
+  UserPlus,
+  Upload,
+  FileText,
+  Trash2
 } from 'lucide-react'
 
 import { getAdminSettings } from '@/lib/admin-settings'
@@ -46,11 +53,13 @@ export default function TeacherPortalPage() {
   const [selectedClassId, setSelectedClassId] = useState<string>('cls_p6_1')
   const [assignments, setAssignments] = useState<SchoolAssignment[]>(SAMPLE_ASSIGNMENTS)
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(SAMPLE_SUBMISSIONS)
+  const [rosters, setRosters] = useState<Record<string, StudentRosterItem[]>>(SAMPLE_ROSTERS)
   
   // Modals
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showAddClassModal, setShowAddClassModal] = useState(false)
   const [showSchoolModal, setShowSchoolModal] = useState(false)
+  const [showRosterModal, setShowRosterModal] = useState(false)
 
   // Forms
   const [newTitle, setNewTitle] = useState('')
@@ -69,17 +78,25 @@ export default function TeacherPortalPage() {
   const [editAffiliation, setEditAffiliation] = useState(currentSchool.affiliation)
   const [isSavingSchool, setIsSavingSchool] = useState(false)
 
+  // Roster Import Form
+  const [rosterImportTab, setRosterImportTab] = useState<'paste' | 'file' | 'current'>('paste')
+  const [rawRosterText, setRawRosterText] = useState('')
+  const [previewRoster, setPreviewRoster] = useState<StudentRosterItem[]>([])
+  const [isSavingRoster, setIsSavingRoster] = useState(false)
+
   const [adminSettings, setAdminSettings] = useState(getAdminSettings())
   const [copiedCode, setCopiedCode] = useState(false)
 
   useEffect(() => {
     setAdminSettings(getAdminSettings())
-    // Load local stored school and classrooms if any
+    // Load local stored school, classrooms, and rosters if any
     try {
       const storedSchool = localStorage.getItem('master_m1_school_info')
       if (storedSchool) setCurrentSchool(JSON.parse(storedSchool))
       const storedClasses = localStorage.getItem('master_m1_classrooms')
       if (storedClasses) setClassrooms(JSON.parse(storedClasses))
+      const storedRosters = localStorage.getItem('master_m1_rosters')
+      if (storedRosters) setRosters(JSON.parse(storedRosters))
     } catch {}
   }, [])
 
@@ -109,6 +126,7 @@ export default function TeacherPortalPage() {
   }
 
   const currentClass = classrooms.find(c => c.id === selectedClassId) || classrooms[0] || SAMPLE_CLASSROOMS[0]
+  const currentRoster = rosters[currentClass.id] || []
 
   // คำนวณค่าสถิติห้องเรียน
   const totalSubmissions = submissions.length
@@ -232,6 +250,77 @@ export default function TeacherPortalPage() {
     setShowSchoolModal(false)
   }
 
+  // แปลงข้อความรายชื่อนักเรียน
+  const handleParseRoster = () => {
+    if (!rawRosterText.trim()) return
+    const parsed = parseRosterText(rawRosterText, currentClass.id)
+    setPreviewRoster(parsed)
+  }
+
+  // อัปโหลดไฟล์ CSV
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      const text = evt.target?.result as string
+      if (text) {
+        setRawRosterText(text)
+        const parsed = parseRosterText(text, currentClass.id)
+        setPreviewRoster(parsed)
+      }
+    }
+    reader.readAsText(file, 'UTF-8')
+  }
+
+  // บันทึกรายชื่อนักเรียนเข้าสู่ห้องเรียน
+  const handleSaveRoster = async () => {
+    if (previewRoster.length === 0) return
+    setIsSavingRoster(true)
+
+    const updatedRosters = {
+      ...rosters,
+      [currentClass.id]: previewRoster
+    }
+    setRosters(updatedRosters)
+    localStorage.setItem('master_m1_rosters', JSON.stringify(updatedRosters))
+
+    // Update classroom studentCount
+    const updatedClasses = classrooms.map(c => 
+      c.id === currentClass.id ? { ...c, studentCount: previewRoster.length } : c
+    )
+    setClassrooms(updatedClasses)
+    localStorage.setItem('master_m1_classrooms', JSON.stringify(updatedClasses))
+
+    try {
+      await fetch('/api/school/import-roster', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          classroomId: currentClass.id,
+          students: previewRoster
+        })
+      })
+    } catch {}
+
+    setIsSavingRoster(false)
+    setShowRosterModal(false)
+    setRawRosterText('')
+    setPreviewRoster([])
+  }
+
+  const handleDownloadTemplate = () => {
+    const templateContent = '\uFEFFเลขที่,ชื่อ-นามสกุล,รหัสนักเรียน\n1,เด็กชายกิตติศักดิ์ พรหมดี,6901\n2,เด็กหญิงชลธิชา สิทธิโชค,6902\n3,เด็กชายนพรัตน์ วงศ์สุวรรณ,6903\n4,เด็กหญิงปานรวี แก้วมณี,6904\n5,เด็กชายภูมิรพีร์ มากแก้ว,6905'
+    const blob = new Blob([templateContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'template_student_roster.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const handleCreateAssignment = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newTitle.trim()) return
@@ -308,16 +397,22 @@ export default function TeacherPortalPage() {
           <div className="flex items-center gap-2">
             <Button
               size="sm"
+              variant="outline"
+              onClick={() => {
+                setPreviewRoster(currentRoster)
+                setShowRosterModal(true)
+              }}
+              className="border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100 font-bold text-xs rounded-xl shadow-xs"
+            >
+              <UserPlus className="w-3.5 h-3.5 mr-1 text-blue-600" /> นำเข้ารายชื่อนักเรียน ({currentRoster.length})
+            </Button>
+            <Button
+              size="sm"
               onClick={() => setShowAddClassModal(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs"
             >
               <Plus className="w-3.5 h-3.5 mr-1" /> สร้างห้องเรียนใหม่
             </Button>
-            <Link href="/onet-exam">
-              <Button variant="outline" size="sm" className="text-xs border-orange-200 text-orange-700 bg-orange-50 font-bold hidden sm:inline-flex">
-                🎯 คลังข้อสอบ O-NET
-              </Button>
-            </Link>
           </div>
         </div>
       </header>
@@ -367,7 +462,7 @@ export default function TeacherPortalPage() {
           <Card className="border-slate-200 bg-white rounded-2xl shadow-xs">
             <CardContent className="pt-5 pb-4 text-center">
               <div className="text-2xl sm:text-3xl font-black text-blue-600 mb-0.5">
-                {currentClass.studentCount} คน
+                {currentRoster.length > 0 ? currentRoster.length : currentClass.studentCount} คน
               </div>
               <p className="text-xs text-slate-500 font-semibold">จำนวนนักเรียนในห้อง</p>
             </CardContent>
@@ -394,7 +489,7 @@ export default function TeacherPortalPage() {
           <Card className="border-slate-200 bg-white rounded-2xl shadow-xs">
             <CardContent className="pt-5 pb-4 text-center">
               <div className="text-2xl sm:text-3xl font-black text-orange-600 mb-0.5">
-                {totalSubmissions} / {currentClass.studentCount}
+                {totalSubmissions} / {currentRoster.length > 0 ? currentRoster.length : currentClass.studentCount}
               </div>
               <p className="text-xs text-slate-500 font-semibold">ส่งกระดาษคำตอบแล้ว</p>
             </CardContent>
@@ -524,6 +619,196 @@ export default function TeacherPortalPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal: Import Student Roster */}
+      {showRosterModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-600" /> นำเข้ารายชื่อนักเรียน ({currentClass.roomName})
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  เมื่อนำเข้าแล้ว นักเรียนจะสามารถเลือกชื่อตัวเองเพื่อเข้าสอบได้ทันทีโดยไม่ต้องพิมพ์เอง
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowRosterModal(false)}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                ✕
+              </Button>
+            </div>
+
+            {/* Sub-tabs */}
+            <div className="flex gap-2 border-b border-slate-100 pb-2">
+              <button
+                onClick={() => setRosterImportTab('paste')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  rosterImportTab === 'paste' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                📋 คัดลอกวางข้อความ (ด่วน)
+              </button>
+              <button
+                onClick={() => setRosterImportTab('file')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  rosterImportTab === 'file' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                📁 อัปโหลดไฟล์ CSV (Excel)
+              </button>
+              <button
+                onClick={() => setRosterImportTab('current')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  rosterImportTab === 'current' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                👥 รายชื่อปัจจุบัน ({currentRoster.length} คน)
+              </button>
+            </div>
+
+            {rosterImportTab === 'paste' && (
+              <div className="space-y-3">
+                <div className="bg-blue-50 p-3 rounded-xl text-xs text-blue-900 leading-relaxed border border-blue-100">
+                  💡 <b>วิธีใช้งาน:</b> คัดลอกรายชื่อจาก Word หรือ Excel มาวางได้เลย (รองรับทั้งแบบมีเลขที่หรือไม่มีเลขที่)
+                  <div className="font-mono text-[11px] text-blue-700 mt-1 bg-white/60 p-2 rounded-lg">
+                    1. ด.ช.กิตติศักดิ์ พรหมดี<br/>
+                    2. ด.ญ.ชลธิชา สิทธิโชค<br/>
+                    3. ด.ช.นพรัตน์ วงศ์สุวรรณ
+                  </div>
+                </div>
+
+                <textarea
+                  rows={6}
+                  value={rawRosterText}
+                  onChange={e => setRawRosterText(e.target.value)}
+                  placeholder="วางรายชื่อนักเรียนที่นี่..."
+                  className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-mono focus:border-blue-500 outline-hidden"
+                />
+
+                <Button
+                  type="button"
+                  onClick={handleParseRoster}
+                  disabled={!rawRosterText.trim()}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 rounded-xl"
+                >
+                  ⚡ ตรวจสอบและสกัดรายชื่อนักเรียน
+                </Button>
+              </div>
+            )}
+
+            {rosterImportTab === 'file' && (
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center space-y-3 hover:border-blue-400 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-2xl">
+                    📊
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">เลือกไฟล์ CSV รายชื่อนักเรียน</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">รองรับไฟล์ .csv (UTF-8)</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl text-xs">
+                  <span className="text-slate-600">ยังไม่มีแบบฟอร์ม?</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadTemplate}
+                    className="text-xs text-blue-600 border-blue-200 font-bold"
+                  >
+                    <Download className="w-3.5 h-3.5 mr-1" /> ดาวน์โหลดแม่แบบ Excel (CSV)
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {rosterImportTab === 'current' && (
+              <div className="space-y-3">
+                {currentRoster.length === 0 ? (
+                  <p className="text-center py-6 text-xs text-slate-400">ยังไม่มีรายชื่อนักเรียนในห้องนี้</p>
+                ) : (
+                  <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-2xl">
+                    {currentRoster.map(r => (
+                      <div key={r.id} className="p-3 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-mono font-bold flex items-center justify-center text-[10px]">
+                            {r.studentNumber}
+                          </span>
+                          <span className="font-bold text-slate-800">{r.studentName}</span>
+                        </div>
+                        {r.studentCode && (
+                          <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded">
+                            รหัส: {r.studentCode}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Preview Section */}
+            {previewRoster.length > 0 && (
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    พบรายชื่อนักเรียน {previewRoster.length} คน:
+                  </h4>
+                  <Badge className="bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                    พร้อมบันทึก
+                  </Badge>
+                </div>
+
+                <div className="max-h-48 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-2xl">
+                  {previewRoster.map((item, i) => (
+                    <div key={i} className="p-2.5 px-3 flex items-center justify-between text-xs hover:bg-slate-50">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-700 font-mono font-bold flex items-center justify-center text-[10px]">
+                          {item.studentNumber}
+                        </span>
+                        <span className="font-semibold text-slate-800">{item.studentName}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setPreviewRoster([])}
+                    className="flex-1 text-xs"
+                  >
+                    ล้างข้อมูล
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleSaveRoster}
+                    disabled={isSavingRoster}
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
+                  >
+                    {isSavingRoster ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : '💾 ยืนยันบันทึกรายชื่อเข้าห้อง ➔'}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Modal: Add New Classroom */}
       {showAddClassModal && (
