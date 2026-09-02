@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     // 1. Fetch all user profiles
     const { data: profiles, error: profileErr } = await supabase
       .from('profiles')
-      .select('id, full_name, created_at')
+      .select('id, full_name, email, school_target, grade_target, created_at')
       .order('created_at', { ascending: false })
 
     if (profileErr) {
@@ -30,6 +30,8 @@ export async function GET(req: NextRequest) {
       {
         id: '4ec823eb-be30-4e1c-a709-a3382ee85491',
         full_name: 'ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)',
+        email: 'phumrapeeft@gmail.com',
+        school_target: 'ห้องพิเศษ Gifted วิทย์-คณิต สู่ เภสัชกร 💊 (👑 VIP Gifted Track)',
         created_at: new Date(Date.now() - 3600000 * 24 * 7).toISOString()
       }
     ]
@@ -64,11 +66,17 @@ export async function GET(req: NextRequest) {
         ? Math.round(userProgress.reduce((sum, item) => sum + (item.score ?? 0), 0) / userProgress.length)
         : 0
 
+      const isFortune = p.full_name?.includes('ภูมิรพีร์') || p.email === 'phumrapeeft@gmail.com' || p.id === '4ec823eb-be30-4e1c-a709-a3382ee85491'
+      const isVip = isFortune || p.school_target?.includes('VIP') || p.school_target?.includes('Gifted')
+
       return {
         id: p.id,
         fullName: p.full_name || 'ผู้เรียนไม่ระบุชื่อ',
+        email: p.email || '',
+        schoolTarget: p.school_target || '',
         createdAt: p.created_at || new Date().toISOString(),
-        isFortune: p.full_name?.includes('ภูมิรพีร์') || p.id === '4ec823eb-be30-4e1c-a709-a3382ee85491',
+        isFortune,
+        isVip,
         stats: {
           totalDone,
           mathDone,

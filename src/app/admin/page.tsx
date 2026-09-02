@@ -118,12 +118,41 @@ export default function AdminPage() {
       const data = await res.json()
       if (data.success) {
         logAdminAction('BATCH_SEND_REPORTS', `ส่งรายงานผลรายบุคคลถึงผู้ปกครองสำเร็จ ${data.sentCount}/${data.totalStudents} คน`)
-        triggerToast(`🚀 ส่งรายงานผลรายบุคคลถึงผู้ปกครองทุกคนสำเร็จ (${data.sentCount} คน) เรียบร้อยแล้ว!`)
+        setSaveSuccess(`🚀 ส่งรายงานผลรายบุคคลถึงผู้ปกครองทุกคนสำเร็จ (${data.sentCount} คน) เรียบร้อยแล้ว!`)
+        setTimeout(() => setSaveSuccess(null), 4000)
       }
     } catch (e) {
       console.warn('Error batch sending reports:', e)
     } finally {
       setIsBatchSendingReports(false)
+    }
+  }
+
+  const [isTogglingVip, setIsTogglingVip] = useState<boolean>(false)
+
+  const handleToggleStudentVip = async (student: any) => {
+    if (!student) return
+    const newStatus = !student.isVip
+    setIsTogglingVip(true)
+    try {
+      const res = await fetch('/api/admin/toggle-vip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId: student.id, isVip: newStatus })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStudentsList(prev => prev.map(s => s.id === student.id ? { ...s, isVip: newStatus, schoolTarget: data.schoolTarget } : s))
+        if (selectedStudent?.id === student.id) {
+          setSelectedStudent({ ...selectedStudent, isVip: newStatus, schoolTarget: data.schoolTarget })
+        }
+        logAdminAction('TOGGLE_VIP', `${newStatus ? 'ตั้งค่า' : 'ยกเลิก'} สิทธิ์ VIP สำหรับนักเรียน: ${student.fullName}`)
+        triggerToast(`👑 ${newStatus ? 'เปิดใช้งานสิทธิ์ VIP สำเร็จ' : 'ยกเลิกสิทธิ์ VIP แล้ว'}: ${student.fullName}`)
+      }
+    } catch (err) {
+      console.warn('Toggle VIP error:', err)
+    } finally {
+      setIsTogglingVip(false)
     }
   }
 
@@ -1013,9 +1042,9 @@ export default function AdminPage() {
                           <div className="font-bold truncate pr-1">
                             {student.fullName}
                           </div>
-                          {student.isFortune && (
+                          {student.isVip && (
                             <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-[10px] shrink-0">
-                              ⭐ VIP
+                              👑 VIP
                             </Badge>
                           )}
                         </div>
@@ -1042,19 +1071,36 @@ export default function AdminPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="text-lg font-black text-white">{selectedStudent.fullName}</h4>
-                            {selectedStudent.isFortune && (
-                              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-xs">
-                                🎯 ม.1 Gifted Pathway
+                            {selectedStudent.isVip ? (
+                              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/40 text-xs font-bold">
+                                👑 VIP Gifted Track
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-slate-800 text-slate-400 border-slate-700 text-xs">
+                                นักเรียนทั่วไป
                               </Badge>
                             )}
                           </div>
                           <p className="text-[11px] text-slate-400">
-                            รหัสผู้เรียน: {selectedStudent.id.slice(0, 16)}... • สมัครเมื่อ: {new Date(selectedStudent.createdAt).toLocaleDateString('th-TH')}
+                            รหัสผู้เรียน: {selectedStudent.id.slice(0, 16)}... • เป้าหมาย: {selectedStudent.schoolTarget || 'เตรียมสอบเข้า ม.1'}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Button
+                          onClick={() => handleToggleStudentVip(selectedStudent)}
+                          disabled={isTogglingVip}
+                          size="sm"
+                          className={`font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition-all ${
+                            selectedStudent.isVip 
+                              ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-amber-500/20' 
+                              : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40'
+                          }`}
+                        >
+                          👑 {selectedStudent.isVip ? 'นักเรียน VIP (แตะเพื่อยกเลิก)' : '⭐ ปรับเป็นนักเรียน VIP'}
+                        </Button>
+
                         <Button
                           onClick={() => handleAnalyzeStudent(selectedStudent)}
                           disabled={isAnalyzingStudent}
@@ -1062,7 +1108,7 @@ export default function AdminPage() {
                           className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5"
                         >
                           <Sparkles className={`w-3.5 h-3.5 ${isAnalyzingStudent ? 'animate-spin' : 'text-amber-300'}`} />
-                          {isAnalyzingStudent ? 'AI กำลังวิเคราะห์...' : '🧠 AI วิเคราะห์ผู้เรียนรายบุคคล'}
+                          {isAnalyzingStudent ? 'AI กำลังวิเคราะห์...' : '🧠 AI วิเคราะห์ผู้เรียน'}
                         </Button>
 
                         <Button
