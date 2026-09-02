@@ -22,6 +22,8 @@ export interface MemorySong {
   trapToAvoid: string
   aipassMusicPrompt: string
   aipassVideoPrompt: string
+  youtubeUrl?: string
+  releaseDate?: string
 }
 
 export const MEMORY_SONGS_DATA: MemorySong[] = [
@@ -71,7 +73,9 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     speedTechnique: 'เลขลงท้าย 5: n5² = [n × (n+1)]25 | ใบไม้แรเงา = (4/7)a² | แปลงมุมวงกลม = % × 3.6°',
     trapToAvoid: 'อย่าลืมว่าสูตรใบไม้ (4/7)a² ใช้ได้เฉพาะเมื่อใบไม้แนบในสี่เหลี่ยมจัตุรัสด้านยาวเท่ากันเท่านั้น!',
     aipassMusicPrompt: 'Upbeat energetic Thai educational synth-pop, 120 BPM, catchy rhythmic vocal cadence, bright synthesizers, punchy modern dance beat, enthusiastic and clear Thai singing voice explaining speed math shortcuts.',
-    aipassVideoPrompt: 'Cute 3D animated schoolboy solving glowing math equations in floating digital space, colorful neon numbers multiplying smoothly, dynamic camera zoom, Studio Ghibli meets Pixar futuristic high-tech classroom style, 4K resolution.'
+    aipassVideoPrompt: 'Cute 3D animated schoolboy solving glowing math equations in floating digital space, colorful neon numbers multiplying smoothly, dynamic camera zoom, Studio Ghibli meets Pixar futuristic high-tech classroom style, 4K resolution.',
+    youtubeUrl: 'https://youtu.be/SLumB462LQU',
+    releaseDate: '2026-09-02'
   },
   {
     id: 'song_sci_heat',
@@ -120,7 +124,9 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     speedTechnique: 'ΔT เปลี่ยน ➔ Q = mcΔt | สถานะเปลี่ยน (T คงที่) ➔ Q = mL (หลอมเหลว L=80, กลายเป็นไอ L=540)',
     trapToAvoid: 'ระวังหน่วยมวล m กับความจุความร้อน c ถ้าโจทย์ให้หน่วยกิโลกรัม (kg) ต้องแปลงเป็นกรัม (g) ให้ตรงกันก่อนคูณ!',
     aipassMusicPrompt: 'Catchy melodic Lo-Fi chillhop with warm guitar and smooth acoustic drums, 110 BPM, gentle friendly tutor voice singing in Thai, rhythmic educational melody about heat formulas Q=mcΔt and Q=mL.',
-    aipassVideoPrompt: 'An ice cube melting into clear glowing water drops then turning into sparkling steam under a friendly microscope lens, vibrant 3D infographic animations showing heat energy molecules bouncing, Disney Pixar style.'
+    aipassVideoPrompt: 'An ice cube melting into clear glowing water drops then turning into sparkling steam under a friendly microscope lens, vibrant 3D infographic animations showing heat energy molecules bouncing, Disney Pixar style.',
+    youtubeUrl: 'https://youtu.be/SR3oNJOThVo',
+    releaseDate: '2026-09-02'
   },
   {
     id: 'song_eng_ifclause',
@@ -166,7 +172,9 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     speedTechnique: 'Type 0 (V.1 ➔ V.1) | Type 1 (V.1 ➔ will + V.inf) | Type 2 (V.2 [were] ➔ would + V.inf) | Type 3 (had V.3 ➔ would have V.3)',
     trapToAvoid: 'Type 2 ในข้อสอบทางการ แม้ประธานจะเป็น He/She/I ก็ต้องใช้ were เช่น "If I were you..." ห้ามเผลอตอบ was เด็ดขาด!',
     aipassMusicPrompt: 'Upbeat K-Pop inspired bubblegum pop, energetic female & male vocal harmonies in Thai and English, bouncy bassline, clapping drums, 124 BPM, fun educational song explaining If-Clause types 0, 1, 2, 3 clearly.',
-    aipassVideoPrompt: 'Animated cheerful teenagers singing in a futuristic bright English classroom, comic book pop-art graphics popping up with grammar formulas (If + Present -> Will + V1), vibrant pastel aesthetic.'
+    aipassVideoPrompt: 'Animated cheerful teenagers singing in a futuristic bright English classroom, comic book pop-art graphics popping up with grammar formulas (If + Present -> Will + V1), vibrant pastel aesthetic.',
+    youtubeUrl: 'https://youtu.be/gtlfFyTnKi0',
+    releaseDate: '2026-09-03 00:00'
   },
   {
     id: 'song_thai_samasa',
@@ -208,6 +216,52 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     speedTechnique: 'สมาส = นำคำบาลี-สันสกฤตมาชนกัน (แปลหลังมาหน้า) | สนธิ = มีการเชื่อมเสียง กลืนสระ/พยัญชนะ/นฤคหิต เป็นคำใหม่',
     trapToAvoid: 'คำที่มีภาษาไทยปน เช่น "ผลไม้" (ผล = บาลี, ไม้ = ไทย) เป็นคำประสม ไม่ใช่คำสมาสเด็ดขาด!',
     aipassMusicPrompt: 'Pleasant Thai acoustic pop with gentle acoustic guitar, traditional Thai flute accent, melodious cheerful vocals, 115 BPM, clear pronunciation of Thai language grammar rules.',
-    aipassVideoPrompt: 'Hand-drawn watercolor Thai calligraphy blending into glowing 3D letters, animated ancient palm-leaf scriptures transforming into modern golden books, soft warm lighting, Thai cultural elegance.'
+    aipassVideoPrompt: 'Hand-drawn watercolor Thai calligraphy blending into glowing 3D letters, animated ancient palm-leaf scriptures transforming into modern golden books, soft warm lighting, Thai cultural elegance.',
+    youtubeUrl: 'https://youtu.be/wWAGTkDTCD4',
+    releaseDate: '2026-09-04 00:00'
+  },
+  {
+    id: 'song_math_pythagoras',
+    title: 'เพลงสามเหลี่ยมพีทาโกรัส 3 วินาที',
+    subject: 'math',
+    subjectLabel: 'คณิตศาสตร์',
+    badgeColor: 'bg-amber-600 text-white',
+    icon: '📐',
+    bpm: 130,
+    genre: 'Energetic Anime Rock / J-Pop',
+    formulaTopic: 'อัตราส่วนสามเหลี่ยมมุมฉาก 3-4-5, 5-12-13, 7-24-25, 8-15-17',
+    catchphrase: 'ท่อง 4 ชุดมหาเทพ กาช้อยส์สามเหลี่ยมมุมฉากใน 3 วินาที!',
+    lyrics: [
+      {
+        section: 'Verse 1',
+        lines: [
+          'สามเหลี่ยมมุมฉาก มีด้านประกอบ และมีด้านตรงข้ามมุมฉาก',
+          'a กำลังสอง บวก b กำลังสอง เท่ากับ c กำลังสองเสมอ',
+          'แต่เวลาลงสนามสอบจริง ไม่ต้องมานั่งคูณให้เสียเวลา!'
+        ]
+      },
+      {
+        section: 'Chorus (สูตรลัด)',
+        lines: [
+          'ท่อง 4 ชุดมหาเทพ 3 วินาที ตอบได้ทันควัน!',
+          'สาม-สี่-ห้า... ห้า-สิบสอง-สิบสาม!',
+          'เจ็ด-ยี่สิบสี่-ยี่สิบห้า... แปด-สิบห้า-สิบเจ็ด!',
+          'เอาแม่สอง แม่สาม มาคูณขยาย: หก-แปด-สิบ ก็มุมฉากเป๊ะๆ!',
+          'เจอสามเหลี่ยมมุมฉาก กาช้อยส์ได้ในสามวิ!'
+        ]
+      },
+      {
+        section: 'Outro',
+        lines: [
+          'MASTER ม.1 พีทาโกรัสคิดเร็ว สอบติดห้อง Gifted แน่นอน!'
+        ]
+      }
+    ],
+    speedTechnique: 'ชุดพีทาโกรัสยอดนิยม: (3,4,5), (5,12,13), (7,24,25), (8,15,17) และผลคูณจำนวนเท่า',
+    trapToAvoid: 'อย่าสับสนด้านตรงข้ามมุมฉาก c ต้องเป็นด้านที่ยาวที่สุดเสมอ ถ้าโจทย์สลับด้านอย่าเผลอตอบ!',
+    aipassMusicPrompt: 'Energetic Anime Rock / J-Pop 130 BPM, rhythmic drums and driving electric guitar, punchy Japanese-style rock rhythm with clear inspiring Thai male vocals.',
+    aipassVideoPrompt: 'Futuristic glowing mathematical laboratory with geometric 3D right triangles, educational diagrams showing formulas a square plus b square equals c square, floating holographic golden numbers 3 4 5 and 5 12 13, bright studio cinematic lighting, 16:9 3D animation, Pixar style.',
+    youtubeUrl: 'https://youtu.be/M7WdGyXD_IM',
+    releaseDate: '2026-09-05 00:00'
   }
 ]
