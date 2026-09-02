@@ -1,0 +1,16 @@
+{
+  "cooldowns": {
+    "Claude Sonnet 5": "2026-09-02T09:49:31.781012",
+    "DeepSeek V3.2": "2026-09-02T09:50:02.620258"
+  },
+  "last_used_model": "Claude Sonnet 5",
+  "history": [
+    {
+      "timestamp": "2026-09-02T09:12:08.167978",
+      "task_class": "code",
+      "model": "Claude Sonnet 5",
+      "prompt_length": 235,
+      "response_length": 2114
+    }
+  ]
+}
