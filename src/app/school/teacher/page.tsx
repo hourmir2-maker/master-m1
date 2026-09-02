@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,7 +15,8 @@ import {
   SAMPLE_SUBMISSIONS, 
   ClassroomInfo, 
   SchoolAssignment,
-  StudentSubmission 
+  StudentSubmission,
+  SchoolInfo
 } from '@/lib/school-portal-data'
 import { 
   Building2, 
@@ -31,23 +32,55 @@ import {
   Download, 
   Sparkles,
   School,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Copy,
+  Edit3,
+  Loader2
 } from 'lucide-react'
 
 import { getAdminSettings } from '@/lib/admin-settings'
-import { useEffect } from 'react'
 
 export default function TeacherPortalPage() {
+  const [currentSchool, setCurrentSchool] = useState<SchoolInfo>(SAMPLE_SCHOOL)
+  const [classrooms, setClassrooms] = useState<ClassroomInfo[]>(SAMPLE_CLASSROOMS)
   const [selectedClassId, setSelectedClassId] = useState<string>('cls_p6_1')
   const [assignments, setAssignments] = useState<SchoolAssignment[]>(SAMPLE_ASSIGNMENTS)
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(SAMPLE_SUBMISSIONS)
+  
+  // Modals
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showAddClassModal, setShowAddClassModal] = useState(false)
+  const [showSchoolModal, setShowSchoolModal] = useState(false)
+
+  // Forms
   const [newTitle, setNewTitle] = useState('')
   const [newSubject, setNewSubject] = useState<'math' | 'science' | 'thai' | 'english'>('math')
+  
+  // New Class Form
+  const [newGradeLevel, setNewGradeLevel] = useState<'p1' | 'p2' | 'p3' | 'p4' | 'p5' | 'p6' | 'm1'>('p6')
+  const [newRoomName, setNewRoomName] = useState('')
+  const [newTeacherName, setNewTeacherName] = useState('')
+  const [customClassCode, setCustomClassCode] = useState('')
+  const [isCreatingClass, setIsCreatingClass] = useState(false)
+
+  // School Form
+  const [editSchoolName, setEditSchoolName] = useState(currentSchool.schoolName)
+  const [editProvince, setEditProvince] = useState(currentSchool.province)
+  const [editAffiliation, setEditAffiliation] = useState(currentSchool.affiliation)
+  const [isSavingSchool, setIsSavingSchool] = useState(false)
+
   const [adminSettings, setAdminSettings] = useState(getAdminSettings())
+  const [copiedCode, setCopiedCode] = useState(false)
 
   useEffect(() => {
     setAdminSettings(getAdminSettings())
+    // Load local stored school and classrooms if any
+    try {
+      const storedSchool = localStorage.getItem('master_m1_school_info')
+      if (storedSchool) setCurrentSchool(JSON.parse(storedSchool))
+      const storedClasses = localStorage.getItem('master_m1_classrooms')
+      if (storedClasses) setClassrooms(JSON.parse(storedClasses))
+    } catch {}
   }, [])
 
   if (!adminSettings.school_enabled) {
@@ -75,7 +108,7 @@ export default function TeacherPortalPage() {
     )
   }
 
-  const currentClass = SAMPLE_CLASSROOMS.find(c => c.id === selectedClassId) || SAMPLE_CLASSROOMS[0]
+  const currentClass = classrooms.find(c => c.id === selectedClassId) || classrooms[0] || SAMPLE_CLASSROOMS[0]
 
   // คำนวณค่าสถิติห้องเรียน
   const totalSubmissions = submissions.length
@@ -97,6 +130,108 @@ export default function TeacherPortalPage() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
 
+  // สร้างห้องเรียนใหม่
+  const handleCreateClassroom = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newRoomName.trim() || !newTeacherName.trim()) return
+
+    setIsCreatingClass(true)
+    const gradeLabelMap: Record<string, string> = {
+      p1: 'ประถมศึกษาปีที่ 1',
+      p2: 'ประถมศึกษาปีที่ 2',
+      p3: 'ประถมศึกษาปีที่ 3',
+      p4: 'ประถมศึกษาปีที่ 4',
+      p5: 'ประถมศึกษาปีที่ 5',
+      p6: 'ประถมศึกษาปีที่ 6',
+      m1: 'มัธยมศึกษาปีที่ 1'
+    }
+
+    try {
+      const res = await fetch('/api/school/create-classroom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          schoolId: currentSchool.id,
+          gradeLevel: newGradeLevel,
+          gradeNameTh: gradeLabelMap[newGradeLevel] || 'ประถมศึกษาปีที่ 6',
+          roomName: newRoomName.trim(),
+          teacherName: newTeacherName.trim(),
+          customCode: customClassCode.trim() || undefined
+        })
+      })
+      const result = await res.json()
+      if (result.success && result.data) {
+        const created: ClassroomInfo = {
+          id: result.data.id || `cls_${Date.now()}`,
+          schoolId: currentSchool.id,
+          classCode: result.data.class_code || customClassCode.toUpperCase() || `MST-${Math.floor(100 + Math.random() * 900)}`,
+          gradeLevel: newGradeLevel,
+          gradeNameTh: gradeLabelMap[newGradeLevel] || 'ประถมศึกษาปีที่ 6',
+          roomName: newRoomName.trim(),
+          teacherName: newTeacherName.trim(),
+          studentCount: 30
+        }
+        const updated = [...classrooms, created]
+        setClassrooms(updated)
+        setSelectedClassId(created.id)
+        localStorage.setItem('master_m1_classrooms', JSON.stringify(updated))
+        setShowAddClassModal(false)
+        setNewRoomName('')
+        setNewTeacherName('')
+        setCustomClassCode('')
+      }
+    } catch {
+      // Fallback local creation
+      const created: ClassroomInfo = {
+        id: `cls_${Date.now()}`,
+        schoolId: currentSchool.id,
+        classCode: customClassCode.toUpperCase() || `MST-${Math.floor(100 + Math.random() * 900)}`,
+        gradeLevel: newGradeLevel,
+        gradeNameTh: gradeLabelMap[newGradeLevel] || 'ประถมศึกษาปีที่ 6',
+        roomName: newRoomName.trim(),
+        teacherName: newTeacherName.trim(),
+        studentCount: 30
+      }
+      const updated = [...classrooms, created]
+      setClassrooms(updated)
+      setSelectedClassId(created.id)
+      localStorage.setItem('master_m1_classrooms', JSON.stringify(updated))
+      setShowAddClassModal(false)
+    } finally {
+      setIsCreatingClass(false)
+    }
+  }
+
+  // บันทึกข้อมูลโรงเรียน
+  const handleSaveSchool = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editSchoolName.trim() || !editProvince.trim()) return
+
+    setIsSavingSchool(true)
+    try {
+      await fetch('/api/school/create-school', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          schoolName: editSchoolName.trim(),
+          province: editProvince.trim(),
+          affiliation: editAffiliation.trim()
+        })
+      })
+    } catch {}
+
+    const updated: SchoolInfo = {
+      ...currentSchool,
+      schoolName: editSchoolName.trim(),
+      province: editProvince.trim(),
+      affiliation: editAffiliation.trim()
+    }
+    setCurrentSchool(updated)
+    localStorage.setItem('master_m1_school_info', JSON.stringify(updated))
+    setIsSavingSchool(false)
+    setShowSchoolModal(false)
+  }
+
   const handleCreateAssignment = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newTitle.trim()) return
@@ -116,6 +251,27 @@ export default function TeacherPortalPage() {
     setShowCreateModal(false)
   }
 
+  const handleExportCSV = () => {
+    const headers = ['เลขที่', 'ชื่อ-นามสกุล', 'คะแนนที่ได้', 'คะแนนเต็ม', 'ร้อยละ', 'วันเวลาที่ส่ง']
+    const rows = submissions.map(s => [
+      s.studentNumber,
+      `"${s.studentName}"`,
+      s.score,
+      s.maxScore,
+      `${s.percentage}%`,
+      `"${s.submittedAt}"`
+    ])
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `ตารางคะแนน_${currentClass.roomName}_${new Date().toISOString().split('T')[0]}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/20 text-slate-800 flex flex-col">
       {/* Header */}
@@ -129,20 +285,36 @@ export default function TeacherPortalPage() {
               </Button>
             </Link>
             <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-            <div>
-              <span className="font-black text-sm text-slate-900 flex items-center gap-1.5">
-                <School className="w-4 h-4 text-blue-600" />
-                {SAMPLE_SCHOOL.schoolName}
-              </span>
-              <p className="text-[10px] text-slate-400 leading-none mt-0.5">
-                สังกัด {SAMPLE_SCHOOL.affiliation} • ปีการศึกษา {SAMPLE_SCHOOL.academicYear}
-              </p>
+            <div className="flex items-center gap-2">
+              <div>
+                <span className="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                  <School className="w-4 h-4 text-blue-600" />
+                  {currentSchool.schoolName}
+                </span>
+                <p className="text-[10px] text-slate-400 leading-none mt-0.5">
+                  จ.{currentSchool.province} • สังกัด {currentSchool.affiliation}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowSchoolModal(true)}
+                className="p-1 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-slate-100"
+                title="แก้ไขข้อมูลโรงเรียน"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              onClick={() => setShowAddClassModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1" /> สร้างห้องเรียนใหม่
+            </Button>
             <Link href="/onet-exam">
-              <Button variant="outline" size="sm" className="text-xs border-orange-200 text-orange-700 bg-orange-50">
+              <Button variant="outline" size="sm" className="text-xs border-orange-200 text-orange-700 bg-orange-50 font-bold hidden sm:inline-flex">
                 🎯 คลังข้อสอบ O-NET
               </Button>
             </Link>
@@ -153,10 +325,10 @@ export default function TeacherPortalPage() {
       <main className="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
         {/* Classroom Switcher Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-xs">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold text-slate-500 shrink-0">เลือกห้องเรียน:</span>
             <div className="flex flex-wrap gap-2">
-              {SAMPLE_CLASSROOMS.map(c => (
+              {classrooms.map(c => (
                 <button
                   key={c.id}
                   onClick={() => setSelectedClassId(c.id)}
@@ -173,8 +345,19 @@ export default function TeacherPortalPage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <Badge variant="outline" className="text-xs font-mono font-bold border-blue-200 text-blue-800 bg-blue-50">
-              รหัสแชร์นักเรียน: {currentClass.classCode}
+            <Badge variant="outline" className="text-xs font-mono font-bold border-blue-200 text-blue-800 bg-blue-50 py-1 px-3 flex items-center gap-1.5">
+              <span>รหัสห้องสอบ: <b>{currentClass.classCode}</b></span>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://master-m1.vercel.app/school/join?code=${currentClass.classCode}`)
+                  setCopiedCode(true)
+                  setTimeout(() => setCopiedCode(false), 2000)
+                }}
+                className="text-blue-600 hover:text-blue-800 ml-1"
+                title="คัดลอกลิงก์สำหรับนักเรียน"
+              >
+                {copiedCode ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
             </Badge>
           </div>
         </div>
@@ -275,7 +458,10 @@ export default function TeacherPortalPage() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={() => alert(`คัดลอกลิงก์สอบสำหรับนักเรียนเรียบร้อย: https://master-m1.vercel.app/school/join?code=${currentClass.classCode}`)}
+                      onClick={() => {
+                        navigator.clipboard.writeText(`https://master-m1.vercel.app/school/join?code=${currentClass.classCode}`)
+                        alert(`คัดลอกลิงก์สอบสำหรับนักเรียนเรียบร้อย: https://master-m1.vercel.app/school/join?code=${currentClass.classCode}`)
+                      }}
                       className="text-xs font-bold text-blue-700 border-blue-200 flex-1"
                     >
                       🔗 คัดลอกลิงก์ส่งให้เด็ก
@@ -296,10 +482,10 @@ export default function TeacherPortalPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => alert('ดาวน์โหลดรายงานสถิติเป็น Excel เรียบร้อย')}
-                className="text-xs border-slate-200 text-slate-700 font-bold"
+                onClick={handleExportCSV}
+                className="text-xs border-slate-200 text-slate-700 font-bold hover:bg-slate-50"
               >
-                <Download className="w-3.5 h-3.5 mr-1" /> ส่งออก Excel
+                <Download className="w-3.5 h-3.5 mr-1" /> ส่งออก Excel (CSV)
               </Button>
             </div>
 
@@ -338,6 +524,158 @@ export default function TeacherPortalPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal: Add New Classroom */}
+      {showAddClassModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <School className="w-5 h-5 text-blue-600" /> สร้างห้องเรียนใหม่
+            </h3>
+            <form onSubmit={handleCreateClassroom} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">ระดับชั้น</label>
+                <select
+                  value={newGradeLevel}
+                  onChange={e => setNewGradeLevel(e.target.value as any)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
+                >
+                  <option value="p6">ประถมศึกษาปีที่ 6 (เตรียมสอบ O-NET / เข้า ม.1)</option>
+                  <option value="p5">ประถมศึกษาปีที่ 5</option>
+                  <option value="p4">ประถมศึกษาปีที่ 4</option>
+                  <option value="p3">ประถมศึกษาปีที่ 3 (เตรียมสอบ NT)</option>
+                  <option value="p2">ประถมศึกษาปีที่ 2</option>
+                  <option value="p1">ประถมศึกษาปีที่ 1 (เตรียมสอบ RT)</option>
+                  <option value="m1">มัธยมศึกษาปีที่ 1 (Advance Track)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">ชื่อห้องเรียน</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น ป.6/1 (ห้องเรียนพิเศษ Gifted)"
+                  value={newRoomName}
+                  onChange={e => setNewRoomName(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">ชื่อคุณครูประจำวิชา / ประจำชั้น</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น คุณครูสมหมาย ใฝ่รู้"
+                  value={newTeacherName}
+                  onChange={e => setNewTeacherName(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  รหัสห้องเรียน (กำหนดเอง หรือปล่อยว่างเพื่อให้ระบบสุ่มอัตโนมัติ)
+                </label>
+                <input
+                  type="text"
+                  placeholder="เช่น P6-GIFTED (ไม่บังคับ)"
+                  value={customClassCode}
+                  onChange={e => setCustomClassCode(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono uppercase"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setShowAddClassModal(false)}
+                  className="flex-1 text-xs"
+                >
+                  ยกเลิก
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isCreatingClass}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs"
+                >
+                  {isCreatingClass ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : 'บันทึกห้องเรียน ➔'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit School Profile */}
+      {showSchoolModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-blue-600" /> ข้อมูลโรงเรียน
+            </h3>
+            <form onSubmit={handleSaveSchool} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">ชื่อโรงเรียน</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น โรงเรียนอนุบาลสาธิตศึกษา"
+                  value={editSchoolName}
+                  onChange={e => setEditSchoolName(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">จังหวัด</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น กรุงเทพมหานคร / นนทบุรี"
+                  value={editProvince}
+                  onChange={e => setEditProvince(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">สังกัด</label>
+                <select
+                  value={editAffiliation}
+                  onChange={e => setEditAffiliation(e.target.value)}
+                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
+                >
+                  <option value="สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)">สพฐ. (สพป. / สพม.)</option>
+                  <option value="สำนักการศึกษา กรุงเทพมหานคร (กทม.)">กทม.</option>
+                  <option value="สำนักงานคณะกรรมการส่งเสริมการศึกษาเอกชน (สช.)">เอกชน (สช.)</option>
+                  <option value="โรงเรียนสาธิตมหาวิทยาลัย">โรงเรียนสาธิตฯ</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 pt-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setShowSchoolModal(false)}
+                  className="flex-1 text-xs"
+                >
+                  ยกเลิก
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSavingSchool}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs"
+                >
+                  {isSavingSchool ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : 'บันทึกข้อมูล ➔'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Modal: Create Assignment */}
       {showCreateModal && (
