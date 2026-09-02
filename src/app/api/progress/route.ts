@@ -44,15 +44,29 @@ export async function POST(req: NextRequest) {
         console.warn('Progress insert warning:', error.message)
       }
 
-      // 3. Trigger Automated Parent Telegram Notification with Growth Delta
+      // 3. Trigger Automated Parent Telegram Notification with Growth Delta & Authentic Identity
       try {
         const { sendParentTelegramNotification } = await import('@/lib/telegram-notify')
-        const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle()
-        const studentName = profile?.full_name || 'น้องภูมิรพีร์'
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
         
+        const isFortune = profile?.email === 'phumrapeeft@gmail.com' || profile?.full_name?.includes('ภูมิรพีร์')
+        const isTestUser = profile?.full_name?.includes('ทดสอบ') || profile?.email?.includes('test') || (!profile && userId !== '4ec823eb-be30-4e1c-a709-a3382ee85491')
+
+        let studentName = profile?.full_name
+        if (!studentName) {
+          studentName = isFortune ? 'ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)' : (isTestUser ? 'นักเรียน (บัญชีทดสอบ)' : 'นักเรียนทั่วไป')
+        }
+
+        const studentTarget = isFortune
+          ? 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊'
+          : (isTestUser ? 'ทดสอบระบบการเรียนรู้' : (profile?.school_target && profile.school_target !== 'ไม่ระบุ' ? `ม.1 (${profile.school_target})` : 'ม.1 เตรียมสอบเข้า ม.1'))
+
         await sendParentTelegramNotification({
           userId,
           studentName,
+          studentTarget,
+          isFortune,
+          isTestUser,
           subject,
           moduleId,
           score: currentScore,

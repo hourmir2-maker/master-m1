@@ -8,6 +8,9 @@ import { LESSONS_DATA } from './lessons-data'
 interface ProgressNotificationParams {
   userId: string
   studentName?: string
+  studentTarget?: string
+  isFortune?: boolean
+  isTestUser?: boolean
   subject: string
   moduleId: string
   score: number
@@ -25,7 +28,10 @@ const SUBJECT_EMOJIS: Record<string, string> = {
 
 export async function sendParentTelegramNotification({
   userId,
-  studentName = 'น้องฟอร์จูน',
+  studentName = 'นักเรียน',
+  studentTarget,
+  isFortune = false,
+  isTestUser = false,
   subject,
   moduleId,
   score,
@@ -75,9 +81,12 @@ export async function sendParentTelegramNotification({
   const thaiTimeStr = now.toLocaleTimeString('th-TH', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit' })
   const thaiDateStr = now.toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok', day: 'numeric', month: 'short', year: 'numeric' })
 
-  const messageText = `🔔 <b>[รายงานผลการเรียน & พัฒนาการ] ${studentName}</b> 👦
+  const targetLabel = studentTarget || (isFortune ? 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊' : 'ม.1 เตรียมสอบเข้า ม.1')
+  const nameLabel = isTestUser ? `🧪 [บัญชีทดสอบ: ${studentName}]` : studentName
+
+  const messageText = `🔔 <b>[รายงานผลการเรียน & พัฒนาการ] ${nameLabel}</b> 👦
 ━━━━━━━━━━━━━━━━━━━━
-🎯 <b>เป้าหมาย:</b> ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊
+🎯 <b>เป้าหมาย:</b> ${targetLabel}
 📚 <b>วิชา:</b> ${subjectLabel}
 📖 <b>บทเรียน:</b> ${moduleTitle}
 🎯 <b>คะแนนครั้งนี้:</b> ${score}% (${passBadge})${growthText}

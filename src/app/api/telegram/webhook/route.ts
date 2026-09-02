@@ -130,8 +130,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const studentName = studentProfile?.full_name || 'ด.ช.ภูมิรพีร์ มากแก้ว'
-    const studentTarget = studentProfile?.grade_target ? `ม.1 (${studentProfile.school_target || 'ห้องพิเศษ Gifted วิทย์-คณิต'})` : 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊'
+    const isFortune = studentProfile?.email === 'phumrapeeft@gmail.com' || studentProfile?.full_name?.includes('ภูมิรพีร์')
+    const isTest = studentProfile?.full_name?.includes('ทดสอบ') || studentProfile?.email?.includes('test')
+
+    const studentName = studentProfile?.full_name || (isFortune ? 'ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)' : (isTest ? 'บัญชีทดสอบ' : 'นักเรียนทั่วไป'))
+    const studentTarget = isFortune
+      ? 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊'
+      : (studentProfile?.school_target && studentProfile.school_target !== 'ไม่ระบุ' ? `ม.1 (${studentProfile.school_target})` : (isTest ? 'ทดสอบระบบการเรียน' : 'ม.1 เตรียมสอบเข้า ม.1'))
 
     // Fetch Pre-Test Results
     const { data: preTestList } = await supabase.from('pre_test_results').select('*').eq('user_id', currentStudentId || '4ec823eb-be30-4e1c-a709-a3382ee85491')
