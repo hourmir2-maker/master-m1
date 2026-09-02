@@ -78,6 +78,9 @@ export default function LessonDetailPage() {
   const [reportQuestionId, setReportQuestionId] = useState<string | undefined>(undefined)
   const [reportContextTitle, setReportContextTitle] = useState<string | undefined>(undefined)
 
+  // VIP Gifted Mode
+  const [isVipMode, setIsVipMode] = useState<boolean>(true)
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
@@ -87,10 +90,11 @@ export default function LessonDetailPage() {
     if (lesson) {
       const extraSets = DYNAMIC_QUESTION_POOL[subject]?.[moduleId] || []
       const setB = extraSets[0] || []
-      const combined = [...(lesson.practiceQuestions || []), ...setB]
+      const vipList = lesson.vipQuestions || []
+      const combined = [...(lesson.practiceQuestions || []), ...setB, ...vipList]
       setQuestions(combined.length > 0 ? combined : (lesson.practiceQuestions || []))
     }
-  }, [subject, moduleId])
+  }, [subject, moduleId, lesson])
 
   if (!lesson) {
     return (
@@ -317,6 +321,39 @@ export default function LessonDetailPage() {
             {/* Audio Lesson Masterclass Player */}
             <AudioLessonPlayer subject={subject} moduleId={moduleId} />
 
+            {/* VIP Gifted Mastery Vault (if available) */}
+            {lesson.vipTricks && lesson.vipTricks.length > 0 && (
+              <Card className="border-2 border-amber-400 shadow-xl bg-gradient-to-br from-amber-500/10 via-amber-100/30 to-orange-50/50 rounded-3xl overflow-hidden">
+                <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 p-1.5" />
+                <CardHeader className="pb-2 pt-6 px-6">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <CardTitle className="flex items-center gap-2 text-amber-950 font-black text-lg sm:text-xl">
+                      <div className="bg-gradient-to-tr from-amber-500 to-yellow-500 text-white p-2 rounded-xl shadow-md text-lg">
+                        👑
+                      </div>
+                      คลังเทคนิคขั้นเทพ & สูตรลัด สสวท. (VIP Gifted Track)
+                    </CardTitle>
+                    <Badge className="bg-amber-400 text-amber-950 font-black text-[11px] px-3 py-1 shadow-xs">
+                      👑 VIP EXCLUSIVE
+                    </Badge>
+                  </div>
+                  <p className="text-amber-900 text-xs sm:text-sm font-semibold mt-1 bg-white/80 p-3 rounded-xl border border-amber-200">
+                    💎 สูตรลัดและความรู้เกินหลักสูตรระดับ ม.ต้น สำหรับเตรียมสอบเข้าห้องพิเศษ Gifted & สสวท.
+                  </p>
+                </CardHeader>
+                <CardContent className="px-6 pb-6">
+                  <div className="space-y-3 mt-1">
+                    {lesson.vipTricks.map((trick, idx) => (
+                      <div key={idx} className="bg-white/90 p-4 rounded-2xl border border-amber-300 shadow-xs text-xs sm:text-sm text-slate-800 font-medium leading-relaxed flex items-start gap-3">
+                        <span className="text-amber-600 text-base shrink-0">⚡</span>
+                        <span>{trick}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Secret Formula Box */}
             <Card className="border-2 border-orange-300 shadow-lg bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-white rounded-3xl overflow-hidden">
               <div className="bg-gradient-to-r from-orange-500 to-red-500 p-1" />
@@ -422,7 +459,14 @@ export default function LessonDetailPage() {
                 <Card key={q.id || qIndex} className="border border-orange-100 shadow-md bg-white rounded-3xl overflow-hidden">
                   <CardHeader className="bg-orange-50/60 pb-3 pt-4 px-6 border-b border-orange-100/60">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-bold text-orange-700">คำถามข้อที่ {qIndex + 1} จาก {questions.length}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-orange-700">คำถามข้อที่ {qIndex + 1} จาก {questions.length}</span>
+                        {q.isVipExclusive && (
+                          <Badge className="bg-amber-400 text-amber-950 font-black text-[10px] px-2 py-0.5 shadow-xs">
+                            👑 VIP Gifted สสวท.
+                          </Badge>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         {submittedQuiz && (
                           isCorrect ? (
