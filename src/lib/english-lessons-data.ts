@@ -32,6 +32,26 @@ export const ENGLISH_LESSONS_DATA: Record<string, LessonData> = {
         '⚡ สำนวนซื้อของ: How much is it? / Can I try this on? / Do you have a smaller size? / Keep the change'
       ]
     },
+    vipTricks: [
+      '👑 【VIP Gifted & EP】เทคนิคตัดช้อยส์ Error Identification 3 วินาที (S-V Agreement Trap): วลีขยายที่ขึ้นต้นด้วย with, together with, as well as, accompanied by, including "ไม่นับเป็นประธาน" ให้ตัดทิ้งแล้วผันกริยาตามประธานตัวหน้าสุดเสมอ! เช่น "The teacher, together with all students, IS (ไม่ใช่ ARE) here."',
+      '👑 【VIP Gifted & EP】เทคนิคจำ Gerund เฉพาะหลัง Preposition: look forward to, be used to, object to, confess to ➔ คำว่า "to" ในที่นี้คือ Preposition จึงต้องตามด้วย "V.ing (Gerund)" เสมอ!'
+    ],
+    vipQuestions: [
+      {
+        id: 'eng_dl_vip_1',
+        isVipExclusive: true,
+        question: '👑 [VIP Gifted สาธิตฯ/สวนกุหลาบ] Choose the grammatically correct sentence:',
+        options: [
+          'The professor, as well as his assistants, is attending the international medical conference.',
+          'The professor, as well as his assistants, are attending the international medical conference.',
+          'The professor, as well as his assistants, have attended the international medical conference.',
+          'The professor, as well as his assistants, were attending the international medical conference.'
+        ],
+        correctAnswer: 'The professor, as well as his assistants, is attending the international medical conference.',
+        explanation: '【เทคนิคขั้นเทพ Parenthetical Phrase Trap】\nวลีที่เชื่อมด้วย "as well as, together with, along with, accompanied by" เป็นเพียงส่วนขยาย (Parenthetical phrase)\nประธานแท้คือ "The professor" (เอกพจน์)\nดังนั้นกริยาต้องผันเป็นเอกพจน์ คือ "is attending" ทันที!',
+        tip: '💡 สูตรลัด: ตัดข้อความหลัง as well as ออก แล้วมองเฉพาะประธานหน้าสุด'
+      }
+    ],
     summaryPoints: [
       'Collocations คือกลุ่มคำที่เจ้าของภาษานิยมใช้คู่กันเสมอ เช่น heavy rain (ไม่ใช่ strong rain), fast food (ไม่ใช่ quick food)',
       'Look forward to + V.ing (ตั้งตารอคอย) ต้องตามด้วย Gerund เสมอ เช่น I look forward to meeting you.',
