@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import Footer from '@/components/Footer'
 import AchievementsModal from '@/components/AchievementsModal'
-import { updateDailyStreak, GamificationState, getGamificationState } from '@/lib/gamification'
+import { updateDailyStreak, GamificationState, getGamificationState, evaluateAndAwardBadges, ALL_BADGES } from '@/lib/gamification'
 import { 
   BookOpen, 
   Target, 
@@ -117,7 +117,10 @@ export default function DashboardPage() {
           }
         })
 
-        setProgressData(Array.from(mergedMap.values()))
+        const mergedList = Array.from(mergedMap.values())
+        setProgressData(mergedList)
+        const evaluatedGame = evaluateAndAwardBadges(mergedList)
+        setGameState(evaluatedGame)
       } catch (err) {
         console.warn('Dashboard load warning:', err)
       }
@@ -201,7 +204,7 @@ export default function DashboardPage() {
               variant="outline"
               className="border-amber-300 bg-amber-50/70 hover:bg-amber-100 text-amber-900 font-bold shadow-xs text-xs"
             >
-              <Trophy className="w-4 h-4 mr-1.5 text-amber-600" /> หอเกียรติยศ ({gameState.unlockedBadgeIds.length}/10)
+              <Trophy className="w-4 h-4 mr-1.5 text-amber-600" /> หอเกียรติยศ ({gameState.unlockedBadgeIds.length}/{ALL_BADGES.length})
             </Button>
             <Link href="/reports/print" target="_blank">
               <Button
