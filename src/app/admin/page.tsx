@@ -17,10 +17,13 @@ import {
   logAdminAction,
   exportCompleteSystemBackup,
   exportProgressCSV,
+  getCustomYoutubeUrl,
+  setCustomYoutubeUrl,
   AdminSettings,
   BroadcastLog 
 } from '@/lib/admin-settings'
 import { LESSONS_DATA } from '@/lib/lessons-data'
+import { MEMORY_SONGS_DATA } from '@/lib/memory-songs-data'
 import { SAMPLE_CLASSROOMS, SAMPLE_SCHOOL } from '@/lib/school-portal-data'
 import { 
   ShieldCheck, 
@@ -54,7 +57,12 @@ import {
   KeyRound,
   FileSpreadsheet,
   Printer,
-  ChevronRight
+  ChevronRight,
+  Video,
+  Link2,
+  Play,
+  RotateCcw,
+  Save
 } from 'lucide-react'
 
 export default function AdminPage() {
@@ -63,13 +71,17 @@ export default function AdminPage() {
   const [passwordError, setPasswordError] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   
-  // Navigation Tabs: overview | telemetry | students | cms | school_mgr | broadcast | monetization | backup
-  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'students' | 'cms' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
+  // Navigation Tabs: overview | telemetry | students | cms | media | school_mgr | broadcast | monetization | backup
+  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'students' | 'cms' | 'media' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
 
   // Settings State
   const [settings, setSettings] = useState<AdminSettings>(getAdminSettings())
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null)
   const [healthStatus, setHealthStatus] = useState<string | null>(null)
+
+  // Media URLs State
+  const [mediaUrls, setMediaUrls] = useState<Record<string, string>>({})
+  const [previewSongId, setPreviewSongId] = useState<string | null>(null)
 
   // Students Directory State
   const [studentsList, setStudentsList] = useState<any[]>([])
@@ -591,6 +603,7 @@ export default function AdminPage() {
             { id: 'telemetry', label: '📊 แดชบอร์ดน้องฟอร์จูน', icon: BarChart3 },
             { id: 'students', label: '👥 ผู้เรียนรายคน', icon: Users },
             { id: 'cms', label: '📝 คลังข้อสอบ 560 ข้อ', icon: BookOpen },
+            { id: 'media', label: '🎬 วิดีโอ YouTube & เพลง AI', icon: Video },
             { id: 'school_mgr', label: '🏫 จัดการระบบโรงเรียน', icon: School },
             { id: 'broadcast', label: '📢 บรอดแคสต์ Telegram', icon: Megaphone },
             { id: 'monetization', label: '💰 โฆษณา AdSense', icon: DollarSign },
@@ -1449,6 +1462,179 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* =========================================================================
+            TAB: MEDIA & YOUTUBE VIDEO MANAGER
+            ========================================================================= */}
+        {activeTab === 'media' && (() => {
+          const getEmbed = (url?: string) => {
+            if (!url) return null
+            if (url.includes('youtu.be/')) {
+              const id = url.split('youtu.be/')[1]?.split('?')[0]
+              return `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+            }
+            if (url.includes('watch?v=')) {
+              const id = url.split('watch?v=')[1]?.split('&')[0]
+              return `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+            }
+            if (url.includes('/embed/')) return url
+            return null
+          }
+
+          const handleSaveMediaUrl = (songId: string, url: string) => {
+            if (!url.trim()) {
+              alert('กรุณากรอกลิงก์ YouTube ที่ถูกต้อง')
+              return
+            }
+            setCustomYoutubeUrl(songId, url.trim())
+            setMediaUrls(prev => ({ ...prev, [songId]: url.trim() }))
+            triggerToast(`✅ บันทึกลิงก์วิดีโอ [${songId}] เรียบร้อยแล้ว`)
+          }
+
+          const handleResetMediaUrl = (songId: string, defaultUrl?: string) => {
+            setCustomYoutubeUrl(songId, defaultUrl || '')
+            setMediaUrls(prev => ({ ...prev, [songId]: defaultUrl || '' }))
+            triggerToast(`🔄 คืนค่าเริ่มต้นสำหรับ [${songId}] แล้ว`)
+          }
+
+          return (
+            <div className="space-y-6 animate-fade-in">
+              {/* Header Banner */}
+              <div className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-3xl p-6 text-white shadow-xl space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <Badge className="bg-white/20 text-white border-white/30 text-xs font-bold">
+                    YouTube Media & AI Music Hub
+                  </Badge>
+                  <span className="text-xs text-orange-100 font-mono">
+                    อัปเดตแบบ Real-time ทันที
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black">
+                  🎬 จัดการลิงก์วิดีโอ YouTube ในบทเรียน & ห้องแล็บ
+                </h2>
+                <p className="text-orange-100 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                  นำลิงก์คลิปวิดีโอจริงจาก YouTube ที่สร้างจาก AiPASS หรือบันทึกการสอน มาแปะในช่องนี้ เพื่อให้แสดงผลในหน้าบทเรียนและหน้า Virtual Science Lab ทันทีโดยไม่ต้องเขียนโค้ด
+                </p>
+              </div>
+
+              {/* Video List */}
+              <div className="space-y-4">
+                {MEMORY_SONGS_DATA.map((song) => {
+                  const currentSavedUrl = mediaUrls[song.id] ?? getCustomYoutubeUrl(song.id, song.youtubeUrl)
+                  const embedUrl = getEmbed(currentSavedUrl)
+                  const isPreviewing = previewSongId === song.id
+
+                  return (
+                    <div 
+                      key={song.id} 
+                      className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4 transition-all"
+                    >
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-800">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                            {song.icon || '🎬'}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-white text-sm sm:text-base">
+                                {song.title}
+                              </h4>
+                              <Badge className={song.badgeColor || 'bg-slate-800 text-white'}>
+                                {song.subjectLabel}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                              {song.formulaTopic} • จังหวะ: {song.bpm} BPM
+                            </p>
+                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                              <span className="text-[10px] text-amber-300 font-bold">🎯 แสดงผลตรงบทเรียน:</span>
+                              {song.relatedModuleIds?.map(mId => (
+                                <span key={mId} className="bg-slate-800 border border-slate-700 text-amber-200/90 text-[10px] px-2 py-0.5 rounded-md font-mono">
+                                  {mId}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setPreviewSongId(isPreviewing ? null : song.id)}
+                            className="text-xs font-bold border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 h-8 rounded-xl flex items-center gap-1"
+                          >
+                            <Play className="w-3 h-3" />
+                            <span>{isPreviewing ? 'ซ่อนตัวอย่าง' : 'ดูตัวอย่างคลิป'}</span>
+                          </Button>
+
+                          {currentSavedUrl && (
+                            <a
+                              href={currentSavedUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-xs text-blue-400 hover:underline flex items-center gap-1"
+                            >
+                              เปิดใน YouTube ↗
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* URL Input Form */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 block">
+                          🔗 ลิงก์ YouTube ปัจจุบัน:
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Input
+                            value={mediaUrls[song.id] ?? currentSavedUrl}
+                            onChange={(e) => setMediaUrls(prev => ({ ...prev, [song.id]: e.target.value }))}
+                            placeholder="วางลิงก์ YouTube เช่น https://youtu.be/... หรือ https://www.youtube.com/watch?v=..."
+                            className="bg-slate-950 border-slate-700 text-white text-xs font-mono rounded-xl flex-1"
+                          />
+                          <div className="flex gap-1.5 shrink-0">
+                            <Button
+                              size="sm"
+                              onClick={() => handleSaveMediaUrl(song.id, mediaUrls[song.id] ?? currentSavedUrl)}
+                              className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md"
+                            >
+                              <Save className="w-3.5 h-3.5 mr-1" /> บันทึก
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleResetMediaUrl(song.id, song.youtubeUrl)}
+                              title="คืนค่าเป็นวิดีโอตัวอย่างเริ่มต้น"
+                              className="text-xs border-slate-700 text-slate-400 hover:text-white rounded-xl"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5 mr-1" /> คืนค่า
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Embedded Preview Player */}
+                      {isPreviewing && embedUrl && (
+                        <div className="pt-2 animate-in fade-in">
+                          <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/50 bg-black max-w-2xl mx-auto">
+                            <iframe
+                              src={embedUrl}
+                              title={song.title}
+                              className="w-full h-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* =========================================================================
             TAB 4: MULTI-SCHOOL & ENTERPRISE MANAGEMENT

@@ -33,7 +33,9 @@ import {
   CheckCircle2,
   Brain,
   TrendingUp,
-  Compass
+  Compass,
+  Beaker,
+  FileText
 } from 'lucide-react'
 import VoiceCallModal from '@/components/VoiceCallModal'
 
@@ -270,12 +272,28 @@ export default function DashboardPage() {
             >
               <Trophy className="w-4 h-4 mr-1.5 text-amber-600" /> หอเกียรติยศ ({gameState.unlockedBadgeIds.length}/{ALL_BADGES.length})
             </Button>
+            <Link href="/virtual-lab">
+              <Button
+                variant="outline"
+                className="border-emerald-300 bg-emerald-50/80 hover:bg-emerald-100 text-emerald-900 font-bold shadow-xs text-xs"
+              >
+                <Beaker className="w-4 h-4 mr-1.5 text-emerald-600" /> ห้องแล็บจำลอง (Virtual Lab)
+              </Button>
+            </Link>
+            <Link href="/cheat-sheets">
+              <Button
+                variant="outline"
+                className="border-orange-300 bg-orange-50/80 hover:bg-orange-100 text-orange-950 font-bold shadow-xs text-xs"
+              >
+                <FileText className="w-4 h-4 mr-1.5 text-orange-600" /> สรุปสูตรลับ (Cheat Sheet)
+              </Button>
+            </Link>
             <Link href="/reports/print" target="_blank">
               <Button
                 variant="outline"
                 className="border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold shadow-xs text-xs"
               >
-                <Printer className="w-4 h-4 mr-1.5 text-slate-600" /> พิมพ์ใบรายงานผล (PDF)
+                <Printer className="w-4 h-4 mr-1.5 text-slate-600" /> พิมพ์รายงาน (PDF)
               </Button>
             </Link>
             <Link href="/learning-path">

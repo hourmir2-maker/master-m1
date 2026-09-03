@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { 
   Music, 
@@ -20,26 +21,71 @@ import {
 } from 'lucide-react'
 import { MEMORY_SONGS_DATA, MemorySong } from '@/lib/memory-songs-data'
 import { speakNaturalText, stopSpeaking, initVoiceEngine } from '@/lib/tts-engine'
+import { getCustomYoutubeUrl } from '@/lib/admin-settings'
 
 interface MemorySongPlayerProps {
   initialSubject?: 'math' | 'science' | 'english' | 'thai' | 'all'
+  currentModuleId?: string
   compact?: boolean
+}
+
+function getYouTubeEmbedUrl(url?: string): string | null {
+  if (!url) return null
+  try {
+    if (url.includes('youtu.be/')) {
+      const id = url.split('youtu.be/')[1]?.split('?')[0]
+      return `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+    }
+    if (url.includes('watch?v=')) {
+      const id = url.split('watch?v=')[1]?.split('&')[0]
+      return `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+    }
+    if (url.includes('/embed/')) {
+      return url
+    }
+    return null
+  } catch {
+    return null
+  }
 }
 
 export default function MemorySongPlayer({ 
   initialSubject = 'all',
+  currentModuleId,
   compact = false 
 }: MemorySongPlayerProps) {
   const [selectedSubject, setSelectedSubject] = useState<'all' | 'math' | 'science' | 'english' | 'thai'>(initialSubject)
-  const [activeSongIndex, setActiveSongIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [copiedPrompt, setCopiedPrompt] = useState<'music' | 'video' | null>(null)
-
+  
   const songs = selectedSubject === 'all' 
     ? MEMORY_SONGS_DATA 
     : MEMORY_SONGS_DATA.filter(s => s.subject === selectedSubject)
 
+  // Find index of song that matches currentModuleId
+  const getMatchedIndex = () => {
+    if (!currentModuleId) return 0
+    const idx = songs.findIndex(s => s.relatedModuleIds?.includes(currentModuleId))
+    return idx >= 0 ? idx : 0
+  }
+
+  const [activeSongIndex, setActiveSongIndex] = useState(getMatchedIndex)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [copiedPrompt, setCopiedPrompt] = useState<'music' | 'video' | null>(null)
+  const [showCreatorTools, setShowCreatorTools] = useState(false)
+
+  // Auto-sync when currentModuleId or selectedSubject changes
+  useEffect(() => {
+    if (currentModuleId) {
+      const idx = songs.findIndex(s => s.relatedModuleIds?.includes(currentModuleId))
+      if (idx >= 0) {
+        setActiveSongIndex(idx)
+      }
+    }
+  }, [currentModuleId, selectedSubject])
+
   const currentSong = songs[activeSongIndex] || songs[0]
+
+  const currentYoutubeUrl = currentSong ? getCustomYoutubeUrl(currentSong.id, currentSong.youtubeUrl) : ''
+  const embedUrl = getYouTubeEmbedUrl(currentYoutubeUrl)
 
   const handlePlaySong = (song: MemorySong) => {
     if (isPlaying) {
@@ -79,16 +125,16 @@ export default function MemorySongPlayer({
             <div className="flex items-center gap-2 mb-1">
               <span className="text-2xl animate-bounce">🎵</span>
               <CardTitle className="text-xl sm:text-2xl font-black tracking-tight">
-                เพลงจำสูตรลัด ม.1 (AI Memory Beats)
+                เพลงจำสูตรลัด ม.1 & คลิป YouTube (AI Memory Beats)
               </CardTitle>
             </div>
             <p className="text-white/90 text-xs sm:text-sm font-medium">
-              ท่องจำสูตรลัดและจุดลวง สทศ. ผ่านจังหวะดนตรีจำง่าย พร้อมต่อยอดด้วย AiPASS Music & Video
+              ท่องจำสูตรลัดและจุดลวง สทศ. ผ่านวิดีโอ YouTube และจังหวะดนตรีจำง่าย
             </p>
           </div>
 
           <Badge className="bg-white/20 text-white border-0 backdrop-blur-sm text-xs px-3 py-1 font-bold">
-            ✨ โควตาผู้สร้างสรรค์ AiPASS
+            🎬 ดูวิดีโอในเว็บได้ทันที
           </Badge>
         </div>
 
@@ -98,39 +144,41 @@ export default function MemorySongPlayer({
             {[
               { id: 'all', label: '🌟 ทั้งหมด' },
               { id: 'math', label: '🔢 คณิตคิดเร็ว' },
-              { id: 'science', label: '🔬 วิทย์ Q=mcΔt' },
-              { id: 'english', label: '🇬🇧 อังกฤษ If-Clause' },
-              { id: 'thai', label: '📖 ไทย สมาส-สนธิ' }
+              { id: 'science', label: '🔬 วิทย์ทดลอง' },
+              { id: 'english', label: '🗣️ อังกฤษ 3S' },
+              { id: 'thai', label: '🇹🇭 ภาษาไทย' },
             ].map(tab => (
-              <button
+              <Button
                 key={tab.id}
+                size="sm"
+                variant={selectedSubject === tab.id ? 'default' : 'ghost'}
                 onClick={() => {
                   setSelectedSubject(tab.id as any)
                   setActiveSongIndex(0)
                   stopSpeaking()
                   setIsPlaying(false)
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`rounded-xl text-xs font-bold transition-all ${
                   selectedSubject === tab.id
-                    ? 'bg-white text-slate-900 shadow-md scale-105'
-                    : 'bg-white/15 text-white hover:bg-white/25'
+                    ? 'bg-white text-orange-900 shadow-md hover:bg-white'
+                    : 'text-white/90 hover:bg-white/15'
                 }`}
               >
                 {tab.label}
-              </button>
+              </Button>
             ))}
           </div>
         )}
       </CardHeader>
 
-      <CardContent className="p-5 sm:p-6 space-y-6">
+      <CardContent className="p-5 sm:p-6 space-y-5">
         {currentSong && (
-          <div className="space-y-5">
+          <div className="space-y-4">
             {/* Song Meta Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-2xl border border-amber-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-amber-200">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shrink-0">
-                  {currentSong.icon}
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                  {currentSong.subject === 'math' ? '🔢' : currentSong.subject === 'science' ? '🔬' : currentSong.subject === 'english' ? '🗣️' : '🇹🇭'}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -140,6 +188,11 @@ export default function MemorySongPlayer({
                     <Badge className={currentSong.badgeColor}>
                       {currentSong.subjectLabel}
                     </Badge>
+                    {currentModuleId && currentSong.relatedModuleIds?.includes(currentModuleId) && (
+                      <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-black">
+                        🎯 คลิปตรงบทเรียนนี้
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-slate-500 font-medium mt-0.5">
                     แนวเพลง: {currentSong.genre} • จังหวะ: {currentSong.bpm} BPM • หัวข้อ: {currentSong.formulaTopic}
@@ -158,15 +211,45 @@ export default function MemorySongPlayer({
               >
                 {isPlaying ? (
                   <>
-                    <Pause className="w-4 h-4 mr-1.5" /> หยุดเล่น
+                    <Pause className="w-4 h-4 mr-1.5" /> หยุดเสียงอ่าน
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 mr-1.5" /> 🎧 ฟังครูพี่ AI ท่องเพลง
+                    <Play className="w-4 h-4 mr-1.5" /> 🎧 ฟังครูพี่ AI ท่องเนื้อเพลง
                   </>
                 )}
               </Button>
             </div>
+
+            {/* Embedded YouTube Video Player */}
+            {embedUrl && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span className="flex items-center gap-1.5 text-red-600 font-black">
+                    <Video className="w-4 h-4" /> วิดีโอเพลง & สูตรลัดช่วยจำ (กดเล่นได้ทันที):
+                  </span>
+                  {currentYoutubeUrl && (
+                    <a 
+                      href={currentYoutubeUrl} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="text-[11px] text-blue-600 hover:underline flex items-center gap-0.5"
+                    >
+                      เปิดในแอป YouTube ↗
+                    </a>
+                  )}
+                </div>
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-lg border-2 border-amber-300 bg-slate-950">
+                  <iframe
+                    src={embedUrl}
+                    title={currentSong.title}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Lyrics Card */}
             <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/50 p-4 sm:p-5 rounded-2xl border border-amber-200 space-y-3">

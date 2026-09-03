@@ -19,6 +19,7 @@ import {
 import ReportModal from '@/components/ReportModal'
 import AiTutorChat from '@/components/AiTutorChat'
 import AudioLessonPlayer from '@/components/AudioLessonPlayer'
+import MemorySongPlayer from '@/components/MemorySongPlayer'
 import PaceCoach from '@/components/PaceCoach'
 import Footer from '@/components/Footer'
 import { soundFX } from '@/lib/sound-fx'
@@ -53,7 +54,17 @@ export default function LessonDetailPage() {
   const supabase = createClient()
 
   const subject = (params.subject as string) || 'math'
-  const moduleId = (params.moduleId as string) || 'numbers_basics'
+  const rawModuleId = (params.moduleId as string) || 'numbers_basics'
+
+  // Friendly Module Aliases Map
+  const MODULE_ALIASES: Record<string, string> = {
+    'geometry_angles': 'geometry',
+    'grammar_tenses': 'grammar_basics',
+    'ratio_percent': 'percentages',
+    'algebra_linear': 'algebra_intro',
+    't1_samasa_sandhi': 'thai_word_classes'
+  }
+  const moduleId = MODULE_ALIASES[rawModuleId] || rawModuleId
 
   const lesson: LessonData | undefined = LESSONS_DATA[subject]?.[moduleId]
 
@@ -491,6 +502,9 @@ export default function LessonDetailPage() {
                 </ul>
               </CardContent>
             </Card>
+
+            {/* YouTube Video Masterclass & Memory Beats (อยู่ใต้บทเรียน & ตรงกับบทเรียนนี้พอดี) */}
+            <MemorySongPlayer initialSubject={subject as any} currentModuleId={moduleId} compact={false} />
 
             {/* Action to Practice */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">

@@ -66,8 +66,8 @@ export default function LandingPage() {
             ทดสอบก่อนเรียน (Pre-Test) ให้ <span className="font-semibold text-orange-700">Gemini AI</span> วิเคราะห์จุดอ่อน ท่องจำด้วย <span className="font-semibold text-amber-700">Flashcards</span> และสอบเสมือนจริงด้วย <span className="font-semibold text-red-700">Mock Exam 45 นาที</span>
           </p>
           
-          <p className="text-sm font-medium text-orange-800/70 mb-10 flex items-center justify-center gap-2">
-            <span>🔢 คณิตศาสตร์</span> • <span>🔬 วิทยาศาสตร์</span> • <span>🗣️ ภาษาอังกฤษ</span>
+          <p className="text-sm font-medium text-orange-800/70 mb-10 flex flex-wrap items-center justify-center gap-2">
+            <span>🔢 คณิตศาสตร์</span> • <span>🔬 วิทยาศาสตร์</span> • <span>🗣️ ภาษาอังกฤษ</span> • <span>🇹🇭 ภาษาไทย</span>
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -91,8 +91,8 @@ export default function LandingPage() {
             {[
               { icon: Brain, title: 'AI วินิจฉัยแม่นยำ', desc: 'Gemini AI ชี้จุดอ่อน-จุดแข็งรายหัวข้อ พร้อมจัดลำดับการเรียนเฉพาะตัว', color: 'text-orange-600 bg-orange-100/70' },
               { icon: Layers, title: 'Flashcards 3D & TTS', desc: 'ระบบ Spaced Repetition ท่องจำสูตรลัดและศัพท์ พร้อมเสียงอ่านครูพี่ AI', color: 'text-amber-600 bg-amber-100/70' },
-              { icon: Timer, title: 'Mock Exam 45 นาที', desc: 'ระบบจับเวลาจำลองสอบจริง 3 วิชา 30 ข้อ วิเคราะห์เกรดและความพร้อมทันที', color: 'text-red-600 bg-red-100/70' },
-              { icon: Printer, title: 'ชีทสรุปสูตรลับแผ่นเดียว', desc: 'ดาวน์โหลดและพิมพ์สูตรลัด High-Yield 3 วิชาไปอ่านทบทวนหน้าห้องสอบ', color: 'text-yellow-700 bg-yellow-100/70' },
+              { icon: Timer, title: 'Mock Exam 45 นาที', desc: 'ระบบจับเวลาจำลองสอบจริง 4 วิชา 40 ข้อ วิเคราะห์เกรดและความพร้อมทันที', color: 'text-red-600 bg-red-100/70' },
+              { icon: Printer, title: 'ชีทสรุปสูตรลับแผ่นเดียว', desc: 'ดาวน์โหลดและพิมพ์สูตรลัด High-Yield 4 วิชาไปอ่านทบทวนหน้าห้องสอบ', color: 'text-yellow-700 bg-yellow-100/70' },
             ].map((f, i) => (
               <Card key={i} className="border border-orange-100 shadow-sm hover:shadow-lg transition-all bg-white rounded-2xl overflow-hidden">
                 <CardContent className="pt-6 text-center">
@@ -114,9 +114,9 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { step: '1', icon: '📝', title: 'ทำ Pre-Test', desc: 'ทดสอบ 30 ข้อ ครอบคลุม 3 วิชาหลัก ประเมินพื้นฐานจริง' },
+              { step: '1', icon: '📝', title: 'ทำ Pre-Test', desc: 'ทดสอบ 40 ข้อ ครอบคลุม 4 วิชาหลัก ประเมินพื้นฐานจริง' },
               { step: '2', icon: '🤖', title: 'AI ประมวลผล', desc: 'Gemini AI ชี้จุดอ่อน-จุดแข็ง พร้อมวิเคราะห์ลึกรายหัวข้อ' },
-              { step: '3', icon: '📚', title: 'เรียน 24 โมดูล', desc: 'ฝึกฝนสูตรลัดและทำโจทย์ พร้อมทบทวนด้วย Flashcards' },
+              { step: '3', icon: '📚', title: 'เรียน 32 โมดูล', desc: 'ฝึกฝนสูตรลัดและทำโจทย์ พร้อมทบทวนด้วย Flashcards' },
               { step: '4', icon: '🏆', title: 'สอบ Mock Exam', desc: 'จำลองสอบ 45 นาที เก็บ Badge และพร้อมลงสนามสอบจริง' },
             ].map((item) => (
               <div key={item.step} className="bg-white/70 backdrop-blur-sm border border-orange-100/80 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all">
@@ -133,10 +133,10 @@ export default function LandingPage() {
 
         {/* Subjects Preview */}
         <section className="py-14">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 mb-2">3 วิชาหลัก พร้อมสูตรลับ & เทคนิคขั้นสูง</h2>
-          <p className="text-center text-slate-500 text-sm mb-12">เน้นความเข้าใจ กระชับ ไม่เน้นท่องจำ (24 โมดูลครบถ้วน)</p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 mb-2">4 วิชาหลัก พร้อมสูตรลับ & เทคนิคขั้นสูง</h2>
+          <p className="text-center text-slate-500 text-sm mb-12">เน้นความเข้าใจ กระชับ ไม่เน้นท่องจำ (32 โมดูลครบถ้วน 4 วิชา)</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 emoji: '🔢', subject: 'คณิตศาสตร์ (8 โมดูล)', color: 'from-orange-500 via-amber-500 to-yellow-500',
@@ -150,25 +150,31 @@ export default function LandingPage() {
                 emoji: '🗣️', subject: 'ภาษาอังกฤษ (8 โมดูล)', color: 'from-amber-500 via-orange-500 to-red-500',
                 secret: 'เทคนิค 3S Reading', modules: ['Grammar, Tenses, If-Clause & Tags', 'Vocabulary Power & Root Words', 'Reading Comprehension (Skim/Scan)', 'Everyday Polite Communication', 'Error Identification & Structure', 'Active vs Passive & Modal Verbs', 'Comparison & Conjunctions', 'Cloze Test & Paragraph Completion']
               },
+              {
+                emoji: '🇹🇭', subject: 'ภาษาไทย (8 โมดูล)', color: 'from-emerald-600 via-teal-600 to-green-600',
+                secret: 'สมาสชน สนธิเชื่อม', modules: ['คำไทยแท้ & คำยืม บาลี-สันสกฤต', 'ชนิดของคำ 7 ชนิด & หน้าที่ในประโยค', 'โครงสร้างประโยค (ความเดียว-รวม-ซ้อน)', 'คำราชาศัพท์ ระดับภาษา & คำสุภาพ', 'สำนวน สุภาษิต คำพังเพย & ปริศนา', 'การอ่านจับใจความ & ตีความ O-NET', 'วรรณคดีวิจักษ์ & ฉันทลักษณ์กลอนแปด', 'การเขียนสื่อสาร & อัตนัย 15 คะแนน']
+              },
             ].map((s, i) => (
-              <Card key={i} className="overflow-hidden border-orange-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white rounded-2xl">
-                <div className={`bg-gradient-to-br ${s.color} text-white p-6 relative`}>
-                  <div className="text-5xl mb-2">{s.emoji}</div>
-                  <h3 className="text-2xl font-bold tracking-tight">{s.subject}</h3>
-                  <span className="inline-block bg-black/20 text-white/95 text-xs font-semibold px-2.5 py-1 rounded-md mt-2">
-                    🔑 สูตรลับ: {s.secret}
-                  </span>
+              <Card key={i} className="overflow-hidden border-orange-100 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white rounded-2xl flex flex-col justify-between">
+                <div>
+                  <div className={`bg-gradient-to-br ${s.color} text-white p-6 relative`}>
+                    <div className="text-4xl mb-2">{s.emoji}</div>
+                    <h3 className="text-xl font-bold tracking-tight">{s.subject}</h3>
+                    <span className="inline-block bg-black/20 text-white/95 text-xs font-semibold px-2.5 py-1 rounded-md mt-2">
+                      🔑 สูตรลับ: {s.secret}
+                    </span>
+                  </div>
+                  <CardContent className="p-5">
+                    <ul className="space-y-2">
+                      {s.modules.map((m, j) => (
+                        <li key={j} className="flex items-start gap-2 text-xs text-slate-700">
+                          <CheckCircle className="w-3.5 h-3.5 text-orange-600 flex-shrink-0 mt-0.5" />
+                          <span>{m}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
                 </div>
-                <CardContent className="p-6">
-                  <ul className="space-y-2.5">
-                    {s.modules.map((m, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
-                        <CheckCircle className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
-                        <span>{m}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
               </Card>
             ))}
           </div>

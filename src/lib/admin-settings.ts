@@ -34,6 +34,7 @@ export interface AdminSettings {
     thai: boolean
     dashboard: boolean
   }
+  custom_youtube_urls?: Record<string, string>
   broadcast_logs: BroadcastLog[]
   audit_logs: AuditLog[]
   last_updated: string
@@ -50,6 +51,7 @@ export const DEFAULT_ADMIN_SETTINGS: AdminSettings = {
     thai: true,
     dashboard: true
   },
+  custom_youtube_urls: {},
   broadcast_logs: [
     {
       id: 'bc_1',
@@ -126,6 +128,34 @@ export function logAdminAction(action: string, details: string): void {
     saveAdminSettings({ audit_logs: updatedLogs })
   } catch (e) {
     console.warn('Failed to log admin action:', e)
+  }
+}
+
+/**
+ * ดึงลิงก์ YouTube ที่ Admin ปรับแต่งไว้ (หรือใช้ค่า default)
+ */
+export function getCustomYoutubeUrl(id: string, fallback?: string): string {
+  if (typeof window === 'undefined') return fallback || ''
+  try {
+    const settings = getAdminSettings()
+    return settings.custom_youtube_urls?.[id] || fallback || ''
+  } catch {
+    return fallback || ''
+  }
+}
+
+/**
+ * บันทึกลิงก์ YouTube ใหม่จากกล่องกรอก
+ */
+export function setCustomYoutubeUrl(id: string, url: string): void {
+  if (typeof window === 'undefined') return
+  try {
+    const settings = getAdminSettings()
+    const customUrls = { ...(settings.custom_youtube_urls || {}), [id]: url.trim() }
+    saveAdminSettings({ custom_youtube_urls: customUrls })
+    logAdminAction('UPDATE_VIDEO_URL', `อัปเดตลิงก์ YouTube [${id}]: ${url}`)
+  } catch (e) {
+    console.warn('Failed to set custom YouTube URL:', e)
   }
 }
 

@@ -15,7 +15,7 @@ export interface MemorySong {
   formulaTopic: string
   catchphrase: string
   lyrics: {
-    section: 'Intro' | 'Verse 1' | 'Chorus (สูตรลัด)' | 'Verse 2' | 'Outro'
+    section: string
     lines: string[]
   }[]
   speedTechnique: string
@@ -24,6 +24,7 @@ export interface MemorySong {
   aipassVideoPrompt: string
   youtubeUrl?: string
   releaseDate?: string
+  relatedModuleIds?: string[]
 }
 
 export const MEMORY_SONGS_DATA: MemorySong[] = [
@@ -37,6 +38,7 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     bpm: 120,
     genre: 'Upbeat Synth-Pop / Energetic EDM',
     formulaTopic: 'ยกกำลังสองเลขลงท้าย 5 & พื้นที่ใบไม้แรเงา',
+    relatedModuleIds: ['numbers_basics', 'fractions_decimals', 'percentages', 'algebra_intro', 'ratio_proportion', 'ratio_percent', 'algebra_linear'],
     catchphrase: 'ตัดสองตัวท้าย ส่องหลักหน่วย ตอบได้ใน 3 วิ!',
     lyrics: [
       {
@@ -87,6 +89,7 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     bpm: 110,
     genre: 'Lo-Fi Chill Hop / Melodic Pop',
     formulaTopic: 'การคำนวณความร้อนเปลี่ยนอุณหภูมิและเปลี่ยนสถานะ',
+    relatedModuleIds: ['energy'],
     catchphrase: 'อุณหภูมิเปลี่ยนใช้ mcΔt สถานะเปลี่ยนใช้ mL!',
     lyrics: [
       {
@@ -138,6 +141,7 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     bpm: 124,
     genre: 'Catchy Bubblegum Pop / K-Pop Beat',
     formulaTopic: 'Conditional Sentences (Type 0, 1, 2, 3)',
+    relatedModuleIds: ['grammar_tenses', 'reading_comprehension', 'vocabulary', 'conversation'],
     catchphrase: 'จำคู่กริยา หน้าคู่หลัง ไม่มีวันโดน สทศ. หลอก!',
     lyrics: [
       {
@@ -186,6 +190,7 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     bpm: 115,
     genre: 'Thai Acoustic Folk Pop',
     formulaTopic: 'หลักการสังเกตคำสมาสและคำสนธิ',
+    relatedModuleIds: ['t1_samasa_sandhi', 't2_traiyang_tone', 't3_sentence_syntax', 't4_royal_vocabulary', 't5_idioms_proverbs', 't6_poetry_rhymes', 't7_reading_criticism', 't8_spelling_literature'],
     catchphrase: 'สมาสชน สนธิเชื่อม แปลจากหลังมาหน้า!',
     lyrics: [
       {
@@ -230,6 +235,7 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     bpm: 130,
     genre: 'Energetic Anime Rock / J-Pop',
     formulaTopic: 'อัตราส่วนสามเหลี่ยมมุมฉาก 3-4-5, 5-12-13, 7-24-25, 8-15-17',
+    relatedModuleIds: ['geometry', 'geometry_3d', 'geometry_angles', 'statistics_probability'],
     catchphrase: 'ท่อง 4 ชุดมหาเทพ กาช้อยส์สามเหลี่ยมมุมฉากใน 3 วินาที!',
     lyrics: [
       {
@@ -263,5 +269,68 @@ export const MEMORY_SONGS_DATA: MemorySong[] = [
     aipassVideoPrompt: 'Futuristic glowing mathematical laboratory with geometric 3D right triangles, educational diagrams showing formulas a square plus b square equals c square, floating holographic golden numbers 3 4 5 and 5 12 13, bright studio cinematic lighting, 16:9 3D animation, Pixar style.',
     youtubeUrl: 'https://youtu.be/M7WdGyXD_IM',
     releaseDate: '2026-09-05 00:00'
+  },
+  {
+    id: 'song_sci_virtual_lab',
+    title: 'เพลง 7 สถานีแล็บวิทย์พิชิต ม.1 (Virtual Science Lab Anthem)',
+    subject: 'science',
+    subjectLabel: 'วิทยาศาสตร์',
+    badgeColor: 'bg-emerald-600 text-white',
+    icon: '🔬',
+    bpm: 132,
+    genre: 'Upbeat Pop-Rock Edutainment',
+    formulaTopic: '7 สถานีแล็บวิทย์เสมือนจริง สสวท. & Gifted',
+    relatedModuleIds: ['force_motion', 'living_things', 'matter_properties', 'human_body', 'earth_space'],
+    catchphrase: 'ส่องกล้อง ทดสอบสาร ดูดแม่เหล็ก แดง-น้ำเงิน แยกสี คำนวณความร้อน เป๊ะ 100%!',
+    lyrics: [
+      {
+        section: 'Verse 1 (ประถม: แสง & แม่เหล็ก)',
+        lines: [
+          'แสงตกกระทบฉาก ยิ่งใกล้วัตถุเงายิ่งใหญ่โต',
+          'เงามืดมัวจำให้โก้ แหล่งกำเนิดแสงโตเงามัวล้อมรอบตัว',
+          'แม่เหล็กขั้วต่างดูด ขั้วเหมือนผลักหนีอย่าได้กลัว',
+          'เหล็กนิเกิลโคบอลต์ดูดชัวร์ แต่อะลูมิเนียมไม่ดูดนะเธอ!'
+        ]
+      },
+      {
+        section: 'Chorus (ฮุคแล็บวิทย์ 7 สถานี)',
+        lines: [
+          'นี่คือ Virtual Science Lab ลงมือทำจริงไม่มีเบลอ',
+          'สูตรวิทย์ที่เคยละเมอ ท่องแล้วเจอยิ้มรับคะแนนเต็ม!',
+          'ส่องกล้อง ย้อมสี ลิตมัสเปลี่ยนสี คำนวณความร้อน',
+          'เรียนแบบนี้ไม่มีถอยรอน พิชิต ม.1 สบายใจ!'
+        ]
+      },
+      {
+        section: 'Verse 2 (ม.1: กรด-เบส & กล้องจุลทรรศน์)',
+        lines: [
+          'จุ่มลิตมัสจำง่าย แดงไปน้ำเงินเป็นเบสแน่นอน',
+          'น้ำเงินไปแดงกรดซ่อน ฟีนอล์ฟทาลีนชมพูในเบสทันที',
+          'ส่องกล้องเยื่อหอมสี่เหลี่ยม ไม่มีคลอโรพลาสต์จำให้ดี',
+          'เยื่อบุข้างแก้มกลมรี ไม่มีผนังเซลล์นุ่มนวล'
+        ]
+      },
+      {
+        section: 'Bridge (สารอาหาร & ความร้อน)',
+        lines: [
+          'ไอโอดีนเปลี่ยนสีเป็นแป้ง เบเนดิกต์ต้มเดือดแดงอิฐน้ำตาล',
+          'ไบยูเร็ตม่วงโปรตีนตระการ โครมาโทกราฟีวัดค่า Rf สารวิ่งไว',
+          'ปิดท้ายด้วยสมดุลความร้อน Q loss เท่ากับ Q gain เสมอไป',
+          'มวลเท่ากันเฉลี่ยไว ๆ แล็บวิทย์ 7 ด่านผ่านฉลุย!'
+        ]
+      },
+      {
+        section: 'Outro',
+        lines: [
+          'MASTER ม.1 Virtual Science Lab เรียนวิทย์สนุก เข้าใจลึกซึ้ง สอบติด 100%!'
+        ]
+      }
+    ],
+    speedTechnique: 'จำภาพสีจากห้องแล็บ: ลิตมัส (แดง->น้ำเงิน=เบส), เบเนดิกต์ (แดงอิฐ), ไอโอดีน (น้ำเงินแกมม่วง), ไบยูเร็ต (ม่วง), สุริยุปราคาวงแหวนจากเงามัว',
+    trapToAvoid: 'อย่าเผลอคิดว่าเซลล์พืชทุกเซลล์มีคลอโรพลาสต์ (เยื่อหอมอยู่ใต้ดินไม่มี) และกระป๋องน้ำอัดลมอะลูมิเนียมแม่เหล็กไม่ดูด!',
+    aipassMusicPrompt: 'Upbeat energetic Pop-Rock Edutainment, driving drums, distorted bright electric guitar riffs, punchy brass synth, 132 BPM, youthful inspiring Thai vocals with tight rhythm, studio quality.',
+    aipassVideoPrompt: 'Futuristic high-tech school science laboratory with glowing glass test tubes, interactive 3D virtual microscopes showing onion cells, colorful litmus test strips turning blue and red, holographic light rays showing umbra and penumbra shadows, vibrant Pixar 3D animation style, 4k cinematic.',
+    youtubeUrl: 'https://youtu.be/SLumB462LQU',
+    releaseDate: '2026-09-06 00:00'
   }
 ]
