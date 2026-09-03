@@ -37,6 +37,10 @@ import ChromatographyLab from '@/components/labs/ChromatographyLab'
 import Math3DNetLab from '@/components/labs/Math3DNetLab'
 import MathAlgebraScaleLab from '@/components/labs/MathAlgebraScaleLab'
 import EnglishTensesLab from '@/components/labs/EnglishTensesLab'
+import EnglishIfClauseLab from '@/components/labs/EnglishIfClauseLab'
+import EnglishPassiveVoiceLab from '@/components/labs/EnglishPassiveVoiceLab'
+import EnglishSubjectVerbAgreementLab from '@/components/labs/EnglishSubjectVerbAgreementLab'
+import EnglishPrepositionLab from '@/components/labs/EnglishPrepositionLab'
 import ThaiSamasaLab from '@/components/labs/ThaiSamasaLab'
 import Footer from '@/components/Footer'
 
@@ -71,6 +75,10 @@ export type LabId =
   | 'math_3d_net'
   | 'math_scale'
   | 'eng_tenses'
+  | 'eng_if_clause'
+  | 'eng_passive_voice'
+  | 'eng_subject_verb'
+  | 'eng_preposition'
   | 'thai_samasa'
 
 export type SubjectFilter = 'all' | 'science' | 'math' | 'english' | 'thai'
@@ -240,6 +248,66 @@ const LAB_TIERS: LabTier[] = [
     accentColor: 'border-sky-300 text-sky-900 bg-sky-50',
     activeGrad: 'bg-sky-600 text-white shadow-sky-600/30 ring-sky-300',
     desc: 'เลื่อนไทม์ไลน์กาลเวลา สังเกตการแปลงร่างของกริยาตาม 12 Tenses และจับจุดคำบอกเวลา',
+    subject: 'english'
+  },
+  {
+    id: 'eng_if_clause',
+    name: '⚡ สวิตช์เหตุการณ์ If-Clause 4 สเต็ป',
+    shortTitle: 'If-Clause 4 สเต็ป',
+    subtitle: 'สสวท. & O-NET ม.1 • Type 0, 1, 2, 3 และจุดดัก were',
+    levelName: 'English Level 2: จอมเวทเงื่อนไข',
+    badgeEmoji: '⚡',
+    minScore: 45,
+    targetModuleId: 'grammar_conditionals',
+    targetModuleName: 'Conditional Sentences (If-Clause)',
+    accentColor: 'border-sky-300 text-sky-900 bg-sky-50',
+    activeGrad: 'bg-sky-600 text-white shadow-sky-600/30 ring-sky-300',
+    desc: 'สับคัตเอาต์เหตุการณ์จำลอง Type 0 ถึง Type 3 พร้อมเทคนิคระวังจุดลวง สทศ.',
+    subject: 'english'
+  },
+  {
+    id: 'eng_passive_voice',
+    name: '🔄 หม้อแปลง Active vs. Passive Voice',
+    shortTitle: 'Passive Voice',
+    subtitle: 'สสวท. & Gifted ม.1 • แปลงประธานเป็นผู้ถูกกระทำ be + V.3',
+    levelName: 'English Level 3: วิศวกรแปลงประโยค',
+    badgeEmoji: '🔄',
+    minScore: 60,
+    targetModuleId: 'grammar_passive',
+    targetModuleName: 'Passive Voice Mastery',
+    accentColor: 'border-indigo-300 text-indigo-900 bg-indigo-50',
+    activeGrad: 'bg-indigo-600 text-white shadow-indigo-600/30 ring-indigo-300',
+    desc: 'หมุนสลับประธานและกรรม ข้าม Tense ต่างๆ พร้อมกฎเหล็กห้ามใช้กับ Intransitive verbs',
+    subject: 'english'
+  },
+  {
+    id: 'eng_subject_verb',
+    name: '🎯 ดักจับ Subject-Verb Agreement',
+    shortTitle: 'Subject-Verb',
+    subtitle: 'O-NET & สพฐ. • กับดักส่วนขยาย, Neither/Either & Along with',
+    levelName: 'English Level 4: นักสืบไวยากรณ์',
+    badgeEmoji: '🎯',
+    minScore: 70,
+    targetModuleId: 'grammar_agreement',
+    targetModuleName: 'Subject-Verb Agreement',
+    accentColor: 'border-amber-300 text-amber-900 bg-amber-50',
+    activeGrad: 'bg-amber-600 text-white shadow-amber-600/30 ring-amber-300',
+    desc: 'ฝึกสแกนหาประธานแท้ ตัดส่วนขยายกวนใจ และฟันธงกริยาเอกพจน์/พหูพจน์',
+    subject: 'english'
+  },
+  {
+    id: 'eng_preposition',
+    name: '📍 พีระมิดกลับหัวบุพบท IN, ON, AT',
+    shortTitle: 'บุพบท IN ON AT',
+    subtitle: 'O-NET ป.6 - ม.1 • สเกลเวลาและสถานที่ Inverted Pyramid',
+    levelName: 'English Level 5: ผู้พิชิตบุพบท',
+    badgeEmoji: '📍',
+    minScore: 20,
+    targetModuleId: 'grammar_preposition',
+    targetModuleName: 'Prepositions of Time and Place',
+    accentColor: 'border-emerald-300 text-emerald-900 bg-emerald-50',
+    activeGrad: 'bg-emerald-600 text-white shadow-emerald-600/30 ring-emerald-300',
+    desc: 'ท่องจำสเกลพีระมิดกลับหัว IN ใหญ่สุด ➔ ON ปานกลาง ➔ AT จุดเป๊ะๆ',
     subject: 'english'
   },
   {
@@ -425,7 +493,7 @@ const SUBJECT_METADATA: Record<'science' | 'math' | 'english' | 'thai', {
             <h1 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
               <span>🔬 Virtual Lab</span>
               <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                11 สถานีทดลอง 4 วิชา
+                {LAB_TIERS.length} สถานีทดลอง 4 วิชา
               </span>
             </h1>
           </div>
@@ -835,6 +903,10 @@ const SUBJECT_METADATA: Record<'science' | 'math' | 'english' | 'thai', {
             {activeTab === 'math_3d_net' && <Math3DNetLab />}
             {activeTab === 'math_scale' && <MathAlgebraScaleLab />}
             {activeTab === 'eng_tenses' && <EnglishTensesLab />}
+            {activeTab === 'eng_if_clause' && <EnglishIfClauseLab />}
+            {activeTab === 'eng_passive_voice' && <EnglishPassiveVoiceLab />}
+            {activeTab === 'eng_subject_verb' && <EnglishSubjectVerbAgreementLab />}
+            {activeTab === 'eng_preposition' && <EnglishPrepositionLab />}
             {activeTab === 'thai_samasa' && <ThaiSamasaLab />}
           </div>
         ) : (

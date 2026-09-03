@@ -49,7 +49,7 @@ export default function Footer() {
             href="/virtual-lab"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-800 border border-purple-200 transition-all font-semibold shadow-2xs hover:scale-105"
           >
-            <span>🔬 ห้องแล็บเสมือนจริง 11 สถานี</span>
+            <span>🔬 ห้องแล็บเสมือนจริง 15 สถานี 4 วิชา</span>
           </Link>
         </div>
 
