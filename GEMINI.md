@@ -197,11 +197,12 @@
   - ให้ใช้คำบรรยายสถานการณ์เชิงวิทยาศาสตร์และคณิตศาสตร์อย่างเป็นกลาง เช่น `glowing mathematical laboratory`, `geometric 3D right triangles`, `educational diagrams showing formulas a² + b² = c²` เพื่อให้สร้างคลิปวิดีโอ 3D ผ่านฉลุย 100%
 
 ### Rule 33 — Expert Agent Guild & Autonomous Multi-Agent Collaboration Standard
-- **4 Expert Subagents Invariant**: ระบบได้รับการจัดโครงสร้าง 4 ทีมงานผู้เชี่ยวชาญระดับสูงที่พร้อมถูกเรียกใช้งานผ่าน `invoke_subagent`:
+- **5 Expert Subagents Invariant**: ระบบได้รับการจัดโครงสร้าง 5 ทีมงานผู้เชี่ยวชาญระดับสูงที่พร้อมถูกเรียกใช้งานผ่าน `invoke_subagent`:
   1. `expert_studio_producer`: ผลิตเพลงสูตรลัด (Lyria 3 Pro), วิดีโอ 3D (Seedance 2.0), ซับคาราโอเกะ Hardsub (Rule 29/30) และตั้งเวลาโพสต์ YouTube/Facebook อัตโนมัติ (Rule 31/32)
   2. `expert_gifted_olympiad`: สกัดโจทย์แข่งขัน สสวท., MWIT, KVIS, สอวน. ผ่าน DeepSeek R1 / Claude Sonnet 5, ออกแบบสูตรลัด 3 วินาที และดูแลเส้นทางสู่เภสัชกรของน้องฟอร์จูน
   3. `expert_interactive_lab`: พัฒนาและขยายขีดความสามารถของ Virtual Science Lab 7 สถานี และสร้าง Interactive STEM Simulators (Math 3D Lab / Physics Lab)
   4. `expert_school_growth`: บริหาร School Portal (`/school`), รูปแบบเอกสารราชการ/ทางการมาตรฐานสากล, การนำเข้ารายชื่อ และระบบส่งรายงานผลถึงผู้ปกครองผ่าน Telegram/LINE
+  5. `expert_growth_hacker`: ออกแบบ Hook 3 วินาทีแรก, Looping Video ดึง Retention > 100%, ซอย 1 เพลงยาวเป็น 3 Shorts, คัดกรอง SEO/Hashtags และกำหนดตารางเวลาโพสต์ทองคำ (Prime Time)
 - **Zero Hallucination Academic Standard**: ทุกข้อสอบและเนื้อหาที่สร้างโดยทีมงาน ต้องตรงตามหลักสูตรแกนกลาง สพฐ. 2551 (ปรับปรุง 2560) และ Blueprint สทศ. 100%
 
 ---

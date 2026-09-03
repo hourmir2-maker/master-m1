@@ -13,7 +13,7 @@ description: >-
 
 --------------------------------------------------------------------------------
 
-## 🌟 4 เสาหลักทีมงานผู้เชี่ยวชาญ (The 4 Expert Subagents)
+## 🌟 5 เสาหลักทีมงานผู้เชี่ยวชาญ (The 5 Expert Subagents)
 
 | รหัสทีมงาน | บทบาทหน้าที่ | โมเดลหลักใน AiPASS ที่ถูกเรียกใช้ | เอกสารประจำทีม |
 | :--- | :--- | :--- | :--- |
@@ -21,6 +21,7 @@ description: >-
 | **`expert_gifted_olympiad`** | สกัดข้อสอบแข่งขัน สสวท., MWIT, KVIS, สอวน., คิดสูตรลัด 3 วินาที (3-Sec Tricks), วางเส้นทาง "ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊" (น้องฟอร์จูน) | **DeepSeek R1** (Reasoning CoT)<br>**Claude Sonnet 5** | `.agents/expert_gifted_olympiad/BRIEFING.md` |
 | **`expert_interactive_lab`** | ดูแล Virtual Science Lab 7 สถานี, สร้างแล็บใหม่: Math 3D Lab (เรขาคณิตคลี่รูป) & Physics Lab (วงจรไฟฟ้า), คุมระบบปลดล็อกตามคะแนน (Score Gates) | **Claude Sonnet 5**<br>**Gemini 3.7 Flash** | `.agents/expert_interactive_lab/BRIEFING.md` |
 | **`expert_school_growth`** | บริหาร School Portal (`/school`), รูปแบบเอกสารทางการและราชการมาตรฐานสากล, ใบรายงานผล (Report Card / PDF), ส่งผล 1-on-1 เข้า Telegram/LINE ผู้ปกครอง | **Pathumma ThaiLLM**<br>**Typhoon-2** | `.agents/expert_school_growth/BRIEFING.md` |
+| **`expert_growth_hacker`** | วางกลยุทธ์ดันยอดวิวคลิปสั้น (Shorts/Reels/TikTok), Hook 3 วินาทีแรก, Looping Video ดึง Retention > 100%, ซอย 1 เพลงเป็น 3 คลิป, วางคีย์เวิร์ด SEO/แฮชแท็ก | **Claude Sonnet 5**<br>**DeepSeek V3.2** | `.agents/expert_growth_hacker/BRIEFING.md` |
 
 --------------------------------------------------------------------------------
 
