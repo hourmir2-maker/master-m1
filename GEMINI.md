@@ -177,7 +177,9 @@
 
 ### Rule 31 — Account Authority, Studio Assets & Local Picker Architecture
 - **Strict Account Authority Invariant**: 
-  - บัญชีหลักอย่างเป็นทางการที่ผูกกับ **Google AdSense (`pub-7280055452989562`)** และเพจ Facebook คือ **`pairote05@hotmail.com`** (ช่องหลัก `@dart2u` / Brand Channel `@MASTERม.1`)
+  - บัญชีหลักอย่างเป็นทางการที่ผูกกับ **Google AdSense (`pub-7280055452989562`)** และเพจ Facebook คือ **`pairote05@hotmail.com`**
+  - **Official YouTube Channel**: Channel ID **`UCL_9roKIZ7-5oL3-I_Sj6eg`** (URL: [https://youtube.com/channel/UCL_9roKIZ7-5oL3-I_Sj6eg](https://youtube.com/channel/UCL_9roKIZ7-5oL3-I_Sj6eg))
+  - **Official Facebook Page**: Page ID **`645243598902533`** (URL: [https://www.facebook.com/645243598902533](https://www.facebook.com/645243598902533))
   - ห้ามระบบอัตโนมัติหรือบอทอัปโหลดสื่อหรือสร้างช่องในบัญชีจำลอง/บัญชีสำรองอื่นเด็ดขาด
 - **Local Media & Desktop Hub Structure**:
   - สื่อวิดีโอและกราฟิกที่พร้อมเผยแพร่ ต้องจัดเก็บในโครงสร้างโฟลเดอร์ภาษาไทยที่ชัดเจน ค้นหาง่าย และเข้าถึงได้ทันทีจาก Windows File Dialog:

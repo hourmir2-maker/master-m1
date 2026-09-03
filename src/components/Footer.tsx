@@ -35,13 +35,13 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://www.youtube.com/@dart2u"
+            href="https://youtube.com/channel/UCL_9roKIZ7-5oL3-I_Sj6eg"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 border border-red-200 transition-all font-semibold shadow-2xs hover:scale-105"
           >
             <YouTubeIcon className="w-3.5 h-3.5 text-red-600" />
-            <span>YouTube: @dart2u / @MASTERม.1</span>
+            <span>YouTube: ช่อง Master ม.1</span>
             <ExternalLink className="w-3 h-3 opacity-60" />
           </a>
 

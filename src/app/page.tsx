@@ -45,6 +45,18 @@ export default function LandingPage() {
               </svg>
               <span>เพจ Facebook</span>
             </a>
+            <a
+              href="https://youtube.com/channel/UCL_9roKIZ7-5oL3-I_Sj6eg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-all shadow-2xs"
+              title="ชมคลิปเพลงและสูตรลัดบนช่อง YouTube Master ม.1"
+            >
+              <svg className="w-3.5 h-3.5 fill-red-600" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span>ช่อง YouTube</span>
+            </a>
             <Link href="/school">
               <Button variant="outline" className="border-blue-200 text-blue-800 bg-blue-50/80 hover:bg-blue-100 font-bold text-xs shadow-xs">
                 🏫 สำหรับโรงเรียน (School Portal)
