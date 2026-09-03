@@ -63,6 +63,35 @@ description: >-
 
 --------------------------------------------------------------------------------
 
+## 🎬 สกิลการทำซับคาราโอเกะวิ่งตรงจังหวะเพลง (Lyric-Synced Hardsub Video Recipe)
+
+สูตรและขั้นตอนมาตรฐานสำหรับสร้างคลิปวิดีโอที่มีเนื้อเพลงวิ่งเปลี่ยนสีตรงกับจังหวะเพลง 100%:
+
+### 1. ถอดเวลาคลื่นเสียงจริงด้วย AI Audio Waveform Ingestion (Rule 29)
+- ส่งไฟล์เสียง `.mp3` ให้ Gemini Audio Engine (`gemini-3.6-flash`) วิเคราะห์หาเวลาเริ่ม-จบระดับมิลลิวินาที (ห้ามเดาเวลาล่วงหน้า):
+  ```bash
+  python scripts/studio/align_all_3_songs.py
+  ```
+- ผลลัพธ์ที่ได้: ไฟล์ `*_aligned.json` ที่มีโครงสร้าง `[{"line": 1, "text": "...", "start": "00:08.50", "end": "00:12.30"}]`
+
+### 2. สร้างไฟล์ซับไตเติลคาราโอเกะ ASS v4.00+ พร้อมไฮไลต์สีทอง
+- ฟอนต์ไทยมาตรฐาน Windows: `Tahoma Bold` ขนาด 34px, ขอบสีดำหนา 4px (Outline: 4)
+- สีตัวอักษรปกติ: สีขาว `&H00FFFFFF&`
+- **สูตรลัดและจุดลวง สทศ.**: ไฮไลต์ด้วยแท็กสีทองคำ `{\c&H002BF7FF&}...{\c&H00FFFFFF&}`
+
+### 3. ตัดต่อและเรนเดอร์ Hardsub ฝังลงวิดีโอด้วย FFmpeg (Rule 30)
+- นำคลิปวิดีโอ 3D มาวนลูปแบบไร้รอยต่อให้ยาวเท่ากับเพลง และฝังซับไตเติลถาวร:
+  ```bash
+  python scripts/studio/assemble_all_3_songs.py
+  ```
+  *(เบื้องหลังใช้: `ffmpeg -stream_loop -1 -i video.mp4 -i song.mp3 -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,ass='lyrics.ass'" -c:v libx264 -preset fast -crf 20 -c:a aac -b:a 192k -shortest output.mp4`)*
+
+### 4. นำส่ง Desktop Hub & ตั้งเวลาเผยแพร่ข้ามแพลตฟอร์ม (Rule 31/32)
+- ก๊อปปี้ไฟล์ `.mp4` พร้อม `ข้อความสำหรับโพสต์_YouTube.txt` ไปที่ `Desktop ➔ คลิปสำหรับลง_YouTube`
+- สั่งยิง Meta Graph API ตั้งเวลาโพสต์ Facebook Page ให้ตรงวินาทีกับ YouTube ด้วย `python scripts/studio/schedule_all_facebook_posts.py`
+
+--------------------------------------------------------------------------------
+
 ## 🛡️ กฎเหล็กที่ทุกทีมต้องปฏิบัติตาม (Non-Negotiable Invariants)
 - **Rule 25 & 26**: ห้ามใช้ Mock/Placeholder Data ในรายงาน และต้องใช้ User-Scoped Storage ผูกกับ User ID เสมอ
 - **Rule 29 & 30**: ห้ามเดาเวลาซับไตเติล (ใช้ Gemini Audio ดึงเวลาจริง) และใช้ฟอนต์มาตรฐาน Windows ไฮไลต์สูตรลัดสีทอง
