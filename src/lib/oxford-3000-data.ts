@@ -27,9 +27,6 @@ export const VOCAB_CATEGORIES = [
 ] as const
 
 export const OXFORD_VOCAB_BANK: VocabItem[] = [
-  // ==========================================
-  // 🏠 1. DAILY & HOME (ชีวิตประจำวัน & ในบ้าน)
-  // ==========================================
   {
     id: 'v_1',
     word: 'routine',
@@ -138,10 +135,6 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Domestic life requires balancing work and family responsibilities.',
     exampleTh: 'ชีวิตครอบครัวจำเป็นต้องรักษาสมดุลระหว่างงานและความรับผิดชอบต่อครอบครัว'
   },
-
-  // ==========================================
-  // 🏫 2. EDUCATION & ACADEMICS (การศึกษา & วิชาการ)
-  // ==========================================
   {
     id: 'v_10',
     word: 'assignment',
@@ -250,10 +243,6 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Through hard work and perseverance, she earned a full scholarship.',
     exampleTh: 'ด้วยการทำงานหนักและความเพียรพยายามไม่ย่อท้อ เธอจึงได้รับทุนการศึกษาเต็มจำนวน'
   },
-
-  // ==========================================
-  // 😊 3. EMOTIONS & PSYCHOLOGY (อารมณ์ & จิตวิทยา)
-  // ==========================================
   {
     id: 'v_19',
     word: 'anxious',
@@ -280,18 +269,6 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
   },
   {
     id: 'v_21',
-    word: 'generous',
-    pos: 'adj.',
-    phonetic: '/ˈdʒen.ər.əs/',
-    thaiPhonetic: 'เจน-เนอะ-เรัส',
-    meaning: 'ใจกว้าง, เอื้อเฟื้อเผื่อแผ่',
-    category: 'feelings',
-    level: 'B1',
-    example: 'He made a generous donation to the children\'s hospital.',
-    exampleTh: 'เขาได้บริจาคเงินก้อนโตอย่างใจกว้างให้แก่โรงพยาบาลเด็ก'
-  },
-  {
-    id: 'v_22',
     word: 'stubborn',
     pos: 'adj.',
     phonetic: '/ˈstʌb.ən/',
@@ -303,7 +280,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เขาดื้อเกินกว่าจะยอมถามทางตอนที่หลงทาง'
   },
   {
-    id: 'v_23',
+    id: 'v_22',
     word: 'empathy',
     pos: 'n.',
     phonetic: '/ˈem.pə.θi/',
@@ -315,7 +292,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ผู้นำที่ยิ่งใหญ่จะรับฟังด้วยความเข้าอกเข้าใจและเมตตากรุณาอย่างแท้จริง'
   },
   {
-    id: 'v_24',
+    id: 'v_23',
     word: 'resilient',
     pos: 'adj.',
     phonetic: '/rɪˈzɪl.jənt/',
@@ -327,7 +304,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'คนที่มีความยืดหยุ่นทางใจจะปรับตัวต่ออุปสรรคที่ไม่คาดฝันได้อย่างรวดเร็ว'
   },
   {
-    id: 'v_25',
+    id: 'v_24',
     word: 'enthusiastic',
     pos: 'adj.',
     phonetic: '/ɪnˌθjuː.ziˈæs.tɪk/',
@@ -338,12 +315,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'The children were enthusiastic about the upcoming science fair.',
     exampleTh: 'เด็กๆ รู้สึกกระตือรือร้นตื่นเต้นกับงานสัปดาห์วิทยาศาสตร์ที่กำลังจะมาถึง'
   },
-
-  // ==========================================
-  // 🥗 4. FOOD, HEALTH & MEDICINE (อาหาร สุขภาพ & การแพทย์)
-  // ==========================================
   {
-    id: 'v_26',
+    id: 'v_25',
     word: 'nutrition',
     pos: 'n.',
     phonetic: '/njuːˈtrɪʃ.ən/',
@@ -355,7 +328,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'โภชนาการที่เหมาะสมช่วยเสริมสร้างระบบภูมิคุ้มกันตามธรรมชาติ'
   },
   {
-    id: 'v_27',
+    id: 'v_26',
     word: 'ingredient',
     pos: 'n.',
     phonetic: '/ɪnˈɡriː.di.ənt/',
@@ -367,7 +340,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'สมุนไพรออร์แกนิกสดเป็นวัตถุดิบลับของอาหารจานนี้'
   },
   {
-    id: 'v_28',
+    id: 'v_27',
     word: 'symptom',
     pos: 'n.',
     phonetic: '/ˈsɪmp.təm/',
@@ -379,7 +352,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ไข้ ไอ และความอ่อนเพลียเป็นอาการของการติดเชื้อในระบบทางเดินหายใจ'
   },
   {
-    id: 'v_29',
+    id: 'v_28',
     word: 'prescribe',
     pos: 'v.',
     phonetic: '/prɪˈskraɪb/',
@@ -391,7 +364,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'แพทย์สั่งจ่ายยาปฏิชีวนะเพื่อรักษาการติดเชื้อที่ลำคอ'
   },
   {
-    id: 'v_30',
+    id: 'v_29',
     word: 'hygiene',
     pos: 'n.',
     phonetic: '/ˈhaɪ.dʒiːn/',
@@ -403,7 +376,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'การล้างมือเป็นประจำคือหัวใจสำคัญของสุขอนามัยส่วนบุคคลที่ดี'
   },
   {
-    id: 'v_31',
+    id: 'v_30',
     word: 'chronic',
     pos: 'adj.',
     phonetic: '/ˈkrɒn.ɪk/',
@@ -414,24 +387,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Regular exercise can prevent chronic diseases like hypertension.',
     exampleTh: 'การออกกำลังกายสม่ำเสมอสามารถป้องกันโรคเรื้อรัง เช่น โรคความดันโลหิตสูงได้'
   },
-
-  // ==========================================
-  // ✈️ 5. TRAVEL & LOGISTICS (การเดินทาง & คมนาคม)
-  // ==========================================
   {
-    id: 'v_32',
-    word: 'destination',
-    pos: 'n.',
-    phonetic: '/ˌdes.tɪˈneɪ.ʃən/',
-    thaiPhonetic: 'เดส-ทิ-เน-เชิน',
-    meaning: 'จุดหมายปลายทาง',
-    category: 'travel',
-    level: 'B1',
-    example: 'Paris is one of the world\'s most visited tourist destinations.',
-    exampleTh: 'ปารีสเป็นหนึ่งในจุดหมายปลายทางของนักท่องเที่ยวที่มีผู้มาเยือนมากที่สุดในโลก'
-  },
-  {
-    id: 'v_33',
+    id: 'v_31',
     word: 'itinerary',
     pos: 'n.',
     phonetic: '/aɪˈtɪn.ər.ər.i/',
@@ -443,7 +400,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'กำหนดการเดินทางของเราประกอบด้วยการเยี่ยมชมวัดโบราณทางประวัติศาสตร์'
   },
   {
-    id: 'v_34',
+    id: 'v_32',
     word: 'pedestrian',
     pos: 'n.',
     phonetic: '/pəˈdes.tri.ən/',
@@ -455,7 +412,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เขตทางเดินเท้าในย่านใจกลางเมืองทำให้การเดินซื้อของปลอดภัยและเพลิดเพลิน'
   },
   {
-    id: 'v_35',
+    id: 'v_33',
     word: 'congestion',
     pos: 'n.',
     phonetic: '/kənˈdʒes.tʃən/',
@@ -467,7 +424,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'การจราจรติดขัดหนาแน่นมากในช่วงชั่วโมงเร่งด่วนตอนเช้า'
   },
   {
-    id: 'v_36',
+    id: 'v_34',
     word: 'accommodation',
     pos: 'n.',
     phonetic: '/əˌkɒm.əˈdeɪ.ʃən/',
@@ -478,12 +435,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'We booked luxury hotel accommodation near the beach.',
     exampleTh: 'พวกเราได้จองที่พักโรงแรมหรูริมชายหาด'
   },
-
-  // ==========================================
-  // 💳 6. FINANCE & COMMERCE (การเงิน & การค้า)
-  // ==========================================
   {
-    id: 'v_37',
+    id: 'v_35',
     word: 'affordable',
     pos: 'adj.',
     phonetic: '/əˈfɔː.də.bəl/',
@@ -495,7 +448,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'การศึกษาที่มีคุณภาพควรมีราคาที่ทุกครอบครัวสามารถจ่ายได้'
   },
   {
-    id: 'v_38',
+    id: 'v_36',
     word: 'investment',
     pos: 'n.',
     phonetic: '/ɪnˈvest.mənt/',
@@ -507,7 +460,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'การอ่านหนังสือคือการลงทุนที่ยิ่งใหญ่ที่สุดสำหรับอนาคตของตนเอง'
   },
   {
-    id: 'v_39',
+    id: 'v_37',
     word: 'inflation',
     pos: 'n.',
     phonetic: '/ɪnˈfleɪ.ʃən/',
@@ -519,7 +472,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ภาวะเงินเฟ้อที่สูงขึ้นทำให้กำลังซื้อของผู้บริโภคลดลง'
   },
   {
-    id: 'v_40',
+    id: 'v_38',
     word: 'lucrative',
     pos: 'adj.',
     phonetic: '/ˈluː.krə.tɪv/',
@@ -531,7 +484,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'วิศวกรรมซอฟต์แวร์เป็นหนึ่งในสายอาชีพที่ทำรายได้อย่างงามที่สุดในปัจจุบัน'
   },
   {
-    id: 'v_41',
+    id: 'v_39',
     word: 'transaction',
     pos: 'n.',
     phonetic: '/trænˈzæk.ʃən/',
@@ -542,12 +495,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Mobile banking allows users to complete secure transactions instantly.',
     exampleTh: 'โมบายแบงก์กิ้งช่วยให้ผู้ใช้งานทำธุรกรรมที่ปลอดภัยได้ในทันที'
   },
-
-  // ==========================================
-  // 💼 7. CAREER & LEADERSHIP (อาชีพ & ภาวะผู้นำ)
-  // ==========================================
   {
-    id: 'v_42',
+    id: 'v_40',
     word: 'colleague',
     pos: 'n.',
     phonetic: '/ˈkɒl.iːɡ/',
@@ -559,7 +508,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'การร่วมมือกันในหมู่เพื่อนร่วมงานทำให้เกิดผลงานสร้างสรรค์ที่ดีที่สุด'
   },
   {
-    id: 'v_43',
+    id: 'v_41',
     word: 'initiative',
     pos: 'n.',
     phonetic: '/ɪˈnɪʃ.ə.tɪv/',
@@ -571,7 +520,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เขาเป็นฝ่ายริเริ่มออกแบบระบบจัดเก็บเอกสารอัตโนมัติขึ้นมาใหม่'
   },
   {
-    id: 'v_44',
+    id: 'v_42',
     word: 'delegate',
     pos: 'v.',
     phonetic: '/ˈdel.ɪ.ɡeɪt/',
@@ -583,7 +532,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ผู้จัดการที่มีประสิทธิภาพย่อมรู้วิธีมอบหมายงานได้อย่างมีประสิทธิผล'
   },
   {
-    id: 'v_45',
+    id: 'v_43',
     word: 'integrity',
     pos: 'n.',
     phonetic: '/ɪnˈteɡ.rə.ti/',
@@ -595,7 +544,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ความซื่อสัตย์ในวิชาชีพคือศิลาฤกษ์แห่งความไว้วางใจในทุกธุรกิจ'
   },
   {
-    id: 'v_46',
+    id: 'v_44',
     word: 'productive',
     pos: 'adj.',
     phonetic: '/prəˈdʌk.tɪv/',
@@ -606,12 +555,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'We had a very productive meeting and resolved all pending issues.',
     exampleTh: 'พวกเรามีการประชุมที่เกิดประสิทธิผลสูงและคลี่คลายปัญหาคั่งค้างได้ทั้งหมด'
   },
-
-  // ==========================================
-  // 🌿 8. ECOLOGY & NATURE (นิเวศวิทยา & ธรรมชาติ)
-  // ==========================================
   {
-    id: 'v_47',
+    id: 'v_45',
     word: 'ecosystem',
     pos: 'n.',
     phonetic: '/ˈiː.kəʊˌsɪs.təm/',
@@ -623,7 +568,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'แนวปะการังเป็นระบบนิเวศสำคัญยิ่งที่หล่อเลี้ยงสิ่งมีชีวิตใต้ทะเลนับพันชนิด'
   },
   {
-    id: 'v_48',
+    id: 'v_46',
     word: 'biodiversity',
     pos: 'n.',
     phonetic: '/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/',
@@ -635,7 +580,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ป่าฝนเขตร้อนมีความหลากหลายทางชีวภาพที่อุดมสมบูรณ์ที่สุดบนโลก'
   },
   {
-    id: 'v_49',
+    id: 'v_47',
     word: 'renewable',
     pos: 'adj.',
     phonetic: '/rɪˈnjuː.ə.bəl/',
@@ -647,7 +592,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'พลังงานแสงอาทิตย์และพลังงานลมเป็นรูปแบบพลังงานหมุนเวียนที่ยั่งยืน'
   },
   {
-    id: 'v_50',
+    id: 'v_48',
     word: 'endangered',
     pos: 'adj.',
     phonetic: '/ɪnˈdeɪn.dʒəd/',
@@ -659,7 +604,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'แพนด้ายักษ์เคยเป็นสัตว์ที่ตกอยู่ในภาวะวิกฤตใกล้สูญพันธุ์'
   },
   {
-    id: 'v_51',
+    id: 'v_49',
     word: 'sustainability',
     pos: 'n.',
     phonetic: '/səˌsteɪ.nəˈbɪl.ə.ti/',
@@ -670,12 +615,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Environmental sustainability requires collective global effort.',
     exampleTh: 'ความยั่งยืนทางสิ่งแวดล้อมจำเป็นต้องอาศัยความร่วมมือร่วมใจจากทั่วโลก'
   },
-
-  // ==========================================
-  // 💻 9. TECH, AI & DIGITAL (เทคโนโลยี AI & ดิจิทัล)
-  // ==========================================
   {
-    id: 'v_52',
+    id: 'v_50',
     word: 'algorithm',
     pos: 'n.',
     phonetic: '/ˈæl.ɡə.rɪ.ðəm/',
@@ -687,7 +628,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เครื่องมือค้นหาใช้อัลกอริทึมที่ซับซ้อนในการจัดอันดับหน้าเว็บ'
   },
   {
-    id: 'v_53',
+    id: 'v_51',
     word: 'artificial',
     pos: 'adj.',
     phonetic: '/ˌɑː.tɪˈfɪʃ.əl/',
@@ -699,7 +640,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ปัญญาประดิษฐ์ช่วยเสริมศักยภาพนักเรียนด้วยการติวแบบเฉพาะบุคคล'
   },
   {
-    id: 'v_54',
+    id: 'v_52',
     word: 'cybersecurity',
     pos: 'n.',
     phonetic: '/ˈsaɪ.bə.sɪˌkjʊə.rə.ti/',
@@ -711,7 +652,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'รหัสผ่านที่รัดกุมคือแนวป้องกันด่านแรกในระบบความปลอดภัยทางไซเบอร์'
   },
   {
-    id: 'v_55',
+    id: 'v_53',
     word: 'innovation',
     pos: 'n.',
     phonetic: '/ˌɪn.əˈveɪ.ʃən/',
@@ -723,7 +664,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'นวัตกรรมทางเทคโนโลยีช่วยขับเคลื่อนการเติบโตทางเศรษฐกิจอย่างรวดเร็วทั่วโลก'
   },
   {
-    id: 'v_56',
+    id: 'v_54',
     word: 'breakthrough',
     pos: 'n.',
     phonetic: '/ˈbreɪk.θruː/',
@@ -734,12 +675,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'Scientists made a major breakthrough in cancer research.',
     exampleTh: 'คณะนักวิทยาศาสตร์ได้สร้างการค้นพบครั้งยิ่งใหญ่ในงานวิจัยโรคมะเร็ง'
   },
-
-  // ==========================================
-  // 🗣️ 10. COMMUNICATION & SOCIETY (การสื่อสาร & สังคม)
-  // ==========================================
   {
-    id: 'v_57',
+    id: 'v_55',
     word: 'persuade',
     pos: 'v.',
     phonetic: '/pəˈsweɪd/',
@@ -751,7 +688,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เธอสามารถโน้มน้าวใจพ่อแม่ให้ยินยอมให้เธอไปเรียนต่อต่างประเทศได้'
   },
   {
-    id: 'v_58',
+    id: 'v_56',
     word: 'negotiate',
     pos: 'v.',
     phonetic: '/nəˈɡəʊ.ʃi.eɪt/',
@@ -763,7 +700,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เหล่านักการทูตได้พบปะกันเพื่อเจรจาต่อรองหาทางออกอย่างสันติสำหรับข้อขัดแย้ง'
   },
   {
-    id: 'v_59',
+    id: 'v_57',
     word: 'eloquent',
     pos: 'adj.',
     phonetic: '/ˈel.ə.kwənt/',
@@ -775,7 +712,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'สุนทรพจน์อันคมคายและสละสลวยของเขาได้สร้างแรงบันดาลใจให้แก่ผู้ฟังนับล้านคนทั่วโลก'
   },
   {
-    id: 'v_60',
+    id: 'v_58',
     word: 'controversy',
     pos: 'n.',
     phonetic: '/ˈkɒn.trə.vɜː.si/',
@@ -786,12 +723,8 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     example: 'The new environmental policy sparked widespread controversy.',
     exampleTh: 'นโยบายสิ่งแวดล้อมใหม่ได้ก่อให้เกิดข้อถกเถียงในวงกว้าง'
   },
-
-  // ==========================================
-  // ⚡ 11. PHRASAL VERBS & IDIOMS (กริยาวลี & สำนวน)
-  // ==========================================
   {
-    id: 'v_61',
+    id: 'v_59',
     word: 'put off',
     pos: 'phr.',
     phonetic: '/pʊt ɒf/',
@@ -803,7 +736,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'อย่าผลัดวันประกันพรุ่งในสิ่งที่คุณสามารถทำให้สำเร็จได้ในวันนี้'
   },
   {
-    id: 'v_62',
+    id: 'v_60',
     word: 'look after',
     pos: 'phr.',
     phonetic: '/lʊk ˈɑːf.tər/',
@@ -815,7 +748,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เธออาสาไปดูแลสัตว์จรจัดที่สถานสงเคราะห์'
   },
   {
-    id: 'v_63',
+    id: 'v_61',
     word: 'figure out',
     pos: 'phr.',
     phonetic: '/ˈfɪɡ.ər aʊt/',
@@ -827,7 +760,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'เขาใช้เวลาหลายชั่วโมงในการคิดหาคำตอบของปริศนาคณิตศาสตร์'
   },
   {
-    id: 'v_64',
+    id: 'v_62',
     word: 'come across',
     pos: 'phr.',
     phonetic: '/kʌm əˈkrɒs/',
@@ -839,19 +772,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'ฉันบังเอิญเจอเหรียญโบราณหายากขณะกำลังทำความสะอาดห้องใต้หลังคา'
   },
   {
-    id: 'v_65',
-    word: 'hit the books',
-    pos: 'phr.',
-    phonetic: '/hɪt ðə bʊks/',
-    thaiPhonetic: 'ฮิท-เดอะ-บุ๊คส์',
-    meaning: 'ตั้งหน้าตั้งตาอ่านหนังสืออย่างหนัก',
-    category: 'phrasal',
-    level: 'B1',
-    example: 'Exam week is starting, so it\'s time to hit the books!',
-    exampleTh: 'สัปดาห์สอบกำลังเริ่มขึ้นแล้ว ถึงเวลาต้องตั้งหน้าตั้งตาอ่านหนังสือหนักแล้ว!'
-  },
-  {
-    id: 'v_66',
+    id: 'v_63',
     word: 'burn the midnight oil',
     pos: 'phr.',
     phonetic: '/bɜːn ðə ˈmɪd.naɪt ɔɪl/',
@@ -863,7 +784,7 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     exampleTh: 'นักศึกษาแพทย์มักจะอ่านหนังสือจนดึกดื่นค่อนคืนก่อนการสอบไฟนอล'
   },
   {
-    id: 'v_67',
+    id: 'v_64',
     word: 'once in a blue moon',
     pos: 'phr.',
     phonetic: '/wʌns ɪn ə bluː muːn/',
@@ -873,5 +794,2189 @@ export const OXFORD_VOCAB_BANK: VocabItem[] = [
     level: 'B1',
     example: 'He lives in Australia, so we only see him once in a blue moon.',
     exampleTh: 'เขาอาศัยอยู่ในออสเตรเลีย พวกเราจึงได้เจอเขานานทีปีหนเท่านั้น'
+  },
+  {
+    id: 'v_65',
+    word: 'neighborhood',
+    pos: 'n.',
+    phonetic: '/ˈneɪ.bər.hʊd/',
+    thaiPhonetic: 'เน-เบอร์-ฮูด',
+    meaning: 'ละแวกบ้าน, แถวบ้าน',
+    category: 'daily',
+    level: 'A2',
+    example: 'This is a quiet and safe neighborhood for children.',
+    exampleTh: 'นี่คือละแวกบ้านที่เงียบสงบและปลอดภัยสำหรับเด็กๆ'
+  },
+  {
+    id: 'v_66',
+    word: 'furniture',
+    pos: 'n.',
+    phonetic: '/ˈfɜː.nɪ.tʃər/',
+    thaiPhonetic: 'เฟอร์-นิ-เจอร์',
+    meaning: 'เฟอร์นิเจอร์, เครื่องเรือน',
+    category: 'daily',
+    level: 'A2',
+    example: 'They bought wooden furniture for their new living room.',
+    exampleTh: 'พวกเขาซื้อเฟอร์นิเจอร์ไม้สำหรับห้องนั่งเล่นใหม่'
+  },
+  {
+    id: 'v_67',
+    word: 'commute',
+    pos: 'v.',
+    phonetic: '/kəˈmjuːt/',
+    thaiPhonetic: 'เคอะ-มิวท',
+    meaning: 'เดินทางไปกลับที่ทำงานหรือโรงเรียน',
+    category: 'daily',
+    level: 'B1',
+    example: 'He commutes to school by bicycle every morning.',
+    exampleTh: 'เขาเดินทางไปโรงเรียนด้วยจักรยานทุกเช้า'
+  },
+  {
+    id: 'v_68',
+    word: 'balcony',
+    pos: 'n.',
+    phonetic: '/ˈbæl.kə.ni/',
+    thaiPhonetic: 'แบล-เคอะ-นี',
+    meaning: 'ระเบียง',
+    category: 'daily',
+    level: 'A2',
+    example: 'There are colorful potted flowers on the balcony.',
+    exampleTh: 'มีกระถางดอกไม้หลากสีสันอยู่บนระเบียง'
+  },
+  {
+    id: 'v_69',
+    word: 'dormitory',
+    pos: 'n.',
+    phonetic: '/ˈdɔːr.mə.tɔːr.i/',
+    thaiPhonetic: 'ดอร์-มิ-ทอ-รี',
+    meaning: 'หอพักนักเรียน, หอพัก',
+    category: 'daily',
+    level: 'B1',
+    example: 'Many boarding school students live happily in the dormitory.',
+    exampleTh: 'นักเรียนโรงเรียนประจำจำนวนมากอาศัยอยู่อย่างมีความสุขในหอพัก'
+  },
+  {
+    id: 'v_70',
+    word: 'utensil',
+    pos: 'n.',
+    phonetic: '/juːˈten.sɪl/',
+    thaiPhonetic: 'ยู-เทน-ซิล',
+    meaning: 'อุปกรณ์เครื่องใช้ในครัว',
+    category: 'daily',
+    level: 'B1',
+    example: 'Keep all cooking utensils clean and sanitized.',
+    exampleTh: 'รักษาอุปกรณ์ทำครัวทั้งหมดให้สะอาดและถูกสุขอนามัย'
+  },
+  {
+    id: 'v_71',
+    word: 'laundry',
+    pos: 'n.',
+    phonetic: '/ˈlɔːn.dri/',
+    thaiPhonetic: 'ลอน-ดรี',
+    meaning: 'การซักรีด, เสื้อผ้าที่รอซัก',
+    category: 'daily',
+    level: 'A2',
+    example: 'Sunday is the day for doing family laundry.',
+    exampleTh: 'วันอาทิตย์เป็นวันสำหรับซักเสื้อผ้าของครอบครัว'
+  },
+  {
+    id: 'v_72',
+    word: 'groceries',
+    pos: 'n.',
+    phonetic: '/ˈɡroʊ.sə.riz/',
+    thaiPhonetic: 'โกร-เซอะ-รีซ',
+    meaning: 'ของชำ, วัตถุดิบอาหาร',
+    category: 'daily',
+    level: 'A2',
+    example: 'Mom bought fresh vegetables and groceries from the supermarket.',
+    exampleTh: 'คุณแม่ซื้อผักสดและของชำมาจากซูเปอร์มาร์เก็ต'
+  },
+  {
+    id: 'v_73',
+    word: 'maintenance',
+    pos: 'n.',
+    phonetic: '/ˈmeɪn.tən.əns/',
+    thaiPhonetic: 'เมน-เทอะ-เนินซ',
+    meaning: 'การบำรุงรักษา, การดูแลซ่อมแซม',
+    category: 'daily',
+    level: 'B2',
+    example: 'Regular maintenance keeps the air conditioner running efficiently.',
+    exampleTh: 'การบำรุงรักษาเป็นประจำช่วยให้เครื่องปรับอากาศทำงานได้อย่างมีประสิทธิภาพ'
+  },
+  {
+    id: 'v_74',
+    word: 'resident',
+    pos: 'n.',
+    phonetic: '/ˈrez.ɪ.dənt/',
+    thaiPhonetic: 'เรส-ซิ-เดิ้นท์',
+    meaning: 'ผู้อยู่อาศัย, ประชาชนในพื้นที่',
+    category: 'daily',
+    level: 'B1',
+    example: 'The local residents gathered to clean up the public park.',
+    exampleTh: 'ผู้อยู่อาศัยในท้องถิ่นมารวมตัวกันเพื่อทำความสะอาดสวนสาธารณะ'
+  },
+  {
+    id: 'v_75',
+    word: 'suburb',
+    pos: 'n.',
+    phonetic: '/ˈsʌb.ɜːb/',
+    thaiPhonetic: 'ซับ-เอิร์บ',
+    meaning: 'ชานเมือง, เขตนอกเมือง',
+    category: 'daily',
+    level: 'B1',
+    example: 'Many families prefer living in peaceful suburbs rather than the downtown.',
+    exampleTh: 'หลายครอบครัวชอบอาศัยอยู่ในย่านชานเมืองที่สงบสุขมากกว่าใจกลางเมือง'
+  },
+  {
+    id: 'v_76',
+    word: 'habit',
+    pos: 'n.',
+    phonetic: '/ˈhæb.ɪt/',
+    thaiPhonetic: 'แฮบ-บิท',
+    meaning: 'นิสัย, ความเคยชิน',
+    category: 'daily',
+    level: 'A2',
+    example: 'Reading 15 minutes before bed is a wonderful habit.',
+    exampleTh: 'การอ่านหนังสือ 15 นาทีก่อนนอนเป็นนิสัยที่ยอดเยี่ยม'
+  },
+  {
+    id: 'v_77',
+    word: 'calendar',
+    pos: 'n.',
+    phonetic: '/ˈkæl.ən.dər/',
+    thaiPhonetic: 'แคล-เลิน-เดอร์',
+    meaning: 'ปฏิทิน',
+    category: 'daily',
+    level: 'A1',
+    example: 'Mark the exam date on your wall calendar.',
+    exampleTh: 'ทำเครื่องหมายวันสอบไว้บนปฏิทินแขวนผนังของคุณ'
+  },
+  {
+    id: 'v_78',
+    word: 'semester',
+    pos: 'n.',
+    phonetic: '/sɪˈmes.tər/',
+    thaiPhonetic: 'ซิ-เมส-เทอร์',
+    meaning: 'ภาคการศึกษา, เทอม',
+    category: 'school',
+    level: 'B1',
+    example: 'The final examination will take place at the end of this semester.',
+    exampleTh: 'การสอบปลายภาคจะจัดขึ้นเมื่อสิ้นสุดภาคการศึกษานี้'
+  },
+  {
+    id: 'v_79',
+    word: 'laboratory',
+    pos: 'n.',
+    phonetic: '/ləˈbɒr.ə.tər.i/',
+    thaiPhonetic: 'เลอะ-บอ-เรอะ-ทรี',
+    meaning: 'ห้องปฏิบัติการ, ห้องแล็บ',
+    category: 'school',
+    level: 'B1',
+    example: 'Wear protective goggles whenever you experiment inside the chemistry laboratory.',
+    exampleTh: 'สวมแว่นตานิรภัยทุกครั้งเมื่อคุณทำการทดลองในห้องปฏิบัติการเคมี'
+  },
+  {
+    id: 'v_80',
+    word: 'scholarship',
+    pos: 'n.',
+    phonetic: '/ˈskɒl.ə.ʃɪp/',
+    thaiPhonetic: 'สกอล-เลอร์-ชิพ',
+    meaning: 'ทุนการศึกษา',
+    category: 'school',
+    level: 'B1',
+    example: 'He won a prestigious scholarship to study in a top gifted school.',
+    exampleTh: 'เขาได้รับทุนการศึกษาอันทรงเกียรติเพื่อเข้าเรียนในโรงเรียนกิฟต์เต็ดชั้นนำ'
+  },
+  {
+    id: 'v_81',
+    word: 'tuition',
+    pos: 'n.',
+    phonetic: '/tjuːˈɪʃ.ən/',
+    thaiPhonetic: 'ทิว-อิช-เชิน',
+    meaning: 'ค่าเล่าเรียน',
+    category: 'school',
+    level: 'B2',
+    example: 'The government provides free tuition for basic compulsory education.',
+    exampleTh: 'รัฐบาลสนับสนุนค่าเล่าเรียนฟรีสำหรับการศึกษาภาคบังคับขั้นพื้นฐาน'
+  },
+  {
+    id: 'v_82',
+    word: 'prerequisite',
+    pos: 'n.',
+    phonetic: '/ˌpriːˈrek.wɪ.zɪt/',
+    thaiPhonetic: 'พรี-เรก-ควิ-ซิท',
+    meaning: 'วิชาบังคับก่อน, ข้อกำหนดเบื้องต้น',
+    category: 'school',
+    level: 'B2',
+    example: 'Basic arithmetic is a prerequisite for studying high-level algebra.',
+    exampleTh: 'คณิตศาสตร์พื้นฐานเป็นวิชาบังคับก่อนสำหรับการเรียนพีชคณิตขั้นสูง'
+  },
+  {
+    id: 'v_83',
+    word: 'deadline',
+    pos: 'n.',
+    phonetic: '/ˈded.laɪn/',
+    thaiPhonetic: 'เดด-ไลน์',
+    meaning: 'กำหนดส่ง, วันสิ้นสุดเวลา',
+    category: 'school',
+    level: 'B1',
+    example: 'Make sure you meet the registration deadline for O-NET exams.',
+    exampleTh: 'ตรวจสอบให้แน่ใจว่าคุณลงทะเบียนทันวันหมดเขตสอบ O-NET'
+  },
+  {
+    id: 'v_84',
+    word: 'attendance',
+    pos: 'n.',
+    phonetic: '/əˈten.dəns/',
+    thaiPhonetic: 'เออะ-เทน-เดิ้นซ',
+    meaning: 'การเข้าเรียน, การเข้าร่วม',
+    category: 'school',
+    level: 'B1',
+    example: 'Good school attendance is strictly required for taking final exams.',
+    exampleTh: 'การมีเวลาเรียนสม่ำเสมอเป็นข้อบังคับสำหรับการเข้าสอบปลายภาค'
+  },
+  {
+    id: 'v_85',
+    word: 'diploma',
+    pos: 'n.',
+    phonetic: '/dɪˈploʊ.mə/',
+    thaiPhonetic: 'ดิ-พโล-เมอะ',
+    meaning: 'ประกาศนียบัตร, วุฒิบัตร',
+    category: 'school',
+    level: 'B1',
+    example: 'Graduates proudly received their diplomas on the graduation stage.',
+    exampleTh: 'ผู้สำเร็จการศึกษาได้รับประกาศนียบัตรอย่างภาคภูมิใจบนเวทีรับวุฒิ'
+  },
+  {
+    id: 'v_86',
+    word: 'calculation',
+    pos: 'n.',
+    phonetic: '/ˌkæl.kjəˈleɪ.ʃən/',
+    thaiPhonetic: 'แคล-คิว-เล-เชิน',
+    meaning: 'การคำนวณ',
+    category: 'school',
+    level: 'B1',
+    example: 'Double check your mathematical calculations to avoid silly mistakes.',
+    exampleTh: 'ตรวจทานการคำนวณทางคณิตศาสตร์ของคุณซ้ำอีกรอบเพื่อหลีกเลี่ยงข้อผิดพลาดเล็กน้อย'
+  },
+  {
+    id: 'v_87',
+    word: 'encyclopedia',
+    pos: 'n.',
+    phonetic: '/ɪnˌsaɪ.kləˈpiː.di.ə/',
+    thaiPhonetic: 'อิน-ไซ-โคล-พี-เดีย',
+    meaning: 'สารานุกรม',
+    category: 'school',
+    level: 'B1',
+    example: 'You can look up historical facts in the library encyclopedia.',
+    exampleTh: 'คุณสามารถค้นหาข้อเท็จจริงทางประวัติศาสตร์ได้ในสารานุกรมของห้องสมุด'
+  },
+  {
+    id: 'v_88',
+    word: 'graduation',
+    pos: 'n.',
+    phonetic: '/ˌɡrædʒ.uˈeɪ.ʃən/',
+    thaiPhonetic: 'แกรจ-จุ-เอ-เชิน',
+    meaning: 'การสำเร็จการศึกษา',
+    category: 'school',
+    level: 'A2',
+    example: 'Her parents took joyful photos on her elementary graduation day.',
+    exampleTh: 'พ่อแม่ของเธอถ่ายรูปอย่างมีความสุขในวันสำเร็จการศึกษาระดับประถมของเธอ'
+  },
+  {
+    id: 'v_89',
+    word: 'detention',
+    pos: 'n.',
+    phonetic: '/dɪˈten.ʃən/',
+    thaiPhonetic: 'ดิ-เทน-เชิน',
+    meaning: 'การกักบริเวณหลังเลิกเรียน',
+    category: 'school',
+    level: 'B2',
+    example: 'Students who repeatedly skip classes might receive detention.',
+    exampleTh: 'นักเรียนที่โดดเรียนซ้ำๆ อาจถูกลงโทษด้วยการกักบริเวณหลังเลิกเรียน'
+  },
+  {
+    id: 'v_90',
+    word: 'revision',
+    pos: 'n.',
+    phonetic: '/rɪˈvɪʒ.ən/',
+    thaiPhonetic: 'ริ-วิช-เชิน',
+    meaning: 'การทบทวนตำราเรียน',
+    category: 'school',
+    level: 'B1',
+    example: 'Early revision guarantees high scores and peace of mind before tests.',
+    exampleTh: 'การทบทวนบทเรียนล่วงหน้ารับประกันคะแนนสูงและความสบายใจก่อนสอบ'
+  },
+  {
+    id: 'v_91',
+    word: 'comprehension',
+    pos: 'n.',
+    phonetic: '/ˌkɒm.prɪˈhen.ʃən/',
+    thaiPhonetic: 'คอม-พริ-เฮน-เชิน',
+    meaning: 'ความเข้าใจในการอ่าน',
+    category: 'school',
+    level: 'B2',
+    example: 'Practice reading articles daily to boost your English reading comprehension.',
+    exampleTh: 'ฝึกอ่านบทความทุกวันเพื่อเพิ่มพูนทักษะความเข้าใจในการอ่านภาษาอังกฤษ'
+  },
+  {
+    id: 'v_92',
+    word: 'vocabulary',
+    pos: 'n.',
+    phonetic: '/vəˈkæb.jə.lər.i/',
+    thaiPhonetic: 'เวอะ-แคบ-บิว-เลอ-รี',
+    meaning: 'คำศัพท์',
+    category: 'school',
+    level: 'A2',
+    example: 'Expanding your vocabulary is the fastest way to master English.',
+    exampleTh: 'การขยายคลังคำศัพท์เป็นวิธีที่เร็วที่สุดในการเก่งภาษาอังกฤษ'
+  },
+  {
+    id: 'v_93',
+    word: 'grammar',
+    pos: 'n.',
+    phonetic: '/ˈɡræm.ər/',
+    thaiPhonetic: 'แกรม-เมอร์',
+    meaning: 'ไวยากรณ์',
+    category: 'school',
+    level: 'A2',
+    example: 'Mastering basic grammar helps you write accurate English essays.',
+    exampleTh: 'การเชี่ยวชาญไวยากรณ์พื้นฐานช่วยให้คุณเขียนเรียงความภาษาอังกฤษได้อย่างถูกต้อง'
+  },
+  {
+    id: 'v_94',
+    word: 'exhausted',
+    pos: 'adj.',
+    phonetic: '/ɪɡˈzɔː.stɪd/',
+    thaiPhonetic: 'อิก-ซอส-ทิด',
+    meaning: 'หมดแรง, เหนื่อยล้าอย่างยิ่ง',
+    category: 'feelings',
+    level: 'B1',
+    example: 'After running the marathon, the athletes were completely exhausted.',
+    exampleTh: 'หลังจากวิ่งมาราธอน นักกีฬาต่างหมดแรงลงอย่างสิ้นเชิง'
+  },
+  {
+    id: 'v_95',
+    word: 'embarrassed',
+    pos: 'adj.',
+    phonetic: '/ɪmˈbær.əst/',
+    thaiPhonetic: 'อิม-แบ-เริสด์',
+    meaning: 'เคอะเขิน, อับอาย',
+    category: 'feelings',
+    level: 'B1',
+    example: 'He was embarrassed when his stomach growled during the quiet test.',
+    exampleTh: 'เขารู้สึกเขินอายเมื่อท้องของเขาร้องเสียงดังระหว่างการสอบที่เงียบสงัด'
+  },
+  {
+    id: 'v_96',
+    word: 'furious',
+    pos: 'adj.',
+    phonetic: '/ˈfjʊə.ri.əs/',
+    thaiPhonetic: 'ฟิว-ริ-เอิส',
+    meaning: 'โกรธจัด, โมโหเป็นฟืนเป็นไฟ',
+    category: 'feelings',
+    level: 'B2',
+    example: 'The coach was furious when the players broke the safety rules.',
+    exampleTh: 'โค้ชโกรธจัดเมื่อผู้เล่นละเมิดกฎความปลอดภัย'
+  },
+  {
+    id: 'v_97',
+    word: 'optimistic',
+    pos: 'adj.',
+    phonetic: '/ˌɒp.tɪˈmɪs.tɪk/',
+    thaiPhonetic: 'ออป-ทิ-มิส-ติก',
+    meaning: 'มองโลกในแง่ดี',
+    category: 'feelings',
+    level: 'B2',
+    example: 'She remains optimistic that she will enter her dream high school.',
+    exampleTh: 'เธอยังคงมองโลกในแง่ดีว่าจะสามารถเข้าโรงเรียนมัธยมในฝันได้'
+  },
+  {
+    id: 'v_98',
+    word: 'pessimistic',
+    pos: 'adj.',
+    phonetic: '/ˌpes.ɪˈmɪs.tɪk/',
+    thaiPhonetic: 'เพส-ซิ-มิส-ติก',
+    meaning: 'มองโลกในแง่ร้าย',
+    category: 'feelings',
+    level: 'B2',
+    example: 'Avoid being pessimistic; positive thinking yields great outcomes.',
+    exampleTh: 'จงหลีกเลี่ยงการมองโลกในแง่ร้าย เพราะความคิดเชิงบวกจะนำมาซึ่งผลลัพธ์ที่ดีเยี่ยม'
+  },
+  {
+    id: 'v_99',
+    word: 'sympathetic',
+    pos: 'adj.',
+    phonetic: '/ˌsɪm.pəˈθet.ɪk/',
+    thaiPhonetic: 'ซิม-เพอะ-เธท-ติก',
+    meaning: 'เห็นอกเห็นใจ, เข้าอกเข้าใจผู้อื่น',
+    category: 'feelings',
+    level: 'B2',
+    example: 'A sympathetic friend listens patiently when you feel down.',
+    exampleTh: 'เพื่อนที่เห็นอกเห็นใจจะคอยรับฟังอย่างอดทนเมื่อคุณรู้สึกท้อแท้'
+  },
+  {
+    id: 'v_100',
+    word: 'generous',
+    pos: 'adj.',
+    phonetic: '/ˈdʒen.ər.əs/',
+    thaiPhonetic: 'เจน-เนอะ-เริส',
+    meaning: 'เอื้อเฟื้อเผื่อแผ่, ใจกว้าง',
+    category: 'feelings',
+    level: 'B1',
+    example: 'The generous alumni donated brand-new computers to the school.',
+    exampleTh: 'ศิษย์เก่าผู้ใจกว้างได้บริจาคคอมพิวเตอร์เครื่องใหม่เอี่ยมให้แก่โรงเรียน'
+  },
+  {
+    id: 'v_101',
+    word: 'patient',
+    pos: 'adj.',
+    phonetic: '/ˈpeɪ.ʃənt/',
+    thaiPhonetic: 'เพ-เชิ้นท์',
+    meaning: 'อดทน, ใจเย็น',
+    category: 'feelings',
+    level: 'A2',
+    example: 'Good teachers are always patient with struggling students.',
+    exampleTh: 'ครูที่ดีมักจะใจเย็นและอดทนกับนักเรียนที่กำลังพยายามปรับตัวเสมอ'
+  },
+  {
+    id: 'v_102',
+    word: 'determined',
+    pos: 'adj.',
+    phonetic: '/dɪˈtɜː.mɪnd/',
+    thaiPhonetic: 'ดิ-เทอร์-มินด์',
+    meaning: 'มุ่งมั่น, ตั้งใจแน่วแน่',
+    category: 'feelings',
+    level: 'B1',
+    example: 'She is determined to score 100% on the mathematics exam.',
+    exampleTh: 'เธอตั้งใจแน่วแน่ว่าจะทำคะแนนสอบคณิตศาสตร์ให้ได้ 100% เต็ม'
+  },
+  {
+    id: 'v_103',
+    word: 'curious',
+    pos: 'adj.',
+    phonetic: '/ˈkjʊə.ri.əs/',
+    thaiPhonetic: 'คิว-ริ-เอิส',
+    meaning: 'อยากรู้อยากเห็น, ใฝ่รู้',
+    category: 'feelings',
+    level: 'B1',
+    example: 'Curious young minds ask insightful questions in science lab.',
+    exampleTh: 'เด็กๆ ที่มีความใฝ่รู้มักจะถามคำถามที่ลึกซึ้งในห้องแล็บวิทยาศาสตร์'
+  },
+  {
+    id: 'v_104',
+    word: 'courageous',
+    pos: 'adj.',
+    phonetic: '/kəˈreɪ.dʒəs/',
+    thaiPhonetic: 'เคอะ-เร-เจิส',
+    meaning: 'กล้าหาญ, กล้าเผชิญหน้า',
+    category: 'feelings',
+    level: 'B2',
+    example: 'It was courageous of him to stand up against bullying.',
+    exampleTh: 'ช่างกล้าหาญมากที่เขาลุกขึ้นมาต่อต้านการกลั่นแกล้งรังแก'
+  },
+  {
+    id: 'v_105',
+    word: 'humble',
+    pos: 'adj.',
+    phonetic: '/ˈhʌm.bəl/',
+    thaiPhonetic: 'ฮัม-เบิล',
+    meaning: 'อ่อนน้อมถ่อมตน',
+    category: 'feelings',
+    level: 'B2',
+    example: 'Despite being top of the class, she remains humble and friendly.',
+    exampleTh: 'แม้ว่าเธอจะสอบได้ที่หนึ่งของห้อง แต่เธอก็ยังคงอ่อนน้อมถ่อมตนและเป็นมิตร'
+  },
+  {
+    id: 'v_106',
+    word: 'recipe',
+    pos: 'n.',
+    phonetic: '/ˈres.ɪ.pi/',
+    thaiPhonetic: 'เรส-ซิ-พี',
+    meaning: 'สูตรอาหาร, ตำรับอาหาร',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Follow the cake recipe carefully to make it light and fluffy.',
+    exampleTh: 'ทำตามสูตรทำเค้กอย่างระมัดระวังเพื่อให้เนื้อเค้กนุ่มฟู'
+  },
+  {
+    id: 'v_107',
+    word: 'beverage',
+    pos: 'n.',
+    phonetic: '/ˈbev.ər.ɪdʒ/',
+    thaiPhonetic: 'เบฟ-เวอะ-ริดจ',
+    meaning: 'เครื่องดื่ม',
+    category: 'food_health',
+    level: 'B1',
+    example: 'Water is the healthiest beverage to stay well hydrated.',
+    exampleTh: 'น้ำเปล่าคือเครื่องดื่มที่ดีต่อสุขภาพที่สุดในการรักษาสมดุลน้ำในร่างกาย'
+  },
+  {
+    id: 'v_108',
+    word: 'vegetarian',
+    pos: 'n.',
+    phonetic: '/ˌvedʒ.ɪˈteə.ri.ən/',
+    thaiPhonetic: 'เวจ-เจอะ-แท-เรียน',
+    meaning: 'ผู้กินมังสวิรัติ',
+    category: 'food_health',
+    level: 'A2',
+    example: 'She became a vegetarian to protect animals and the environment.',
+    exampleTh: 'เธอหันมากินมังสวิรัติเพื่อปกป้องสัตว์และสิ่งแวดล้อม'
+  },
+  {
+    id: 'v_109',
+    word: 'allergy',
+    pos: 'n.',
+    phonetic: '/ˈæl.ə.dʒi/',
+    thaiPhonetic: 'แอล-เลอะ-จี',
+    meaning: 'ภูมิแพ้, อาการแพ้สารต่างๆ',
+    category: 'food_health',
+    level: 'B1',
+    example: 'Please inform the teacher if you have a severe peanut allergy.',
+    exampleTh: 'กรุณาแจ้งคุณครูหากคุณมีอาการแพ้ถั่วลิสงอย่างรุนแรง'
+  },
+  {
+    id: 'v_110',
+    word: 'infectious',
+    pos: 'adj.',
+    phonetic: '/ɪnˈfek.ʃəs/',
+    thaiPhonetic: 'อิน-เฟก-เชิส',
+    meaning: 'ที่ติดต่อได้, ซึ่งแพร่เชื้อได้',
+    category: 'food_health',
+    level: 'B2',
+    example: 'Wash hands regularly to prevent the spread of infectious viruses.',
+    exampleTh: 'ล้างมือเป็นประจำเพื่อป้องกันการแพร่ระบาดของเชื้อไวรัสที่ติดต่อได้'
+  },
+  {
+    id: 'v_111',
+    word: 'ambulance',
+    pos: 'n.',
+    phonetic: '/ˈæm.bjə.ləns/',
+    thaiPhonetic: 'แอม-บิว-เลินซ',
+    meaning: 'รถพยาบาลฉุกเฉิน',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Drivers must clear the lane when an ambulance flashes its sirens.',
+    exampleTh: 'ผู้ขับขี่ต้องเปิดทางเมื่อรถพยาบาลเปิดสัญญาณไซเรนฉุกเฉิน'
+  },
+  {
+    id: 'v_112',
+    word: 'digestion',
+    pos: 'n.',
+    phonetic: '/daɪˈdʒes.tʃən/',
+    thaiPhonetic: 'ได-เจส-เชิน',
+    meaning: 'ระบบการย่อยอาหาร',
+    category: 'food_health',
+    level: 'B2',
+    example: 'Chewing your food slowly aids proper digestion.',
+    exampleTh: 'การเคี้ยวอาหารช้าๆ ช่วยส่งเสริมระบบการย่อยอาหารที่เหมาะสม'
+  },
+  {
+    id: 'v_113',
+    word: 'vitamin',
+    pos: 'n.',
+    phonetic: '/ˈvɪt.ə.mɪn/',
+    thaiPhonetic: 'วิต-เทอะ-มิน',
+    meaning: 'วิตามิน',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Oranges and guavas are rich in vitamin C.',
+    exampleTh: 'ส้มและฝรั่งอุดมไปด้วยวิตามินซี'
+  },
+  {
+    id: 'v_114',
+    word: 'appetite',
+    pos: 'n.',
+    phonetic: '/ˈæp.ə.taɪt/',
+    thaiPhonetic: 'แอพ-เพอะ-ไทท์',
+    meaning: 'ความอยากอาหาร, ความเจริญอาหาร',
+    category: 'food_health',
+    level: 'B1',
+    example: 'Regular exercise boosts both stamina and healthy appetite.',
+    exampleTh: 'การออกกำลังกายสม่ำเสมอช่วยเพิ่มทั้งความทนทานและความอยากอาหารที่ดีต่อสุขภาพ'
+  },
+  {
+    id: 'v_115',
+    word: 'destination',
+    pos: 'n.',
+    phonetic: '/ˌdes.tɪˈneɪ.ʃən/',
+    thaiPhonetic: 'เดส-ทิ-เน-เชิน',
+    meaning: 'จุดหมายปลายทาง',
+    category: 'travel',
+    level: 'B1',
+    example: 'Chiang Mai is a world-famous tourist destination in winter.',
+    exampleTh: 'เชียงใหม่เป็นจุดหมายปลายทางท่องเที่ยวที่มีชื่อเสียงระดับโลกในฤดูหนาว'
+  },
+  {
+    id: 'v_116',
+    word: 'departure',
+    pos: 'n.',
+    phonetic: '/dɪˈpɑː.tʃər/',
+    thaiPhonetic: 'ดิ-พาร์-เชอร์',
+    meaning: 'การออกเดินทาง, ขาออก',
+    category: 'travel',
+    level: 'B1',
+    example: 'Please arrive at the departure lounge two hours before your flight.',
+    exampleTh: 'กรุณามาถึงห้องรับรองผู้โดยสารขาออกสองชั่วโมงก่อนเที่ยวบินของคุณ'
+  },
+  {
+    id: 'v_117',
+    word: 'arrival',
+    pos: 'n.',
+    phonetic: '/əˈraɪ.vəl/',
+    thaiPhonetic: 'เออะ-ไร-เวิล',
+    meaning: 'การมาถึง, ขาเข้า',
+    category: 'travel',
+    level: 'B1',
+    example: 'The flight arrival board showed that the plane was on schedule.',
+    exampleTh: 'ป้ายข้อมูลเที่ยวบินขาเข้าแสดงว่าเครื่องบินเดินทางมาถึงตรงเวลา'
+  },
+  {
+    id: 'v_118',
+    word: 'passenger',
+    pos: 'n.',
+    phonetic: '/ˈpæs.ən.dʒər/',
+    thaiPhonetic: 'แพส-เซิน-เจอร์',
+    meaning: 'ผู้โดยสาร',
+    category: 'travel',
+    level: 'A2',
+    example: 'All train passengers must hold valid tickets before boarding.',
+    exampleTh: 'ผู้โดยสารรถไฟทุกคนต้องถือตั๋วโดยสารที่ถูกต้องก่อนขึ้นขบวน'
+  },
+  {
+    id: 'v_119',
+    word: 'luggage',
+    pos: 'n.',
+    phonetic: '/ˈlʌɡ.ɪdʒ/',
+    thaiPhonetic: 'ลัก-กิดจ',
+    meaning: 'กระเป๋าเดินทาง, สัมภาระ',
+    category: 'travel',
+    level: 'A2',
+    example: 'Do not leave your personal luggage unattended at the airport.',
+    exampleTh: 'อย่าวางกระเป๋าสัมภาระส่วนตัวทิ้งไว้โดยไม่มีคนดูแลที่สนามบิน'
+  },
+  {
+    id: 'v_120',
+    word: 'passport',
+    pos: 'n.',
+    phonetic: '/ˈpɑːs.pɔːt/',
+    thaiPhonetic: 'พาส-พอร์ต',
+    meaning: 'หนังสือเดินทาง',
+    category: 'travel',
+    level: 'A2',
+    example: 'Ensure your passport has at least six months validity before traveling abroad.',
+    exampleTh: 'ตรวจสอบให้แน่ใจว่าหนังสือเดินทางของคุณมีอายุเหลืออย่างน้อย 6 เดือนก่อนเดินทางไปต่างประเทศ'
+  },
+  {
+    id: 'v_121',
+    word: 'boarding',
+    pos: 'n.',
+    phonetic: '/ˈbɔː.dɪŋ/',
+    thaiPhonetic: 'บอร์ด-ดิง',
+    meaning: 'การขึ้นเครื่องบินหรือเรือ',
+    category: 'travel',
+    level: 'B1',
+    example: 'Boarding for flight TG102 starts at gate number four.',
+    exampleTh: 'การขึ้นเครื่องบินเที่ยวบิน TG102 เริ่มขึ้นที่ประตูหมายเลข 4'
+  },
+  {
+    id: 'v_122',
+    word: 'sightseeing',
+    pos: 'n.',
+    phonetic: '/ˈsaɪtˌsiː.ɪŋ/',
+    thaiPhonetic: 'ไซต์-ซี-อิง',
+    meaning: 'การเที่ยวชมทิวทัศน์และสถานที่สำคัญ',
+    category: 'travel',
+    level: 'A2',
+    example: 'They spent the sunny afternoon sightseeing around the old capital.',
+    exampleTh: 'พวกเขาใช้เวลาช่วงบ่ายที่แดดจ้าเที่ยวชมสถานที่สำคัญรอบๆ เมืองหลวงเก่า'
+  },
+  {
+    id: 'v_123',
+    word: 'reservation',
+    pos: 'n.',
+    phonetic: '/ˌrez.əˈveɪ.ʃən/',
+    thaiPhonetic: 'เรส-เซอะ-เว-เชิน',
+    meaning: 'การสำรองที่นั่ง, การจองล่วงหน้า',
+    category: 'travel',
+    level: 'B1',
+    example: 'I called the restaurant to confirm our dinner reservation.',
+    exampleTh: 'ฉันโทรไปที่ร้านอาหารเพื่อยืนยันการสำรองที่นั่งสำหรับมื้อค่ำของเรา'
+  },
+  {
+    id: 'v_124',
+    word: 'souvenir',
+    pos: 'n.',
+    phonetic: '/ˌsuː.vəˈnɪər/',
+    thaiPhonetic: 'ซู-เวอะ-เนียร์',
+    meaning: 'ของที่ระลึก, ของฝาก',
+    category: 'travel',
+    level: 'B1',
+    example: 'He bought handcrafted wooden elephants as souvenirs for his classmates.',
+    exampleTh: 'เขาซื้อช้างไม้แกะสลักมือเป็นของฝากสำหรับเพื่อนร่วมชั้นของเขา'
+  },
+  {
+    id: 'v_125',
+    word: 'delay',
+    pos: 'n.',
+    phonetic: '/dɪˈleɪ/',
+    thaiPhonetic: 'ดิ-เลย์',
+    meaning: 'ความล่าช้า, การเลื่อนเวลา',
+    category: 'travel',
+    level: 'A2',
+    example: 'Heavy storm clouds caused a two-hour flight delay.',
+    exampleTh: 'เมฆพายุฝนฟ้าคะนองที่รุนแรงทำให้เที่ยวบินเกิดความล่าช้าไปสองชั่วโมง'
+  },
+  {
+    id: 'v_126',
+    word: 'cruise',
+    pos: 'n.',
+    phonetic: '/kruːz/',
+    thaiPhonetic: 'ครูซ',
+    meaning: 'การล่องเรือสำราญ',
+    category: 'travel',
+    level: 'B1',
+    example: 'They took an evening dinner cruise along the Chao Phraya River.',
+    exampleTh: 'พวกเขาไปล่องเรือสำราญรับประทานอาหารค่ำไปตามแม่น้ำเจ้าพระยา'
+  },
+  {
+    id: 'v_127',
+    word: 'discount',
+    pos: 'n.',
+    phonetic: '/ˈdɪs.kaʊnt/',
+    thaiPhonetic: 'ดิส-เคาท์',
+    meaning: 'ส่วนลด',
+    category: 'shopping',
+    level: 'A2',
+    example: 'Students get a 20% discount on all educational stationery.',
+    exampleTh: 'นักเรียนจะได้รับส่วนลด 20% สำหรับเครื่องเขียนเพื่อการศึกษาทุกชนิด'
+  },
+  {
+    id: 'v_128',
+    word: 'receipt',
+    pos: 'n.',
+    phonetic: '/rɪˈsiːt/',
+    thaiPhonetic: 'ริ-ซีท',
+    meaning: 'ใบเสร็จรับเงิน (ตัว p ไม่ออกเสียง!)',
+    category: 'shopping',
+    level: 'A2',
+    example: 'Always keep your purchase receipt in case you need an exchange.',
+    exampleTh: 'เก็บใบเสร็จรับเงินไว้เสมอ เผื่อในกรณีที่คุณต้องการเปลี่ยนสินค้า'
+  },
+  {
+    id: 'v_129',
+    word: 'bargain',
+    pos: 'n.',
+    phonetic: '/ˈbɑː.ɡɪn/',
+    thaiPhonetic: 'บาร์-กิน',
+    meaning: 'สินค้าราคาถูกคุ้มค่า, การต่อรองราคา',
+    category: 'shopping',
+    level: 'B1',
+    example: 'This high-end tablet was an absolute bargain on Black Friday.',
+    exampleTh: 'แท็บเล็ตสเปกสูงเครื่องนี้ราคาคุ้มค่ามากอย่างเหลือเชื่อในวันแบล็กฟรายเดย์'
+  },
+  {
+    id: 'v_130',
+    word: 'expense',
+    pos: 'n.',
+    phonetic: '/ɪkˈspens/',
+    thaiPhonetic: 'อิก-สเปนซ',
+    meaning: 'ค่าใช้จ่าย, รายจ่าย',
+    category: 'shopping',
+    level: 'B1',
+    example: 'Keep track of daily expenses to save pocket money each month.',
+    exampleTh: 'จดบันทึกรายจ่ายประจำวันเพื่อเก็บออมเงินค่าขนมในแต่ละเดือน'
+  },
+  {
+    id: 'v_131',
+    word: 'refund',
+    pos: 'n.',
+    phonetic: '/ˈriː.fʌnd/',
+    thaiPhonetic: 'รี-ฟันด์',
+    meaning: 'การคืนเงิน, เงินที่ได้คืน',
+    category: 'shopping',
+    level: 'B1',
+    example: 'The store issued a full refund because the item was defective.',
+    exampleTh: 'ทางร้านได้คืนเงินเต็มจำนวนเนื่องจากสินค้ามีตำหนิชำรุด'
+  },
+  {
+    id: 'v_132',
+    word: 'budget',
+    pos: 'n.',
+    phonetic: '/ˈbʌdʒ.ɪt/',
+    thaiPhonetic: 'บัด-เจ็ท',
+    meaning: 'งบประมาณ, วงเงินที่ตั้งไว้',
+    category: 'shopping',
+    level: 'B1',
+    example: 'We must manage our project budget wisely to prevent overspending.',
+    exampleTh: 'เราต้องบริหารงบประมาณของโครงงานอย่างชาญฉลาดเพื่อไม่ให้ใช้จ่ายเกินตัว'
+  },
+  {
+    id: 'v_133',
+    word: 'purchase',
+    pos: 'v.',
+    phonetic: '/ˈpɜː.tʃəs/',
+    thaiPhonetic: 'เพอร์-เชิส',
+    meaning: 'ซื้อ, จัดซื้อ',
+    category: 'shopping',
+    level: 'B1',
+    example: 'You can purchase online mock exam sets with digital points.',
+    exampleTh: 'คุณสามารถซื้อชุดข้อสอบจำลองออนไลน์ได้ด้วยคะแนนสะสมดิจิทัล'
+  },
+  {
+    id: 'v_134',
+    word: 'warranty',
+    pos: 'n.',
+    phonetic: '/ˈwɒr.ən.ti/',
+    thaiPhonetic: 'วอ-รัน-ตี',
+    meaning: 'ใบรับประกันสินค้า',
+    category: 'shopping',
+    level: 'B1',
+    example: 'The laptop comes with a two-year hardware replacement warranty.',
+    exampleTh: 'แล็ปท็อปเครื่องนี้มาพร้อมกับการรับประกันการเปลี่ยนอะไหล่นานสองปี'
+  },
+  {
+    id: 'v_135',
+    word: 'currency',
+    pos: 'n.',
+    phonetic: '/ˈkʌr.ən.si/',
+    thaiPhonetic: 'เคอร์-เริน-ซี',
+    meaning: 'สกุลเงินตรา',
+    category: 'shopping',
+    level: 'B1',
+    example: 'The Thai Baht is the official currency of Thailand.',
+    exampleTh: 'เงินบาทคือสกุลเงินตราอย่างเป็นทางการของประเทศไทย'
+  },
+  {
+    id: 'v_136',
+    word: 'cashier',
+    pos: 'n.',
+    phonetic: '/kæʃˈɪər/',
+    thaiPhonetic: 'แคช-เชียร์',
+    meaning: 'พนักงานเก็บเงิน, แคชเชียร์',
+    category: 'shopping',
+    level: 'A2',
+    example: 'Hand your selected items to the cashier at the checkout counter.',
+    exampleTh: 'ส่งสิ่งของที่คุณเลือกให้แก่พนักงานเก็บเงินที่เคาน์เตอร์ชำระเงิน'
+  },
+  {
+    id: 'v_137',
+    word: 'candidate',
+    pos: 'n.',
+    phonetic: '/ˈkæn.dɪ.dət/',
+    thaiPhonetic: 'แคน-ดิ-เดท',
+    meaning: 'ผู้สมัคร, ผู้เข้าชิงตำแหน่ง',
+    category: 'work',
+    level: 'B2',
+    example: 'Top candidates demonstrated fluent English and sharp analytical skills.',
+    exampleTh: 'ผู้สมัครแถวหน้าแสดงทักษะภาษาอังกฤษที่คล่องแคล่วและการคิดวิเคราะห์ที่เฉียบคม'
+  },
+  {
+    id: 'v_138',
+    word: 'responsibility',
+    pos: 'n.',
+    phonetic: '/rɪˌspɒn.sɪˈbɪl.ə.ti/',
+    thaiPhonetic: 'ริ-สปอน-สิ-บิล-เลอะ-ที',
+    meaning: 'ความรับผิดชอบ',
+    category: 'work',
+    level: 'B1',
+    example: 'Class leaders have the responsibility to help keep peace in room.',
+    exampleTh: 'หัวหน้าห้องมีความรับผิดชอบในการช่วยดูแลความสงบเรียบร้อยในห้องเรียน'
+  },
+  {
+    id: 'v_139',
+    word: 'achievement',
+    pos: 'n.',
+    phonetic: '/əˈtʃiːv.mənt/',
+    thaiPhonetic: 'เออะ-ชีฟ-เมิ้นท์',
+    meaning: 'ความสำเร็จ, ผลงานชิ้นเอก',
+    category: 'work',
+    level: 'B1',
+    example: 'Scoring first in national Olympiad was his greatest academic achievement.',
+    exampleTh: 'การคว้าอันดับหนึ่งในโอลิมปิกระดับชาติคือความสำเร็จทางวิชาการที่ยิ่งใหญ่ที่สุดของเขา'
+  },
+  {
+    id: 'v_140',
+    word: 'interview',
+    pos: 'n.',
+    phonetic: '/ˈɪn.tə.vjuː/',
+    thaiPhonetic: 'อิน-เทอร์-วิว',
+    meaning: 'การสัมภาษณ์งานหรือการเข้าเรียน',
+    category: 'work',
+    level: 'B1',
+    example: 'Practice your spoken English thoroughly before attending the M.1 interview.',
+    exampleTh: 'ฝึกฝนการพูดภาษาอังกฤษให้คล่องก่อนเข้ารับการสัมภาษณ์สอบเข้า ม.1'
+  },
+  {
+    id: 'v_141',
+    word: 'promotion',
+    pos: 'n.',
+    phonetic: '/prəˈmoʊ.ʃən/',
+    thaiPhonetic: 'โพร-โม-เชิน',
+    meaning: 'การเลื่อนตำแหน่ง, การส่งเสริม',
+    category: 'work',
+    level: 'B1',
+    example: 'Hard work and dedication led to his rapid promotion as department head.',
+    exampleTh: 'ความขยันและการทุ่มเททำให้เขาได้รับการเลื่อนตำแหน่งเป็นหัวหน้าหมวดอย่างรวดเร็ว'
+  },
+  {
+    id: 'v_142',
+    word: 'salary',
+    pos: 'n.',
+    phonetic: '/ˈsæl.ər.i/',
+    thaiPhonetic: 'แซล-เลอะ-รี',
+    meaning: 'เงินเดือน',
+    category: 'work',
+    level: 'B1',
+    example: 'Engineers and software developers often earn competitive salaries.',
+    exampleTh: 'วิศวกรและนักพัฒนาซอฟต์แวร์มักได้รับเงินเดือนที่น่าดึงดูดใจ'
+  },
+  {
+    id: 'v_143',
+    word: 'efficiency',
+    pos: 'n.',
+    phonetic: '/ɪˈfɪʃ.ən.si/',
+    thaiPhonetic: 'อิฟ-ฟิช-เชิน-ซี',
+    meaning: 'ประสิทธิภาพในการทำงาน',
+    category: 'work',
+    level: 'B2',
+    example: 'Using flashcards dramatically increases your study efficiency.',
+    exampleTh: 'การใช้แฟลชการ์ดช่วยเพิ่มประสิทธิภาพในการอ่านหนังสือของคุณได้อย่างก้าวกระโดด'
+  },
+  {
+    id: 'v_144',
+    word: 'environment',
+    pos: 'n.',
+    phonetic: '/ɪnˈvaɪ.rən.mənt/',
+    thaiPhonetic: 'อิน-ไว-รอน-เมิ้นท์',
+    meaning: 'สิ่งแวดล้อม',
+    category: 'nature',
+    level: 'B1',
+    example: 'Planting trees helps protect our environment from global warming.',
+    exampleTh: 'การปลูกต้นไม้ช่วยปกป้องสิ่งแวดล้อมของเราจากภาวะโลกร้อน'
+  },
+  {
+    id: 'v_145',
+    word: 'conservation',
+    pos: 'n.',
+    phonetic: '/ˌkɒn.səˈveɪ.ʃən/',
+    thaiPhonetic: 'คอน-เซอ-เว-เชิน',
+    meaning: 'การอนุรักษ์ธรรมชาติ',
+    category: 'nature',
+    level: 'B2',
+    example: 'Wildlife conservation efforts have saved the giant panda from extinction.',
+    exampleTh: 'ความพยายามในการอนุรักษ์สัตว์ป่าช่วยให้หมีแพนด้ายักษ์รอดพ้นจากการสูญพันธุ์'
+  },
+  {
+    id: 'v_146',
+    word: 'pollution',
+    pos: 'n.',
+    phonetic: '/pəˈluː.ʃən/',
+    thaiPhonetic: 'เพอะ-ลู-เชิน',
+    meaning: 'มลพิษ',
+    category: 'nature',
+    level: 'A2',
+    example: 'Air pollution from vehicles causes respiratory problems in big cities.',
+    exampleTh: 'มลพิษทางอากาศจากยานพาหนะก่อให้เกิดปัญหาระบบทางเดินหายใจในเมืองใหญ่'
+  },
+  {
+    id: 'v_147',
+    word: 'species',
+    pos: 'n.',
+    phonetic: '/ˈspiː.ʃiːz/',
+    thaiPhonetic: 'สปี-ชีส์',
+    meaning: 'สปีชีส์, สายพันธุ์สิ่งมีชีวิต',
+    category: 'nature',
+    level: 'B1',
+    example: 'Scientists discovered a brand-new frog species in the tropical rainforest.',
+    exampleTh: 'นักวิทยาศาสตร์ค้นพบกบสายพันธุ์ใหม่เอี่ยมในป่าดิบชื้น'
+  },
+  {
+    id: 'v_148',
+    word: 'habitat',
+    pos: 'n.',
+    phonetic: '/ˈhæb.ɪ.tæt/',
+    thaiPhonetic: 'แฮบ-บิ-แทท',
+    meaning: 'ถิ่นที่อยู่อาศัยตามธรรมชาติ',
+    category: 'nature',
+    level: 'B1',
+    example: 'Polar bears depend on sea ice as their vital hunting habitat.',
+    exampleTh: 'หมีขั้วโลกพึ่งพาน้ำแข็งในทะเลเป็นถิ่นที่อยู่อาศัยและแหล่งล่าเหยื่อที่สำคัญ'
+  },
+  {
+    id: 'v_149',
+    word: 'climate',
+    pos: 'n.',
+    phonetic: '/ˈklaɪ.mət/',
+    thaiPhonetic: 'ไคล-เมิท',
+    meaning: 'สภาพภูมิอากาศ',
+    category: 'nature',
+    level: 'A2',
+    example: 'Thailand has a tropical climate with high temperatures year-round.',
+    exampleTh: 'ประเทศไทยมีสภาพภูมิอากาศแบบร้อนชื้นและมีอุณหภูมิสูงตลอดทั้งปี'
+  },
+  {
+    id: 'v_150',
+    word: 'database',
+    pos: 'n.',
+    phonetic: '/ˈdeɪ.tə.beɪs/',
+    thaiPhonetic: 'เด-เทอะ-เบส',
+    meaning: 'ฐานข้อมูล',
+    category: 'tech',
+    level: 'B1',
+    example: 'The school database securely stores student test scores and attendance.',
+    exampleTh: 'ฐานข้อมูลของโรงเรียนจัดเก็บผลคะแนนสอบและการเข้าเรียนของนักเรียนอย่างปลอดภัย'
+  },
+  {
+    id: 'v_151',
+    word: 'gadget',
+    pos: 'n.',
+    phonetic: '/ˈɡædʒ.ɪt/',
+    thaiPhonetic: 'แกด-เจ็ต',
+    meaning: 'อุปกรณ์พกพา, แกดเจ็ตสุดล้ำ',
+    category: 'tech',
+    level: 'B1',
+    example: 'Smartwatches are popular gadgets that track daily steps and heart rate.',
+    exampleTh: 'สมาร์ตวอทช์เป็นแกดเจ็ตยอดนิยมที่คอยบันทึกจำนวนก้าวและอัตราการเต้นของหัวใจ'
+  },
+  {
+    id: 'v_152',
+    word: 'interactive',
+    pos: 'adj.',
+    phonetic: '/ˌɪn.təˈræk.tɪv/',
+    thaiPhonetic: 'อิน-เทอร์-แอก-ทิฟ',
+    meaning: 'ที่มีการโต้ตอบสองทาง',
+    category: 'tech',
+    level: 'B2',
+    example: 'Interactive simulations make learning abstract physics concepts fun.',
+    exampleTh: 'แบบจำลองที่มีการโต้ตอบสองทางทำให้การเรียนรู้ฟิสิกส์เชิงนามธรรมกลายเป็นเรื่องสนุก'
+  },
+  {
+    id: 'v_153',
+    word: 'software',
+    pos: 'n.',
+    phonetic: '/ˈsɒft.weər/',
+    thaiPhonetic: 'ซอฟท์-แวร์',
+    meaning: 'ซอฟต์แวร์, โปรแกรมคอมพิวเตอร์',
+    category: 'tech',
+    level: 'A2',
+    example: 'Install the educational software to access free interactive flashcards.',
+    exampleTh: 'ติดตั้งโปรแกรมเพื่อการศึกษาเพื่อเข้าถึงแฟลชการ์ดอินเทอร์แอคทีฟฟรี'
+  },
+  {
+    id: 'v_154',
+    word: 'simulation',
+    pos: 'n.',
+    phonetic: '/ˌsɪm.jəˈleɪ.ʃən/',
+    thaiPhonetic: 'ซิม-มิว-เล-เชิน',
+    meaning: 'การจำลองสถานการณ์เสมือนจริง',
+    category: 'tech',
+    level: 'B2',
+    example: 'Flight simulations train pilots to handle severe turbulence safely.',
+    exampleTh: 'การจำลองการบินฝึกฝนให้นักบินรับมือกับสภาพอากาศแปรปรวนได้อย่างปลอดภัย'
+  },
+  {
+    id: 'v_155',
+    word: 'virtual',
+    pos: 'adj.',
+    phonetic: '/ˈvɜː.tʃu.əl/',
+    thaiPhonetic: 'เวอร์-ชู-เอิล',
+    meaning: 'เสมือนจริง (Virtual Lab)',
+    category: 'tech',
+    level: 'B1',
+    example: 'Our virtual science lab lets students mix chemicals safely on a screen.',
+    exampleTh: 'ห้องแล็บวิทยาศาสตร์เสมือนจริงของเราช่วยให้นักเรียนผสมสารเคมีได้อย่างปลอดภัยบนหน้าจอ'
+  },
+  {
+    id: 'v_156',
+    word: 'wireless',
+    pos: 'adj.',
+    phonetic: '/ˈwaɪə.ləs/',
+    thaiPhonetic: 'ไวร์-เลิส',
+    meaning: 'ไร้สาย',
+    category: 'tech',
+    level: 'A2',
+    example: 'Connect your headphones via wireless Bluetooth technology.',
+    exampleTh: 'เชื่อมต่อหูฟังของคุณผ่านเทคโนโลยีบลูทูธไร้สาย'
+  },
+  {
+    id: 'v_157',
+    word: 'discussion',
+    pos: 'n.',
+    phonetic: '/dɪˈskʌʃ.ən/',
+    thaiPhonetic: 'ดิส-คัช-เชิน',
+    meaning: 'การอภิปราย, การพูดคุยแลกเปลี่ยน',
+    category: 'communication',
+    level: 'A2',
+    example: 'We had a lively class discussion on renewable clean energy.',
+    exampleTh: 'พวกเรามีการอภิปรายในชั้นเรียนอย่างคึกคักในหัวข้อพลังงานสะอาดหมุนเวียน'
+  },
+  {
+    id: 'v_158',
+    word: 'opinion',
+    pos: 'n.',
+    phonetic: '/əˈpɪn.jən/',
+    thaiPhonetic: 'เออะ-พิน-เยิน',
+    meaning: 'ความคิดเห็น',
+    category: 'communication',
+    level: 'A2',
+    example: 'In my opinion, solving mock exams regularly is the key to success.',
+    exampleTh: 'ในความคิดเห็นของฉัน การทำข้อสอบจำลองสม่ำเสมอคือกุญแจสู่ความสำเร็จ'
+  },
+  {
+    id: 'v_159',
+    word: 'feedback',
+    pos: 'n.',
+    phonetic: '/ˈfiːd.bæk/',
+    thaiPhonetic: 'ฟีด-แบ็ก',
+    meaning: 'ผลตอบรับ, คำติชมเพื่อการพัฒนา',
+    category: 'communication',
+    level: 'B1',
+    example: 'Constructive feedback from your teacher helps you polish your writing.',
+    exampleTh: 'คำแนะนำติชมเชิงสร้างสรรค์จากคุณครูช่วยให้คุณขัดเกลางานเขียนได้ดีขึ้น'
+  },
+  {
+    id: 'v_160',
+    word: 'fluent',
+    pos: 'adj.',
+    phonetic: '/ˈfluː.ənt/',
+    thaiPhonetic: 'ฟลู-เอิ้นท์',
+    meaning: 'คล่องแคล่ว, ลื่นไหล (ภาษา)',
+    category: 'communication',
+    level: 'B1',
+    example: 'She speaks fluent English after two years of consistent daily practice.',
+    exampleTh: 'เธอพูดภาษาอังกฤษได้อย่างคล่องแคล่วหลังจากฝึกฝนสม่ำเสมอทุกวันมาสองปี'
+  },
+  {
+    id: 'v_161',
+    word: 'dialogue',
+    pos: 'n.',
+    phonetic: '/ˈdaɪ.ə.lɒɡ/',
+    thaiPhonetic: 'ได-เออะ-ล็อก',
+    meaning: 'บทสนทนาโต้ตอบ',
+    category: 'communication',
+    level: 'A2',
+    example: 'Practice the dialogue with your partner to improve pronunciation.',
+    exampleTh: 'ฝึกซ้อมบทสนทนากับคู่ของคุณเพื่อปรับปรุงการออกเสียงให้ดียิ่งขึ้น'
+  },
+  {
+    id: 'v_162',
+    word: 'translate',
+    pos: 'v.',
+    phonetic: '/trænzˈleɪt/',
+    thaiPhonetic: 'แตรนซ-เลท',
+    meaning: 'แปลภาษา',
+    category: 'communication',
+    level: 'A2',
+    example: 'Can you help me translate this Thai proverb into native English?',
+    exampleTh: 'คุณช่วยฉันแปลสุภาษิตไทยบทนี้ให้เป็นภาษาอังกฤษที่สละสลวยได้ไหม'
+  },
+  {
+    id: 'v_163',
+    word: 'give up',
+    pos: 'phr.',
+    phonetic: '/ɡɪv ʌp/',
+    thaiPhonetic: 'กิฟ-อัพ',
+    meaning: 'ยอมแพ้, ละทิ้งความพยายาม',
+    category: 'phrasal',
+    level: 'A2',
+    example: 'Never give up; difficult roads often lead to beautiful destinations.',
+    exampleTh: 'อย่ายอมแพ้เด็ดขาด เส้นทางที่ยากลำบากมักนำไปสู่จุดหมายที่งดงามเสมอ'
+  },
+  {
+    id: 'v_164',
+    word: 'carry on',
+    pos: 'phr.',
+    phonetic: '/ˈkær.i ɒn/',
+    thaiPhonetic: 'แค-รี-ออน',
+    meaning: 'ทำต่อไป, ดำเนินการต่อ',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'Carry on with your practice quiz; do not let distractions stop you.',
+    exampleTh: 'ทำแบบทดสอบของคุณต่อไป อย่าปล่อยให้สิ่งรบกวนมาหยุดคุณได้'
+  },
+  {
+    id: 'v_165',
+    word: 'run out of',
+    pos: 'phr.',
+    phonetic: '/rʌn aʊt əv/',
+    thaiPhonetic: 'รัน-เอาท์-เอิฟ',
+    meaning: 'หมดเกลี้ยง, ขาดแคลน',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'The car stopped because it had run out of fuel.',
+    exampleTh: 'รถยนต์ดับลงเพราะน้ำมันเชื้อเพลิงหมดเกลี้ยง'
+  },
+  {
+    id: 'v_166',
+    word: 'call off',
+    pos: 'phr.',
+    phonetic: '/kɔːl ɒf/',
+    thaiPhonetic: 'คอล-ออฟ',
+    meaning: 'ยกเลิก (Cancel)',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'The football match was called off because of heavy thunderstorms.',
+    exampleTh: 'การแข่งขันฟุตบอลถูกยกเลิกเนื่องจากพายุฝนฟ้าคะนองที่รุนแรง'
+  },
+  {
+    id: 'v_167',
+    word: 'catch up with',
+    pos: 'phr.',
+    phonetic: '/kætʃ ʌp wɪð/',
+    thaiPhonetic: 'แคทช-อัพ-วิธ',
+    meaning: 'ตามทัน, ไล่ตามทัน',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'If you study hard this weekend, you can easily catch up with the class.',
+    exampleTh: 'ถ้าคุณตั้งใจอ่านหนังสือในวันหยุดนี้ คุณจะสามารถตามบทเรียนในห้องทันได้อย่างสบาย'
+  },
+  {
+    id: 'v_168',
+    word: 'break down',
+    pos: 'phr.',
+    phonetic: '/breɪk daʊn/',
+    thaiPhonetic: 'เบรก-ดาวน์',
+    meaning: 'เสีย, พัง, สติแตก',
+    category: 'phrasal',
+    level: 'A2',
+    example: 'The school bus broke down, so students walked safely on the sidewalk.',
+    exampleTh: 'รถโรงเรียนเสีย นักเรียนจึงเดินอย่างปลอดภัยบนทางเท้า'
+  },
+  {
+    id: 'v_169',
+    word: 'bring up',
+    pos: 'phr.',
+    phonetic: '/brɪŋ ʌp/',
+    thaiPhonetic: 'บริง-อัพ',
+    meaning: 'หยิบยกประเด็นขึ้นมาพูด, เลี้ยงดูสั่งสอน',
+    category: 'phrasal',
+    level: 'B2',
+    example: 'She brought up an interesting question about gravitational waves.',
+    exampleTh: 'เธอหยิบยกคำถามที่น่าสนใจเรื่องคลื่นความโน้มถ่วงขึ้นมาพูดคุย'
+  },
+  {
+    id: 'v_170',
+    word: 'turn down',
+    pos: 'phr.',
+    phonetic: '/tɜːn daʊn/',
+    thaiPhonetic: 'เทิร์น-ดาวน์',
+    meaning: 'ปฏิเสธ (ข้อเสนอ), หรี่เสียงลง',
+    category: 'phrasal',
+    level: 'B2',
+    example: 'He turned down the job offer to pursue full-time graduate studies.',
+    exampleTh: 'เขาปฏิเสธข้อเสนองานเพื่อไปศึกษาต่อระดับบัณฑิตศึกษาเต็มเวลา'
+  },
+  {
+    id: 'v_171',
+    word: 'look forward to',
+    pos: 'phr.',
+    phonetic: '/lʊk ˈfɔː.wəd tuː/',
+    thaiPhonetic: 'ลุค-ฟอร์-เวิร์ด-ทู',
+    meaning: 'ตั้งตารอคอย (ตามด้วย V.ing เสมอ!)',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'We are all looking forward to joining the annual science exhibition.',
+    exampleTh: 'พวกเราทุกคนต่างตั้งตารอคอยที่จะได้เข้าร่วมงานนิทรรศการวิทยาศาสตร์ประจำปี'
+  },
+  {
+    id: 'v_172',
+    word: 'get along with',
+    pos: 'phr.',
+    phonetic: '/ɡet əˈlɒŋ wɪð/',
+    thaiPhonetic: 'เก็ต-เออะ-ลอง-วิธ',
+    meaning: 'เข้ากันได้ดีกับผู้อื่น',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'He gets along very well with all of his classmates and teachers.',
+    exampleTh: 'เขาเข้ากันได้ดีมากๆ กับเพื่อนร่วมชั้นและคุณครูทุกคน'
+  },
+  {
+    id: 'v_173',
+    word: 'count on',
+    pos: 'phr.',
+    phonetic: '/kaʊnt ɒn/',
+    thaiPhonetic: 'เคาท์-ออน',
+    meaning: 'พึ่งพาได้, ไว้ใจได้',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'You can always count on your parents for unconditional love and support.',
+    exampleTh: 'คุณสามารถพึ่งพาความรักและกำลังใจอันไร้เงื่อนไขจากพ่อแม่ได้เสมอ'
+  },
+  {
+    id: 'v_174',
+    word: 'make up for',
+    pos: 'phr.',
+    phonetic: '/meɪk ʌp fɔːr/',
+    thaiPhonetic: 'เมก-อัพ-ฟอร์',
+    meaning: 'ชดเชยสิ่งที่ขาดหายไป',
+    category: 'phrasal',
+    level: 'B2',
+    example: 'She practiced extra hours on weekends to make up for lost time.',
+    exampleTh: 'เธอฝึกซ้อมเพิ่มขึ้นในช่วงวันหยุดสุดสัปดาห์เพื่อชดเชยเวลาที่สูญเสียไป'
+  },
+  {
+    id: 'v_175',
+    word: 'stand for',
+    pos: 'phr.',
+    phonetic: '/stænd fɔːr/',
+    thaiPhonetic: 'สแตนด์-ฟอร์',
+    meaning: 'ย่อมาจาก, เป็นตัวแทนของ',
+    category: 'phrasal',
+    level: 'A2',
+    example: 'What does the acronym UNESCO stand for in world affairs?',
+    exampleTh: 'คำย่อ UNESCO ย่อมาจากคำว่าอะไรในกิจการระดับโลก'
+  },
+  {
+    id: 'v_176',
+    word: 'take off',
+    pos: 'phr.',
+    phonetic: '/teɪk ɒf/',
+    thaiPhonetic: 'เทก-ออฟ',
+    meaning: 'เครื่องบินบินขึ้น, ถอดเสื้อผ้าออก',
+    category: 'phrasal',
+    level: 'A2',
+    example: 'The airplane took off smoothly into the clear blue sky.',
+    exampleTh: 'เครื่องบินบินขึ้นสู่ท้องฟ้าสีครามสดใสได้อย่างนุ่มนวลราบรื่น'
+  },
+  {
+    id: 'v_177',
+    word: 'warm up',
+    pos: 'phr.',
+    phonetic: '/wɔːm ʌp/',
+    thaiPhonetic: 'วอร์ม-อัพ',
+    meaning: 'อบอุ่นร่างกายก่อนออกกำลังกาย',
+    category: 'phrasal',
+    level: 'A2',
+    example: 'Always warm up for 10 minutes to prevent muscle injury.',
+    exampleTh: 'อบอุ่นร่างกาย 10 นาทีก่อนออกกำลังกายเสมอเพื่อป้องกันการบาดเจ็บของกล้ามเนื้อ'
+  },
+  {
+    id: 'v_178',
+    word: 'show off',
+    pos: 'phr.',
+    phonetic: '/ʃoʊ ɒf/',
+    thaiPhonetic: 'โชว์-ออฟ',
+    meaning: 'อวด, ขี้อวด',
+    category: 'phrasal',
+    level: 'B1',
+    example: 'A truly wise student never shows off their achievements arrogantly.',
+    exampleTh: 'นักเรียนที่ฉลาดอย่างแท้จริงจะไม่โอ้อวดความสำเร็จของตนอย่างหยิ่งยโส'
+  },
+  {
+    id: 'v_179',
+    word: 'refrigerator',
+    pos: 'n.',
+    phonetic: '/rɪˈfrɪdʒ.ə.reɪ.tər/',
+    thaiPhonetic: 'ริ-ฟริด-เจอะ-เร-เทอร์',
+    meaning: 'ตู้เย็น',
+    category: 'daily',
+    level: 'A1',
+    example: 'Store fresh milk and cheese in the refrigerator.',
+    exampleTh: 'เก็บนมสดและชีสไว้ในตู้เย็น'
+  },
+  {
+    id: 'v_180',
+    word: 'microwave',
+    pos: 'n.',
+    phonetic: '/ˈmaɪ.krə.weɪv/',
+    thaiPhonetic: 'ไม-โคร-เวฟ',
+    meaning: 'เตาไมโครเวฟ',
+    category: 'daily',
+    level: 'A2',
+    example: 'He heated the soup in the microwave for two minutes.',
+    exampleTh: 'เขาอุ่นซุปในเตาไมโครเวฟเป็นเวลาสองนาที'
+  },
+  {
+    id: 'v_181',
+    word: 'scissors',
+    pos: 'n.',
+    phonetic: '/ˈsɪz.əz/',
+    thaiPhonetic: 'ซิส-เซอร์ซ',
+    meaning: 'กรรไกร (เป็นพหูพจน์เสมอ มี s)',
+    category: 'daily',
+    level: 'A1',
+    example: 'Use safety scissors to cut the craft paper neatly.',
+    exampleTh: 'ใช้กรรไกรนิรภัยตัดกระดาษประดิษฐ์ให้เรียบร้อย'
+  },
+  {
+    id: 'v_182',
+    word: 'envelope',
+    pos: 'n.',
+    phonetic: '/ˈen.və.loʊp/',
+    thaiPhonetic: 'เอน-เวอะ-โลพ',
+    meaning: 'ซองจดหมาย',
+    category: 'daily',
+    level: 'A2',
+    example: 'Seal the handwritten letter inside a stamped envelope.',
+    exampleTh: 'ปิดผนึกจดหมายที่เขียนด้วยมือลงในซองจดหมายที่ติดแสตมป์'
+  },
+  {
+    id: 'v_183',
+    word: 'umbrella',
+    pos: 'n.',
+    phonetic: '/ʌmˈbrel.ə/',
+    thaiPhonetic: 'อัม-เบรล-เลอะ',
+    meaning: 'ร่มกันฝน',
+    category: 'daily',
+    level: 'A1',
+    example: 'Take an umbrella because the sky looks overcast.',
+    exampleTh: 'พกร่มไปด้วยเพราะท้องฟ้าดูมืดครึ้ม'
+  },
+  {
+    id: 'v_184',
+    word: 'thermometer',
+    pos: 'n.',
+    phonetic: '/θəˈmɒm.ɪ.tər/',
+    thaiPhonetic: 'เธอ-มอม-มิ-เทอร์',
+    meaning: 'เทอร์โมมิเตอร์, ปรอทวัดอุณหภูมิ',
+    category: 'daily',
+    level: 'A2',
+    example: 'The digital thermometer showed a body temperature of 37°C.',
+    exampleTh: 'เทอร์โมมิเตอร์ดิจิทัลแสดงอุณหภูมิร่างกาย 37 องศาเซลเซียส'
+  },
+  {
+    id: 'v_185',
+    word: 'flashlight',
+    pos: 'n.',
+    phonetic: '/ˈflæʃ.laɪt/',
+    thaiPhonetic: 'แฟลช-ไลท์',
+    meaning: 'ไฟฉาย',
+    category: 'daily',
+    level: 'A2',
+    example: 'We used a bright LED flashlight during the power outage.',
+    exampleTh: 'เราใช้ไฟฉายแอลอีดีสว่างจ้าในระหว่างที่ไฟฟ้าดับ'
+  },
+  {
+    id: 'v_186',
+    word: 'battery',
+    pos: 'n.',
+    phonetic: '/ˈbæt.ər.i/',
+    thaiPhonetic: 'แบต-เตอะ-รี',
+    meaning: 'แบตเตอรี่, ถ่านไฟฉาย',
+    category: 'daily',
+    level: 'A2',
+    example: 'Replace the dead batteries in the wall clock.',
+    exampleTh: 'เปลี่ยนถ่านที่หมดแล้วในนาฬิกาแขวนผนัง'
+  },
+  {
+    id: 'v_187',
+    word: 'briefcase',
+    pos: 'n.',
+    phonetic: '/ˈbriːf.keɪs/',
+    thaiPhonetic: 'บรีฟ-เคส',
+    meaning: 'กระเป๋าใส่เอกสาร',
+    category: 'daily',
+    level: 'B1',
+    example: 'The lawyer opened his leather briefcase to review the contract.',
+    exampleTh: 'ทนายความเปิดกระเป๋าหนังใส่เอกสารเพื่อตรวจดูสัญญา'
+  },
+  {
+    id: 'v_188',
+    word: 'wardrobe',
+    pos: 'n.',
+    phonetic: '/ˈwɔː.droʊb/',
+    thaiPhonetic: 'วอร์ด-โรบ',
+    meaning: 'ตู้เสื้อผ้า',
+    category: 'daily',
+    level: 'A2',
+    example: 'Hang your ironed school uniforms neatly in the wardrobe.',
+    exampleTh: 'แขวนชุดนักเรียนที่รีดแล้วให้เรียบร้อยในตู้เสื้อผ้า'
+  },
+  {
+    id: 'v_189',
+    word: 'geography',
+    pos: 'n.',
+    phonetic: '/dʒiˈɒɡ.rə.fi/',
+    thaiPhonetic: 'จิ-ออก-เกรอะ-ฟี',
+    meaning: 'วิชาภูมิศาสตร์',
+    category: 'school',
+    level: 'A2',
+    example: 'We learned about world continents and oceans in geography class.',
+    exampleTh: 'พวกเราได้เรียนรู้เกี่ยวกับทวีปและมหาสมุทรของโลกในวิชาภูมิศาสตร์'
+  },
+  {
+    id: 'v_190',
+    word: 'history',
+    pos: 'n.',
+    phonetic: '/ˈhɪs.tər.i/',
+    thaiPhonetic: 'ฮิส-เทอะ-รี',
+    meaning: 'วิชาประวัติศาสตร์',
+    category: 'school',
+    level: 'A2',
+    example: 'History teaches us how human societies evolved over centuries.',
+    exampleTh: 'ประวัติศาสตร์สอนให้เรารู้ว่าสังคมมนุษย์มีวิวัฒนาการอย่างไรตลอดหลายศตวรรษ'
+  },
+  {
+    id: 'v_191',
+    word: 'mathematics',
+    pos: 'n.',
+    phonetic: '/ˌmæθˈmæt.ɪks/',
+    thaiPhonetic: 'แมธ-เธอะ-แมท-ติกส์',
+    meaning: 'วิชาคณิตศาสตร์',
+    category: 'school',
+    level: 'A2',
+    example: 'Mathematics trains your logical deduction and problem-solving skills.',
+    exampleTh: 'คณิตศาสตร์ฝึกฝนการคิดหาเหตุผลและการแก้ปัญหาของคุณ'
+  },
+  {
+    id: 'v_192',
+    word: 'literature',
+    pos: 'n.',
+    phonetic: '/ˈlɪt.rə.tʃər/',
+    thaiPhonetic: 'ลิต-เทรอะ-เชอร์',
+    meaning: 'วรรณคดี, วรรณกรรม',
+    category: 'school',
+    level: 'B1',
+    example: 'Shakespeare wrote classic literature that is still read today.',
+    exampleTh: 'เชกสเปียร์เขียนวรรณกรรมคลาสสิกที่ยังคงมีผู้อ่านมาจนถึงทุกวันนี้'
+  },
+  {
+    id: 'v_193',
+    word: 'physics',
+    pos: 'n.',
+    phonetic: '/ˈfɪz.ɪks/',
+    thaiPhonetic: 'ฟิส-ซิกส์',
+    meaning: 'วิชาฟิสิกส์',
+    category: 'school',
+    level: 'B1',
+    example: 'Physics explains the laws of motion, gravity, and electricity.',
+    exampleTh: 'ฟิสิกส์อธิบายกฎแห่งการเคลื่อนที่ แรงโน้มถ่วง และไฟฟ้า'
+  },
+  {
+    id: 'v_194',
+    word: 'chemistry',
+    pos: 'n.',
+    phonetic: '/ˈkem.ɪ.stri/',
+    thaiPhonetic: 'เคม-มิ-สตรี',
+    meaning: 'วิชาเคมี',
+    category: 'school',
+    level: 'B1',
+    example: 'In chemistry lab, we observed the reaction between acid and base.',
+    exampleTh: 'ในห้องแล็บเคมี เราสังเกตปฏิกิริยาระหว่างกรดและเบส'
+  },
+  {
+    id: 'v_195',
+    word: 'biology',
+    pos: 'n.',
+    phonetic: '/baɪˈɒl.ə.dʒi/',
+    thaiPhonetic: 'ไบ-ออล-เลอะ-จี',
+    meaning: 'วิชาชีววิทยา',
+    category: 'school',
+    level: 'B1',
+    example: 'Biology explores living organisms, animal cells, and plant tissues.',
+    exampleTh: 'ชีววิทยาสำรวจสิ่งมีชีวิต เซลล์สัตว์ และเนื้อเยื่อพืช'
+  },
+  {
+    id: 'v_196',
+    word: 'geometry',
+    pos: 'n.',
+    phonetic: '/dʒiˈɒm.ə.tri/',
+    thaiPhonetic: 'จิ-ออม-เมอะ-ตรี',
+    meaning: 'เรขาคณิต',
+    category: 'school',
+    level: 'B1',
+    example: 'Geometry deals with angles, triangles, circles, and 3D shapes.',
+    exampleTh: 'เรขาคณิตเกี่ยวข้องกับมุม รูปสามเหลี่ยม วงกลม และรูปทรงสามมิติ'
+  },
+  {
+    id: 'v_197',
+    word: 'telescope',
+    pos: 'n.',
+    phonetic: '/ˈtel.ɪ.skoʊp/',
+    thaiPhonetic: 'เทล-ลิ-สโคพ',
+    meaning: 'กล้องโทรทรรศน์',
+    category: 'school',
+    level: 'A2',
+    example: 'Astronomers look through giant telescopes to observe distant galaxies.',
+    exampleTh: 'นักดาราศาสตร์มองผ่านกล้องโทรทรรศน์ขนาดยักษ์เพื่อสังเกตดาราจักรที่อยู่ห่างไกล'
+  },
+  {
+    id: 'v_198',
+    word: 'microscope',
+    pos: 'n.',
+    phonetic: '/ˈmaɪ.krə.skoʊp/',
+    thaiPhonetic: 'ไม-โคร-สโคพ',
+    meaning: 'กล้องจุลทรรศน์',
+    category: 'school',
+    level: 'A2',
+    example: 'Place the thin onion cell slide under the optical microscope.',
+    exampleTh: 'วางแผ่นสไลด์เซลล์หัวหอมบางๆ ใต้กล้องจุลทรรศน์แบบใช้แสง'
+  },
+  {
+    id: 'v_199',
+    word: 'polite',
+    pos: 'adj.',
+    phonetic: '/pəˈlaɪt/',
+    thaiPhonetic: 'เพอะ-ไลท์',
+    meaning: 'สุภาพ, มีมารยาท',
+    category: 'feelings',
+    level: 'A1',
+    example: 'It is always good manners to be polite to elders.',
+    exampleTh: 'การมีมารยาทสุภาพต่อผู้อาวุโสถือเป็นสิ่งที่ดีงามเสมอ'
+  },
+  {
+    id: 'v_200',
+    word: 'rude',
+    pos: 'adj.',
+    phonetic: '/ruːd/',
+    thaiPhonetic: 'รูด',
+    meaning: 'หยาบคาย, ไร้มารยาท',
+    category: 'feelings',
+    level: 'A2',
+    example: 'Interrupting someone while they are speaking is considered rude.',
+    exampleTh: 'การขัดจังหวะผู้อื่นขณะที่พวกเขากำลังพูดถือเป็นการเสียมารยาท'
+  },
+  {
+    id: 'v_201',
+    word: 'clumsy',
+    pos: 'adj.',
+    phonetic: '/ˈklʌm.zi/',
+    thaiPhonetic: 'คลัม-ซี',
+    meaning: 'ซุ่มซ่าม, เงอะงะ',
+    category: 'feelings',
+    level: 'B1',
+    example: 'He felt clumsy when he accidentally dropped his pencil case.',
+    exampleTh: 'เขารู้สึกซุ่มซ่ามเมื่อทำกล่องดินสอตกโดยไม่ได้ตั้งใจ'
+  },
+  {
+    id: 'v_202',
+    word: 'cautious',
+    pos: 'adj.',
+    phonetic: '/ˈkɔː.ʃəs/',
+    thaiPhonetic: 'คอ-เชิส',
+    meaning: 'รอบคอบ, ระมัดระวัง',
+    category: 'feelings',
+    level: 'B1',
+    example: 'Be cautious when crossing the busy multi-lane highway.',
+    exampleTh: 'จงระมัดระวังรอบคอบเมื่อข้ามถนนทางหลวงหลายเลนที่พลุกพล่าน'
+  },
+  {
+    id: 'v_203',
+    word: 'arrogant',
+    pos: 'adj.',
+    phonetic: '/ˈær.ə.ɡənt/',
+    thaiPhonetic: 'แอ-เรอะ-เกิ้นท์',
+    meaning: 'หยิ่งยะโส, หลงตัวเอง',
+    category: 'feelings',
+    level: 'B2',
+    example: 'Nobody likes an arrogant winner who mocks others\' efforts.',
+    exampleTh: 'ไม่มีใครชอบผู้ชนะที่หยิ่งยะโสและเยาะเย้ยความพยายามของผู้อื่น'
+  },
+  {
+    id: 'v_204',
+    word: 'sensible',
+    pos: 'adj.',
+    phonetic: '/ˈsen.sə.bəl/',
+    thaiPhonetic: 'เซน-ซิ-เบิล',
+    meaning: 'มีเหตุผล, ฉลาดคิด',
+    category: 'feelings',
+    level: 'B1',
+    example: 'It is sensible to save a portion of your pocket money each week.',
+    exampleTh: 'เป็นความคิดที่มีเหตุผลที่จะเก็บออมเงินค่าขนมส่วนหนึ่งไว้ทุกสัปดาห์'
+  },
+  {
+    id: 'v_205',
+    word: 'obedient',
+    pos: 'adj.',
+    phonetic: '/oʊˈbiː.di.ənt/',
+    thaiPhonetic: 'โอ-บี-เดี้ยนท์',
+    meaning: 'เชื่อฟัง, ว่านอนสอนง่าย',
+    category: 'feelings',
+    level: 'B1',
+    example: 'The well-trained guide dog is completely obedient to its blind owner.',
+    exampleTh: 'สุนัขนำทางที่ฝึกมาเป็นอย่างดีเชื่อฟังเจ้าของที่พิการทางสายตาอย่างเคร่งครัด'
+  },
+  {
+    id: 'v_206',
+    word: 'cheerful',
+    pos: 'adj.',
+    phonetic: '/ˈtʃɪə.fəl/',
+    thaiPhonetic: 'เชียร์-ฟูล',
+    meaning: 'ร่าเริง, แจ่มใส',
+    category: 'feelings',
+    level: 'A2',
+    example: 'Her cheerful smile brightens up the whole classroom.',
+    exampleTh: 'รอยยิ้มที่สดใสของเธอทำให้ห้องเรียนทั้งห้องสว่างไสวขึ้นมา'
+  },
+  {
+    id: 'v_207',
+    word: 'miserable',
+    pos: 'adj.',
+    phonetic: '/ˈmɪz.ər.ə.bəl/',
+    thaiPhonetic: 'มิส-เซอะ-เรอะ-เบิล',
+    meaning: 'ทุกข์ทรมาน, อมทุกข์',
+    category: 'feelings',
+    level: 'B1',
+    example: 'Catching the cold on a rainy day made him feel miserable.',
+    exampleTh: 'การเป็นหวัดในวันที่ฝนตกทำให้เขารู้สึกทุกข์ทรมานมาก'
+  },
+  {
+    id: 'v_208',
+    word: 'carbohydrate',
+    pos: 'n.',
+    phonetic: '/ˌkɑː.boʊˈhaɪ.dreɪt/',
+    thaiPhonetic: 'คาร์-โบ-ไฮ-เดรท',
+    meaning: 'คาร์โบไฮเดรต (แป้งและน้ำตาล)',
+    category: 'food_health',
+    level: 'B1',
+    example: 'Rice, noodles, and bread are rich sources of carbohydrates.',
+    exampleTh: 'ข้าว ก๋วยเตี๋ยว และขนมปังเป็นแหล่งคาร์โบไฮเดรตที่อุดมสมบูรณ์'
+  },
+  {
+    id: 'v_209',
+    word: 'protein',
+    pos: 'n.',
+    phonetic: '/ˈproʊ.tiːn/',
+    thaiPhonetic: 'โปร-ทีน',
+    meaning: 'โปรตีน (สร้างกล้ามเนื้อและซ่อมแซม)',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Eggs, fish, and tofu contain high-quality protein for growth.',
+    exampleTh: 'ไข่ ปลา และเต้าหู้มีโปรตีนคุณภาพสูงสำหรับการเจริญเติบโต'
+  },
+  {
+    id: 'v_210',
+    word: 'mineral',
+    pos: 'n.',
+    phonetic: '/ˈmɪn.ər.əl/',
+    thaiPhonetic: 'มิน-เนอะ-เริล',
+    meaning: 'เกลือแร่, แร่ธาตุ',
+    category: 'food_health',
+    level: 'B1',
+    example: 'Milk provides essential calcium and vital minerals for strong bones.',
+    exampleTh: 'นมให้แคลเซียมและเกลือแร่ที่จำเป็นสำหรับกระดูกที่แข็งแรง'
+  },
+  {
+    id: 'v_211',
+    word: 'delicious',
+    pos: 'adj.',
+    phonetic: '/dɪˈlɪʃ.əs/',
+    thaiPhonetic: 'ดิ-ลิช-เชิส',
+    meaning: 'อร่อยมาก',
+    category: 'food_health',
+    level: 'A1',
+    example: 'Mom cooked a delicious bowl of chicken noodle soup.',
+    exampleTh: 'คุณแม่ทำก๋วยเตี๋ยวไก่ชามที่อร่อยมากๆ'
+  },
+  {
+    id: 'v_212',
+    word: 'bitter',
+    pos: 'adj.',
+    phonetic: '/ˈbɪt.ər/',
+    thaiPhonetic: 'บิท-เทอร์',
+    meaning: 'ขม (รสชาติ)',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Dark chocolate and black coffee have a naturally bitter taste.',
+    exampleTh: 'ดาร์กช็อกโกแลตและกาแฟดำมีรสขมตามธรรมชาติ'
+  },
+  {
+    id: 'v_213',
+    word: 'sour',
+    pos: 'adj.',
+    phonetic: '/saʊər/',
+    thaiPhonetic: 'ซาว-เออร์',
+    meaning: 'เปรี้ยว',
+    category: 'food_health',
+    level: 'A2',
+    example: 'Fresh lime juice tastes extremely sour but refreshes the throat.',
+    exampleTh: 'น้ำมะนาวสดมีรสเปรี้ยวจี๊ดแต่ช่วยให้ชุ่มคอสดชื่น'
+  },
+  {
+    id: 'v_214',
+    word: 'spicy',
+    pos: 'adj.',
+    phonetic: '/ˈspaɪ.si/',
+    thaiPhonetic: 'สไป-ซี',
+    meaning: 'เผ็ดร้อน, รสจัด',
+    category: 'food_health',
+    level: 'A1',
+    example: 'Tom Yum Goong is a world-famous spicy and sour Thai soup.',
+    exampleTh: 'ต้มยำกุ้งเป็นต้มยำรสเผ็ดเปรี้ยวที่มีชื่อเสียงระดับโลกของไทย'
+  },
+  {
+    id: 'v_215',
+    word: 'crispy',
+    pos: 'adj.',
+    phonetic: '/ˈkrɪs.pi/',
+    thaiPhonetic: 'คริส-ปี',
+    meaning: 'กรอบ (อาหาร)',
+    category: 'food_health',
+    level: 'A2',
+    example: 'The fried chicken skin was delightfully golden and crispy.',
+    exampleTh: 'หนังไก่ทอดมีสีเหลืองทองและกรอบอร่อยน่ารับประทาน'
+  },
+  {
+    id: 'v_216',
+    word: 'bandage',
+    pos: 'n.',
+    phonetic: '/ˈbæn.dɪdʒ/',
+    thaiPhonetic: 'แบน-ดิดจ',
+    meaning: 'ผ้าพันแผล',
+    category: 'food_health',
+    level: 'A2',
+    example: 'The school nurse wrapped a sterile bandage around his scraped knee.',
+    exampleTh: 'พยาบาลประจำโรงเรียนพันผ้าพันแผลปลอดเชื้อรอบหัวเข่าที่ถลอกของเขา'
+  },
+  {
+    id: 'v_217',
+    word: 'skeleton',
+    pos: 'n.',
+    phonetic: '/ˈskel.ə.tən/',
+    thaiPhonetic: 'สเกล-เลอะ-เทิน',
+    meaning: 'โครงกระดูก',
+    category: 'food_health',
+    level: 'B1',
+    example: 'The human skeleton consists of 206 individual bones.',
+    exampleTh: 'โครงกระดูกของมนุษย์ประกอบด้วยกระดูกทั้งหมด 206 ชิ้น'
+  },
+  {
+    id: 'v_218',
+    word: 'roundabout',
+    pos: 'n.',
+    phonetic: '/ˈraʊnd.ə.baʊt/',
+    thaiPhonetic: 'ราวนด์-เออะ-เบาท์',
+    meaning: 'วงเวียนการจราจร',
+    category: 'travel',
+    level: 'B1',
+    example: 'Take the second exit when driving through the traffic roundabout.',
+    exampleTh: 'ใช้ทางออกที่สองเมื่อขับรถผ่านวงเวียนจราจร'
+  },
+  {
+    id: 'v_219',
+    word: 'intersection',
+    pos: 'n.',
+    phonetic: '/ˌɪn.təˈsek.ʃən/',
+    thaiPhonetic: 'อิน-เทอร์-เซก-เชิน',
+    meaning: 'สี่แยก, จุดตัดของถนน',
+    category: 'travel',
+    level: 'B1',
+    example: 'Vehicles must stop behind the white line at the busy intersection.',
+    exampleTh: 'ยานพาหนะต้องหยุดหลังเส้นสีขาวตรงสี่แยกที่มีการจราจรคับคั่ง'
+  },
+  {
+    id: 'v_220',
+    word: 'skyscraper',
+    pos: 'n.',
+    phonetic: '/ˈskaɪˌskreɪ.pər/',
+    thaiPhonetic: 'สกาย-สเคร-เปอร์',
+    meaning: 'ตึกระฟ้า, อาคารสูงเสียดฟ้า',
+    category: 'travel',
+    level: 'B1',
+    example: 'Bangkok is filled with breathtaking modern skyscrapers.',
+    exampleTh: 'กรุงเทพมหานครเต็มไปด้วยตึกระฟ้าที่ทันสมัยและสวยงามตระการตา'
+  },
+  {
+    id: 'v_221',
+    word: 'vehicle',
+    pos: 'n.',
+    phonetic: '/ˈviː.ɪ.kəl/',
+    thaiPhonetic: 'วี-อิ-เคิล',
+    meaning: 'ยานพาหนะ',
+    category: 'travel',
+    level: 'B1',
+    example: 'Electric vehicles help reduce greenhouse gas emissions in cities.',
+    exampleTh: 'ยานพาหนะไฟฟ้าช่วยลดการปล่อยก๊าซเรือนกระจกในเมือง'
+  },
+  {
+    id: 'v_222',
+    word: 'monument',
+    pos: 'n.',
+    phonetic: '/ˈmɒn.jə.mənt/',
+    thaiPhonetic: 'มอน-ยู-เมิ้นท์',
+    meaning: 'อนุสาวรีย์',
+    category: 'travel',
+    level: 'B1',
+    example: 'Victory Monument is a major transit hub in central Bangkok.',
+    exampleTh: 'อนุสาวรีย์ชัยสมรภูมิเป็นศูนย์กลางการคมนาคมที่สำคัญใจกลางกรุงเทพฯ'
+  },
+  {
+    id: 'v_223',
+    word: 'museum',
+    pos: 'n.',
+    phonetic: '/mjuːˈziː.əm/',
+    thaiPhonetic: 'มิว-ซี-เอิม',
+    meaning: 'พิพิธภัณฑ์',
+    category: 'travel',
+    level: 'A1',
+    example: 'Students visited the national science museum on their annual field trip.',
+    exampleTh: 'นักเรียนไปเยี่ยมชมพิพิธภัณฑ์วิทยาศาสตร์แห่งชาติในทัศนศึกษาประจำปี'
+  },
+  {
+    id: 'v_224',
+    word: 'landmark',
+    pos: 'n.',
+    phonetic: '/ˈlænd.mɑːk/',
+    thaiPhonetic: 'แลนด์-มาร์ก',
+    meaning: 'จุดสังเกตเด่น, สถานที่สำคัญที่เป็นสัญลักษณ์',
+    category: 'travel',
+    level: 'B1',
+    example: 'The Grand Palace is Thailand\'s most revered cultural landmark.',
+    exampleTh: 'พระบรมมหาราชวังเป็นสถานที่สำคัญทางวัฒนธรรมที่ได้รับการเคารพสูงสุดของไทย'
+  },
+  {
+    id: 'v_225',
+    word: 'commuter',
+    pos: 'n.',
+    phonetic: '/kəˈmjuː.tər/',
+    thaiPhonetic: 'เคอะ-มิว-เทอร์',
+    meaning: 'ผู้เดินทางไปกลับทำงานทุกวัน',
+    category: 'travel',
+    level: 'B2',
+    example: 'Thousands of daily commuters ride the sky train every morning.',
+    exampleTh: 'ผู้เดินทางหลายพันคนโดยสารรถไฟฟ้าบีทีเอสทุกเช้า'
+  },
+  {
+    id: 'v_226',
+    word: 'navigator',
+    pos: 'n.',
+    phonetic: '/ˈnæv.ɪ.ɡeɪ.tər/',
+    thaiPhonetic: 'แนฟ-วิ-เก-เทอร์',
+    meaning: 'ผู้นำทาง, ระบบนำทาง GPS',
+    category: 'travel',
+    level: 'B1',
+    example: 'GPS navigators calculate the fastest route to avoid traffic jams.',
+    exampleTh: 'ระบบนำทางจีพีเอสช่วยคำนวณเส้นทางที่เร็วที่สุดเพื่อหลีกเลี่ยงรถติด'
+  },
+  {
+    id: 'v_227',
+    word: 'architect',
+    pos: 'n.',
+    phonetic: '/ˈɑː.kɪ.tekt/',
+    thaiPhonetic: 'อาร์-คิ-เทกท์',
+    meaning: 'สถาปนิก (ผู้ออกแบบอาคาร)',
+    category: 'work',
+    level: 'B1',
+    example: 'The architect drew innovative 3D blueprints for the smart school.',
+    exampleTh: 'สถาปนิกวาดพิมพ์เขียวสามมิติสุดล้ำสำหรับโรงเรียนอัจฉริยะ'
+  },
+  {
+    id: 'v_228',
+    word: 'journalist',
+    pos: 'n.',
+    phonetic: '/ˈdʒɜː.nə.lɪst/',
+    thaiPhonetic: 'เจอร์-เนอะ-ลิสท์',
+    meaning: 'นักข่าว, ผู้สื่อข่าว',
+    category: 'work',
+    level: 'B1',
+    example: 'The investigative journalist interviewed eyewitnesses at the scene.',
+    exampleTh: 'นักข่าวเชิงสืบสวนได้สัมภาษณ์พยานผู้เห็นเหตุการณ์ในที่เกิดเหตุ'
+  },
+  {
+    id: 'v_229',
+    word: 'veterinarian',
+    pos: 'n.',
+    phonetic: '/ˌvet.ər.ɪˈneə.ri.ən/',
+    thaiPhonetic: 'เวท-เทริน-แน-เรียน',
+    meaning: 'สัตวแพทย์ (มักย่อว่า Vet)',
+    category: 'work',
+    level: 'B1',
+    example: 'Take your injured puppy to the veterinarian for emergency treatment.',
+    exampleTh: 'พาลูกสุนัขที่ได้รับบาดเจ็บไปพบสัตวแพทย์เพื่อรับการรักษาฉุกเฉิน'
+  },
+  {
+    id: 'v_230',
+    word: 'astronaut',
+    pos: 'n.',
+    phonetic: '/ˈæs.trə.nɔːt/',
+    thaiPhonetic: 'แอส-โทร-นอท',
+    meaning: 'นักบินอวกาศ',
+    category: 'work',
+    level: 'A2',
+    example: 'Astronauts conduct biological experiments aboard the International Space Station.',
+    exampleTh: 'นักบินอวกาศทำการทดลองทางชีววิทยาบนสถานีอวกาศนานาชาติ'
+  },
+  {
+    id: 'v_231',
+    word: 'paramedic',
+    pos: 'n.',
+    phonetic: '/ˌpær.əˈmed.ɪk/',
+    thaiPhonetic: 'แพ-เรอะ-เมด-ดิก',
+    meaning: 'เจ้าหน้าที่กู้ชีพฉุกเฉิน',
+    category: 'work',
+    level: 'B2',
+    example: 'Paramedics administered first aid to the passengers before the ambulance arrived.',
+    exampleTh: 'เจ้าหน้าที่กู้ชีพได้ปฐมพยาบาลผู้โดยสารก่อนที่รถพยาบาลจะมาถึง'
+  },
+  {
+    id: 'v_232',
+    word: 'technician',
+    pos: 'n.',
+    phonetic: '/tekˈnɪʃ.ən/',
+    thaiPhonetic: 'เทก-นิช-เชิน',
+    meaning: 'ช่างเทคนิค',
+    category: 'work',
+    level: 'B1',
+    example: 'A certified technician inspected the school computer lab network.',
+    exampleTh: 'ช่างเทคนิคผู้เชี่ยวชาญได้ตรวจสอบระบบเครือข่ายของห้องคอมพิวเตอร์โรงเรียน'
+  },
+  {
+    id: 'v_233',
+    word: 'detective',
+    pos: 'n.',
+    phonetic: '/dɪˈtek.tɪv/',
+    thaiPhonetic: 'ดิ-เทก-ทิฟ',
+    meaning: 'นักสืบ',
+    category: 'work',
+    level: 'A2',
+    example: 'The clever detective analyzed subtle fingerprints left on the glass window.',
+    exampleTh: 'นักสืบผู้ชาญฉลาดวิเคราะห์รอยนิ้วมือบางๆ ที่ทิ้งไว้บนหน้าต่างกระจก'
+  },
+  {
+    id: 'v_234',
+    word: 'accountant',
+    pos: 'n.',
+    phonetic: '/əˈkaʊn.tənt/',
+    thaiPhonetic: 'เออะ-เคาท์-เทิ้นท์',
+    meaning: 'นักบัญชี',
+    category: 'work',
+    level: 'B1',
+    example: 'The accountant verified every single financial transaction in the ledger.',
+    exampleTh: 'นักบัญชีตรวจสอบทุกธุรกรรมทางการเงินในสมุดบัญชีอย่างละเอียด'
+  },
+  {
+    id: 'v_235',
+    word: 'librarian',
+    pos: 'n.',
+    phonetic: '/laɪˈbreə.ri.ən/',
+    thaiPhonetic: 'ไล-แบร-เรียน',
+    meaning: 'บรรณารักษ์ห้องสมุด',
+    category: 'work',
+    level: 'A2',
+    example: 'The kind librarian recommended a fantastic science fiction book to me.',
+    exampleTh: 'บรรณารักษ์ใจดีแนะนำหนังสือนวนิยายวิทยาศาสตร์ที่ยอดเยี่ยมเล่มหนึ่งให้ฉัน'
+  },
+  {
+    id: 'v_236',
+    word: 'manager',
+    pos: 'n.',
+    phonetic: '/ˈmæn.ɪ.dʒər/',
+    thaiPhonetic: 'แมน-นิด-เจอร์',
+    meaning: 'ผู้จัดการ',
+    category: 'work',
+    level: 'A2',
+    example: 'The project manager led the team to complete the task before deadline.',
+    exampleTh: 'ผู้จัดการโครงการนำทีมทำงานจนสำเร็จลุล่วงก่อนกำหนดส่ง'
+  },
+  {
+    id: 'v_237',
+    word: 'mammal',
+    pos: 'n.',
+    phonetic: '/ˈmæm.əl/',
+    thaiPhonetic: 'แมม-เมิล',
+    meaning: 'สัตว์เลี้ยงลูกด้วยนม',
+    category: 'nature',
+    level: 'B1',
+    example: 'Whales and dolphins are warm-blooded mammals that breathe with lungs.',
+    exampleTh: 'วาฬและโลมาเป็นสัตว์เลี้ยงลูกด้วยนมเลือดอุ่นที่หายใจด้วยปอด'
+  },
+  {
+    id: 'v_238',
+    word: 'reptile',
+    pos: 'n.',
+    phonetic: '/ˈrep.taɪl/',
+    thaiPhonetic: 'เรพ-ไทล์',
+    meaning: 'สัตว์เลื้อยคลาน',
+    category: 'nature',
+    level: 'B1',
+    example: 'Snakes, turtles, and lizards are cold-blooded reptiles with scaly skin.',
+    exampleTh: 'งู เต่า และกิ้งก่าเป็นสัตว์เลื้อยคลานเลือดเย็นที่มีผิวหนังเป็นเกล็ด'
+  },
+  {
+    id: 'v_239',
+    word: 'amphibian',
+    pos: 'n.',
+    phonetic: '/æmˈfɪb.i.ən/',
+    thaiPhonetic: 'แอม-ฟิบ-เบียน',
+    meaning: 'สัตว์สะเทินน้ำสะเทินบก',
+    category: 'nature',
+    level: 'B2',
+    example: 'Frogs and toads are amphibians that live both in water and on land.',
+    exampleTh: 'กบและคางคกเป็นสัตว์สะเทินน้ำสะเทินบกที่อาศัยอยู่ได้ทั้งในน้ำและบนบก'
+  },
+  {
+    id: 'v_240',
+    word: 'predator',
+    pos: 'n.',
+    phonetic: '/ˈpred.ə.tər/',
+    thaiPhonetic: 'เพรด-เดอะ-เทอร์',
+    meaning: 'ผู้ล่าในห่วงโซ่อาหาร',
+    category: 'nature',
+    level: 'B1',
+    example: 'Eagles are apex aerial predators that hunt small rodents from above.',
+    exampleTh: 'นกอินทรีเป็นผู้ล่าเวหาชั้นยอดที่ล่าสัตว์ฟันแทะขนาดเล็กจากเบื้องบน'
+  },
+  {
+    id: 'v_241',
+    word: 'herbivore',
+    pos: 'n.',
+    phonetic: '/ˈhɜː.bɪ.vɔːr/',
+    thaiPhonetic: 'เฮอร์-บิ-วอร์',
+    meaning: 'สัตว์กินพืช',
+    category: 'nature',
+    level: 'B2',
+    example: 'Elephants, giraffes, and deer are giant herbivores.',
+    exampleTh: 'ช้าง ยีราฟ และกวางเป็นสัตว์กินพืชขนาดใหญ่'
+  },
+  {
+    id: 'v_242',
+    word: 'camouflage',
+    pos: 'n.',
+    phonetic: '/ˈkæm.ə.flɑːʒ/',
+    thaiPhonetic: 'แค-เมอะ-ฟลาฌ',
+    meaning: 'การพรางตัวตามธรรมชาติ',
+    category: 'nature',
+    level: 'B2',
+    example: 'The chameleon changes skin colors as an ingenious camouflage mechanism.',
+    exampleTh: 'กิ้งก่าคาเมเลียนเปลี่ยนสีผิวเพื่อเป็นกลไกการพรางตัวอันชาญฉลาด'
+  },
+  {
+    id: 'v_243',
+    word: 'migration',
+    pos: 'n.',
+    phonetic: '/maɪˈɡreɪ.ʃən/',
+    thaiPhonetic: 'ไม-เกร-เชิน',
+    meaning: 'การอพยพย้ายถิ่นฐานตามฤดูกาล',
+    category: 'nature',
+    level: 'B2',
+    example: 'Seasonal bird migration covers thousands of kilometers across continents.',
+    exampleTh: 'การอพยพตามฤดูกาลของนกครอบคลุมระยะทางหลายพันกิโลเมตรข้ามทวีป'
+  },
+  {
+    id: 'v_244',
+    word: 'hibernate',
+    pos: 'v.',
+    phonetic: '/ˈhaɪ.bə.neɪt/',
+    thaiPhonetic: 'ไฮ-เบอร์-เนท',
+    meaning: 'จำศีลในฤดูหนาว',
+    category: 'nature',
+    level: 'B2',
+    example: 'Grizzly bears hibernate inside cozy mountain caves during freezing winters.',
+    exampleTh: 'หมีกริซลีจำศีลอยู่ในถ้ำบนภูเขาอันอบอุ่นในช่วงฤดูหนาวที่เยือกแข็ง'
+  },
+  {
+    id: 'v_245',
+    word: 'photosynthesis',
+    pos: 'n.',
+    phonetic: '/ˌfoʊ.toʊˈsɪn.θə.sɪs/',
+    thaiPhonetic: 'โฟ-โต-ซิน-เธอ-ซิส',
+    meaning: 'การสังเคราะห์ด้วยแสงของพืช',
+    category: 'nature',
+    level: 'B1',
+    example: 'Green chlorophyll captures sunlight to fuel the process of photosynthesis.',
+    exampleTh: 'คลอโรฟิลล์สีเขียวดูดกลืนแสงแดดเพื่อขับเคลื่อนกระบวนการสังเคราะห์ด้วยแสง'
+  },
+  {
+    id: 'v_246',
+    word: 'earthquake',
+    pos: 'n.',
+    phonetic: '/ˈɜːθ.kweɪk/',
+    thaiPhonetic: 'เอิร์ธ-เควก',
+    meaning: 'แผ่นดินไหว',
+    category: 'nature',
+    level: 'A2',
+    example: 'Modern tall buildings are engineered to withstand powerful earthquakes.',
+    exampleTh: 'อาคารสูงสมัยใหม่ได้รับการออกแบบทางวิศวกรรมให้ต้านทานแผ่นดินไหวที่รุนแรงได้'
   }
 ]
