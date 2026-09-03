@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import AdBanner from '@/components/AdBanner'
+import Footer from '@/components/Footer'
 import { 
   BookOpen, 
   Brain, 
@@ -32,6 +33,18 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <a
+              href="https://www.facebook.com/645243598902533"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all shadow-2xs"
+              title="ติดตามข่าวสารและสูตรลัดบน Facebook เพจ Master ม.1"
+            >
+              <svg className="w-3.5 h-3.5 fill-blue-600" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span>เพจ Facebook</span>
+            </a>
             <Link href="/school">
               <Button variant="outline" className="border-blue-200 text-blue-800 bg-blue-50/80 hover:bg-blue-100 font-bold text-xs shadow-xs">
                 🏫 สำหรับโรงเรียน (School Portal)
@@ -229,12 +242,7 @@ export default function LandingPage() {
         </div>
       </main>
 
-      <footer className="bg-white border-t border-orange-100 py-8 text-center text-slate-500 text-xs sm:text-sm">
-        <p className="font-semibold text-slate-700">© 2026 MASTER ม.1 — เตรียมพร้อม พิชิตทุกข้อสอบ | สงวนลิขสิทธิ์</p>
-        <p className="text-xs text-slate-500 mt-1">
-          พัฒนาโดย <span className="font-bold text-orange-600">Phairot Makkaew</span> ร่วมกับ <span className="font-bold text-amber-600">Gemini AI</span>
-        </p>
-      </footer>
+      <Footer />
     </div>
   )
 }
