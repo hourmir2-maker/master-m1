@@ -3,7 +3,9 @@
 ## 🎯 เกี่ยวกับโปรเจกต์
 - **ชื่อระบบ**: MASTER ม.1 — เตรียมพร้อม พิชิตทุกข้อสอบ
 - **เป้าหมาย**: ติวสอบเข้มข้น ม.1 (คณิตศาสตร์, วิทยาศาสตร์, ภาษาอังกฤษ) พร้อมระบบ AI วิเคราะห์จุดอ่อน และจัดแผนการเรียนเฉพาะบุคคล
-- **ผู้พัฒนา**: Phairot Makkaew ร่วมกับ Gemini AI
+- **ผู้พัฒนา**: Phairot Makkaew (Email: pairote05@hotmail.com) ร่วมกับ Gemini AI
+- **Official YouTube Channel**: https://youtube.com/channel/UCL_9roKIZ7-5oL3-I_Sj6eg (ID: UCL_9roKIZ7-5oL3-I_Sj6eg)
+- **Official Facebook Page**: https://www.facebook.com/645243598902533 (ID: 645243598902533)
 - **Production URL**: https://master-m1.vercel.app
 
 ---
@@ -211,6 +213,19 @@
 - **Automated 9:16 Shorts Extraction**: ทุกครั้งที่ทีมสตูดิโอ (`expert_studio_producer`) ผลิตคลิปเพลงและวิดีโอตัวเต็มเสร็จสิ้น ระบบต้องรันตัดต่อคลิปสั้นแนวตั้ง 9:16 (1080x1920) ความยาว 25–45 วินาที ด้วย FFmpeg อัตโนมัติ (`render_all_shorts_9x16.py`) โดยใส่ Dynamic Blurred Background, แถบ Hook ด้านบน, และ แถบ CTA ด้านล่าง
 - **Instant Facebook Reels Auto-Publish**: ระบบต้องสั่งยิงไฟล์คลิปสั้นเข้าสู่ **Facebook Reels** ของเพจ Master ม.1 ทันทีผ่าน Meta Graph API v21.0 (`video_reels` 3-phase binary upload) โดยไม่ต้องรอให้ผู้ใช้มาอัปโหลดมือ พร้อมแนบแคปชันสูตรลัดและลิงก์เว็บไซต์ [master-m1.vercel.app](https://master-m1.vercel.app)
 - **Desktop Artifact Mirroring**: วางไฟล์คลิปแนวตั้งและไฟล์ข้อความโพสต์ไว้ที่ `Desktop\คลิปสำหรับลง_YouTube\Shorts_9x16` เพื่อความสะดวกในการนำไปอัปโหลดเป็น YouTube Shorts ต่อไป
+
+### Rule 35 — Automated YouTube Shorts CDP Upload & Multi-Channel Guardrail Standard
+- **Account & Target Channel Disambiguation**:
+  - Owner Google Account: `pairote05@hotmail.com`
+  - Target Channel: **MASTER ม.1** (`@master_m1_exam` / Channel ID: `UCL_9roKIZ7-5oL3-I_Sj6eg`)
+  - **ห้าม** ดำเนินการอัปโหลดคลิปใดๆ โดยไม่ตรวจสอบ Active Channel เด็ดขาด เพื่อป้องกันการหลุดไปลงช่องส่วนตัว (`@hourmir2391`) โดยต้องตรวจสอบ `#entity-name` ยืนยันคำว่า `MASTER ม.1` บน YouTube Studio เสมอ
+- **CDP Raw DOM Injection Protocol (Windows Non-ASCII Workaround)**:
+  - การอัปโหลดผ่าน Chrome DevTools Protocol (CDP Port 9222) บน Windows ห้ามใช้ `page.set_input_files` หรือส่งไฟล์ชื่อภาษาไทยตรงๆ เพราะจะเกิด Timeout 30s
+  - ต้องสำเนาไฟล์เป็น ASCII Temp Path (`yt_upload_temp.mp4`) และยิงผ่าน Raw CDP Protocol (`DOM.setFileInputFiles` บน `nodeId` ของ `input[type="file"]`) เสมอ
+- **Batch Upload Clean-State Navigation**:
+  - ระหว่างการอัปโหลดวิดีโอแบบต่อเนื่อง (Batch) ต้องเรียก `page.goto("https://studio.youtube.com/", wait_until="domcontentloaded")` ก่อนเริ่มคลิปถัดไปทุกครั้ง เพื่อเคลียร์ `<tp-yt-iron-overlay-backdrop>` ป้องกัน Pointer Interception Error
+- **Cloud Scheduling Autonomy**:
+  - การเลือก "ตั้งเวลา (Schedule)" บน YouTube Studio (`#second-container-expand-button` -> `#done-button`) และ Facebook Reels (`video_state: "SCHEDULED"`) ถูกจัดคิวอยู่บนเซิร์ฟเวอร์คลาวด์โดยตรง แม้ปิดเครื่องคอมพิวเตอร์ ระบบก็จะเผยแพร่คลิปอัตโนมัติ 100%
 
 ---
 
