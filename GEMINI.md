@@ -205,6 +205,11 @@
   5. `expert_growth_hacker`: ออกแบบ Hook 3 วินาทีแรก, Looping Video ดึง Retention > 100%, ซอย 1 เพลงยาวเป็น 3 Shorts, คัดกรอง SEO/Hashtags และกำหนดตารางเวลาโพสต์ทองคำ (Prime Time)
 - **Zero Hallucination Academic Standard**: ทุกข้อสอบและเนื้อหาที่สร้างโดยทีมงาน ต้องตรงตามหลักสูตรแกนกลาง สพฐ. 2551 (ปรับปรุง 2560) และ Blueprint สทศ. 100%
 
+### Rule 34 — Automated Short-Form Rendering & Instant Facebook Reels Publishing Standard
+- **Automated 9:16 Shorts Extraction**: ทุกครั้งที่ทีมสตูดิโอ (`expert_studio_producer`) ผลิตคลิปเพลงและวิดีโอตัวเต็มเสร็จสิ้น ระบบต้องรันตัดต่อคลิปสั้นแนวตั้ง 9:16 (1080x1920) ความยาว 25–45 วินาที ด้วย FFmpeg อัตโนมัติ (`render_all_shorts_9x16.py`) โดยใส่ Dynamic Blurred Background, แถบ Hook ด้านบน, และ แถบ CTA ด้านล่าง
+- **Instant Facebook Reels Auto-Publish**: ระบบต้องสั่งยิงไฟล์คลิปสั้นเข้าสู่ **Facebook Reels** ของเพจ Master ม.1 ทันทีผ่าน Meta Graph API v21.0 (`video_reels` 3-phase binary upload) โดยไม่ต้องรอให้ผู้ใช้มาอัปโหลดมือ พร้อมแนบแคปชันสูตรลัดและลิงก์เว็บไซต์ [master-m1.vercel.app](https://master-m1.vercel.app)
+- **Desktop Artifact Mirroring**: วางไฟล์คลิปแนวตั้งและไฟล์ข้อความโพสต์ไว้ที่ `Desktop\คลิปสำหรับลง_YouTube\Shorts_9x16` เพื่อความสะดวกในการนำไปอัปโหลดเป็น YouTube Shorts ต่อไป
+
 ---
 
 ## 🗺️ แผนงานและฟีเจอร์ในอนาคต (Future Roadmap)

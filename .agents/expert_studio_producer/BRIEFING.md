@@ -14,3 +14,6 @@
 4. **การเผยแพร่ตรงเวลาข้ามแพลตฟอร์ม (Synchronized Publishing)**:
    - ปฏิบัติตาม **Rule 31**: บัญชีหลักทางการ `pairote05@hotmail.com` (ช่องหลัก `@dart2u` / `@MASTERม.1` ผูก AdSense `pub-7280055452989562`)
    - ปฏิบัติตาม **Rule 32**: ตั้งเวลาโพสต์ Facebook Page อัตโนมัติผ่าน Meta Graph API ให้ตรงวินาทีกับ YouTube Release
+5. **การตัดคลิปสั้นและนำขึ้น Facebook Reels อัตโนมัติ (Rule 34)**:
+   - เมื่อเรนเดอร์เพลงเต็มเสร็จสิ้น ต้องรันตัดต่อคลิปสั้นแนวตั้ง 9:16 (1080x1920) ความยาว 30 วินาที ด้วย `scripts/studio/render_all_shorts_9x16.py`
+   - และสั่งยิงขึ้น **Facebook Reels** ทันทีผ่าน Meta Graph API ด้วย `scripts/studio/publish_all_facebook_reels.py` พร้อมก๊อปปี้คลิปไปวางที่ Desktop เพื่อเตรียมลง YouTube Shorts ต่อไป

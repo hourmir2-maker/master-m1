@@ -91,10 +91,22 @@ description: >-
 - ก๊อปปี้ไฟล์ `.mp4` พร้อม `ข้อความสำหรับโพสต์_YouTube.txt` ไปที่ `Desktop ➔ คลิปสำหรับลง_YouTube`
 - สั่งยิง Meta Graph API ตั้งเวลาโพสต์ Facebook Page ให้ตรงวินาทีกับ YouTube ด้วย `python scripts/studio/schedule_all_facebook_posts.py`
 
+### 5. ตัดต่อคลิปสั้นแนวตั้ง (Shorts & Reels 9:16) และนำขึ้น Facebook Reels อัตโนมัติ (Rule 34)
+- **ตัดท่อนฮุก 30 วิ แปลงเป็น 9:16:** รันสคริปต์ตัดต่อจัดหน้าจอแนวตั้ง 1080x1920 พร้อม Dynamic Blurred Background, แถบ Hook บน และ แถบ CTA ล่าง:
+  ```bash
+  python scripts/studio/render_all_shorts_9x16.py
+  ```
+- **นำขึ้น Facebook Reels อัตโนมัติในทันที:** สั่งยิง Meta Graph API v21.0 (`video_reels` 3-phase upload) เผยแพร่ตรงสู่เพจ Master ม.1 ทันที:
+  ```bash
+  python scripts/studio/publish_all_facebook_reels.py
+  ```
+- **เตรียมไฟล์ YouTube Shorts:** ก๊อปปี้คลิปพร้อม `ข้อความสำหรับโพสต์_Shorts.txt` ไว้ที่ `Desktop ➔ คลิปสำหรับลง_YouTube ➔ Shorts_9x16`
+
 --------------------------------------------------------------------------------
 
 ## 🛡️ กฎเหล็กที่ทุกทีมต้องปฏิบัติตาม (Non-Negotiable Invariants)
 - **Rule 25 & 26**: ห้ามใช้ Mock/Placeholder Data ในรายงาน และต้องใช้ User-Scoped Storage ผูกกับ User ID เสมอ
 - **Rule 29 & 30**: ห้ามเดาเวลาซับไตเติล (ใช้ Gemini Audio ดึงเวลาจริง) และใช้ฟอนต์มาตรฐาน Windows ไฮไลต์สูตรลัดสีทอง
 - **Rule 31 & 32**: ควบคุมสิทธิ์บัญชีทางการ `pairote05@hotmail.com` (@dart2u / @MASTERม.1) และตั้งเวลาโพสต์ Facebook ตรงวินาทีเดียวกับ YouTube
-- **Rule 33**: ยึดถือโครงสร้าง 4 Expert Subagents และคงมาตรฐานวิชาการ สพฐ. 100%
+- **Rule 33**: ยึดถือโครงสร้าง 5 Expert Subagents และคงมาตรฐานวิชาการ สพฐ. 100%
+- **Rule 34 (Reels & Shorts Automation Standard)**: เมื่อทำคลิปเต็มเสร็จสิ้นทุกครั้ง ต้องตัดต่อคลิปสั้นแนวตั้ง 9:16 (30 วินาที) และยิงขึ้น Facebook Reels อัตโนมัติทันที ห้ามปล่อยให้ค้างเติ่ง
