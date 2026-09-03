@@ -34,6 +34,10 @@ import MagnetLab from '@/components/labs/MagnetLab'
 import MicroscopeLab from '@/components/labs/MicroscopeLab'
 import AcidBaseLab from '@/components/labs/AcidBaseLab'
 import ChromatographyLab from '@/components/labs/ChromatographyLab'
+import Math3DNetLab from '@/components/labs/Math3DNetLab'
+import MathAlgebraScaleLab from '@/components/labs/MathAlgebraScaleLab'
+import EnglishTensesLab from '@/components/labs/EnglishTensesLab'
+import ThaiSamasaLab from '@/components/labs/ThaiSamasaLab'
 import Footer from '@/components/Footer'
 
 function getYouTubeEmbedUrl(url?: string): string {
@@ -56,7 +60,20 @@ function getYouTubeEmbedUrl(url?: string): string {
   }
 }
 
-export type LabId = 'shadow' | 'magnet' | 'acidbase' | 'microscope' | 'nutrients' | 'chromatography' | 'heat'
+export type LabId = 
+  | 'shadow' 
+  | 'magnet' 
+  | 'acidbase' 
+  | 'microscope' 
+  | 'nutrients' 
+  | 'chromatography' 
+  | 'heat'
+  | 'math_3d_net'
+  | 'math_scale'
+  | 'eng_tenses'
+  | 'thai_samasa'
+
+export type SubjectFilter = 'all' | 'science' | 'math' | 'english' | 'thai'
 
 interface LabTier {
   id: LabId
@@ -71,6 +88,7 @@ interface LabTier {
   accentColor: string
   activeGrad: string
   desc: string
+  subject: 'science' | 'math' | 'english' | 'thai'
 }
 
 const LAB_TIERS: LabTier[] = [
@@ -79,103 +97,171 @@ const LAB_TIERS: LabTier[] = [
     name: '🪞 การเกิดเงา: เงามืด & เงามัว',
     shortTitle: 'แสงและเงา',
     subtitle: 'สสวท. ป.4 - ป.6 • แหล่งกำเนิดแสงและการบังแสง',
-    levelName: 'Level 1: นักวิทยาศาสตร์ฝึกหัด',
+    levelName: 'Science Level 1: นักวิทยาศาสตร์ฝึกหัด',
     badgeEmoji: '🥉',
     minScore: 0,
     targetModuleId: 'force_motion',
     targetModuleName: 'แสงและเงา',
     accentColor: 'border-amber-300 text-amber-900 bg-amber-50',
     activeGrad: 'bg-amber-500 text-white shadow-amber-500/30 ring-amber-300',
-    desc: 'ปูพื้นฐานการสังเกตแสง เงามืด เงามัว และขนาดของเงาตามระยะวัตถุ'
+    desc: 'ปูพื้นฐานการสังเกตแสง เงามืด เงามัว และขนาดของเงาตามระยะวัตถุ',
+    subject: 'science'
   },
   {
     id: 'magnet',
     name: '🧲 แม่เหล็ก & สารแม่เหล็ก',
     shortTitle: 'แม่เหล็ก & แรงดูด',
     subtitle: 'สสวท. ป.3 - ป.6 • แรงดูด-แรงผลัก และจุดดักข้อสอบ',
-    levelName: 'Level 2: นักวิจัยรุ่นเยาว์',
+    levelName: 'Science Level 2: นักวิจัยรุ่นเยาว์',
     badgeEmoji: '🥈',
     minScore: 35,
     targetModuleId: 'force_motion',
     targetModuleName: 'แรงและการเคลื่อนที่',
     accentColor: 'border-rose-300 text-rose-900 bg-rose-50',
     activeGrad: 'bg-rose-600 text-white shadow-rose-600/30 ring-rose-300',
-    desc: 'จำแนกสารแม่เหล็ก สารที่ไม่ใช่แม่เหล็ก (อะลูมิเนียม) และแรงระหว่างขั้ว N-S'
+    desc: 'จำแนกสารแม่เหล็ก สารที่ไม่ใช่แม่เหล็ก (อะลูมิเนียม) และแรงระหว่างขั้ว N-S',
+    subject: 'science'
   },
   {
     id: 'acidbase',
     name: '💧 กรด-เบส & อินดิเคเตอร์',
     shortTitle: 'กรด-เบส & pH',
     subtitle: 'สสวท. ป.5 - ม.1 • กระดาษลิตมัส, ฟีนอล์ฟทาลีน & pH',
-    levelName: 'Level 3: นักวิเคราะห์สารเคมี',
+    levelName: 'Science Level 3: นักวิเคราะห์สารเคมี',
     badgeEmoji: '🧪',
     minScore: 50,
     targetModuleId: 'matter_properties',
     targetModuleName: 'สารบริสุทธิ์และสารผสม',
     accentColor: 'border-violet-300 text-violet-900 bg-violet-50',
     activeGrad: 'bg-violet-600 text-white shadow-violet-600/30 ring-violet-300',
-    desc: 'ทดสอบกระดาษลิตมัสแดง-น้ำเงิน ฟีนอล์ฟทาลีน และวัดสเกล pH 1-14 ของสารในชีวิตประจำวัน'
+    desc: 'ทดสอบกระดาษลิตมัสแดง-น้ำเงิน ฟีนอล์ฟทาลีน และวัดสเกล pH 1-14 ของสารในชีวิตประจำวัน',
+    subject: 'science'
   },
   {
     id: 'microscope',
     name: '🔬 กล้องจุลทรรศน์: เซลล์พืช vs สัตว์',
     shortTitle: 'กล้องส่องเซลล์',
     subtitle: 'สสวท. ม.1 • ส่องเซลล์เยื่อหอม, สาหร่าย & เยื่อบุข้างแก้ม',
-    levelName: 'Level 4: นักจุลชีววิทยา',
+    levelName: 'Science Level 4: นักจุลชีววิทยา',
     badgeEmoji: '🔬',
     minScore: 65,
     targetModuleId: 'living_things',
     targetModuleName: 'เซลล์และสิ่งมีชีวิต',
     accentColor: 'border-teal-300 text-teal-900 bg-teal-50',
     activeGrad: 'bg-teal-600 text-white shadow-teal-600/30 ring-teal-300',
-    desc: 'หมุนปุ่มปรับภาพละเอียด สลับกำลังขยาย 40x-400x ย้อมสีสไลด์ และจำแนกออร์แกเนลล์'
+    desc: 'หมุนปุ่มปรับภาพละเอียด สลับกำลังขยาย 40x-400x ย้อมสีสไลด์ และจำแนกออร์แกเนลล์',
+    subject: 'science'
   },
   {
     id: 'nutrients',
     name: '🥣 การทดสอบสารอาหาร 4 ชนิด',
     shortTitle: 'ทดสอบสารอาหาร',
     subtitle: 'สสวท. ม.1 • ไอโอดีน, เบเนดิกต์ต้มเดือด, ไบยูเร็ต',
-    levelName: 'Level 5: นักสืบวิทยาศาสตร์ ม.1',
+    levelName: 'Science Level 5: นักสืบวิทยาศาสตร์ ม.1',
     badgeEmoji: '🥇',
     minScore: 75,
     targetModuleId: 'human_body',
     targetModuleName: 'ร่างกายมนุษย์และสารอาหาร',
     accentColor: 'border-emerald-300 text-emerald-900 bg-emerald-50',
     activeGrad: 'bg-emerald-600 text-white shadow-emerald-600/30 ring-emerald-300',
-    desc: 'เทคนิคการทดสอบแป้ง น้ำตาลรีดิวซ์ โปรตีน และหลุมพรางน้ำตาลทรายซูโครส'
+    desc: 'เทคนิคการทดสอบแป้ง น้ำตาลรีดิวซ์ โปรตีน และหลุมพรางน้ำตาลทรายซูโครส',
+    subject: 'science'
   },
   {
     id: 'chromatography',
     name: '🌈 โครมาโทกราฟี & การคำนวณค่า Rf',
     shortTitle: 'โครมาโทกราฟี',
     subtitle: 'สสวท. ม.1 • แยกสารผสม, แถบสี & ไม้บรรทัดวัด Rf',
-    levelName: 'Level 6: ผู้เชี่ยวชาญการแยกสาร',
+    levelName: 'Science Level 6: ผู้เชี่ยวชาญการแยกสาร',
     badgeEmoji: '🎨',
     minScore: 85,
     targetModuleId: 'matter_properties',
     targetModuleName: 'เทคนิคการแยกสารผสม',
     accentColor: 'border-purple-300 text-purple-900 bg-purple-50',
     activeGrad: 'bg-purple-600 text-white shadow-purple-600/30 ring-purple-300',
-    desc: 'แยกองค์ประกอบหมึกสีและรงควัตถุพืช พร้อมคำนวณค่า Rf = d_สาร / d_ตัวทำละลาย'
+    desc: 'แยกองค์ประกอบหมึกสีและรงควัตถุพืช พร้อมคำนวณค่า Rf = d_สาร / d_ตัวทำละลาย',
+    subject: 'science'
   },
   {
     id: 'heat',
     name: '🌡️ สมดุลความร้อน Q=mcΔt',
     shortTitle: 'สมดุลความร้อน',
     subtitle: 'ห้องเรียนพิเศษ Gifted/สสวท. • การคำนวณอุณหพลศาสตร์',
-    levelName: 'Level 7: ปรมาจารย์แล็บ Gifted',
+    levelName: 'Science Level 7: ปรมาจารย์แล็บ Gifted',
     badgeEmoji: '💎',
     minScore: 92,
     targetModuleId: 'energy',
     targetModuleName: 'พลังงานความร้อน',
     accentColor: 'border-orange-300 text-orange-900 bg-orange-50',
     activeGrad: 'bg-orange-600 text-white shadow-orange-600/30 ring-orange-300',
-    desc: 'จำลองการถ่ายโอนความร้อน Q_loss = Q_gain พร้อมสูตรลัด 3 วินาทีสำหรับสอบเข้า ม.1'
+    desc: 'จำลองการถ่ายโอนความร้อน Q_loss = Q_gain พร้อมสูตรลัด 3 วินาทีสำหรับสอบเข้า ม.1',
+    subject: 'science'
   },
+  {
+    id: 'math_3d_net',
+    name: '🧊 คลี่รูปทรงเรขาคณิต 3 มิติ',
+    shortTitle: 'คลี่รูปทรง 3D',
+    subtitle: 'สสวท. ป.6 - ม.1 • คลี่ลูกบาศก์, พีระมิด, ทรงกระบอก, ทรงกรวย',
+    levelName: 'Math Level 1: ยอดนักต่อโมเดล 3D',
+    badgeEmoji: '🧊',
+    minScore: 0,
+    targetModuleId: 'geometry_3d',
+    targetModuleName: 'รูปเรขาคณิตสามมิติ',
+    accentColor: 'border-amber-300 text-amber-900 bg-amber-50',
+    activeGrad: 'bg-amber-600 text-white shadow-amber-600/30 ring-amber-300',
+    desc: 'คลี่รูปทรง 3D ออกเป็น 2D ศึกษาจำนวนหน้า ขอบ จุดยอด พร้อมคำนวณพื้นที่ผิวและปริมาตรจริง',
+    subject: 'math'
+  },
+  {
+    id: 'math_scale',
+    name: '⚖️ ตาชั่งสมดุลแก้สมการ',
+    shortTitle: 'ตาชั่งสมดุลสมการ',
+    subtitle: 'สสวท. ป.6 - ม.1 • การแก้สมการเชิงเส้นตัวแปรเดียว',
+    levelName: 'Math Level 2: จอมพลังสมดุลสมการ',
+    badgeEmoji: '⚖️',
+    minScore: 40,
+    targetModuleId: 'algebra_linear',
+    targetModuleName: 'สมการและการแก้สมการ',
+    accentColor: 'border-emerald-300 text-emerald-900 bg-emerald-50',
+    activeGrad: 'bg-emerald-600 text-white shadow-emerald-600/30 ring-emerald-300',
+    desc: 'เข้าใจหลักการย้ายข้างสมการผ่านตาชั่งจำลอง หักออกและหารเท่ากันทั้งสองข้างจนหาค่า x',
+    subject: 'math'
+  },
+  {
+    id: 'eng_tenses',
+    name: '⏰ ไทม์แมชชีนกาลเวลา (12 Tenses)',
+    shortTitle: 'ไทม์แมชชีน Tenses',
+    subtitle: 'สสวท. & Gifted ม.1 • Past, Present, Future & Aspects',
+    levelName: 'English Level 1: ผู้คุมกาลเวลา Tenses',
+    badgeEmoji: '⏰',
+    minScore: 30,
+    targetModuleId: 'tenses_mastery',
+    targetModuleName: 'Tenses & Verb Forms',
+    accentColor: 'border-sky-300 text-sky-900 bg-sky-50',
+    activeGrad: 'bg-sky-600 text-white shadow-sky-600/30 ring-sky-300',
+    desc: 'เลื่อนไทม์ไลน์กาลเวลา สังเกตการแปลงร่างของกริยาตาม 12 Tenses และจับจุดคำบอกเวลา',
+    subject: 'english'
+  },
+  {
+    id: 'thai_samasa',
+    name: '💥 แท่นหลอมคำ: สมาสชน-สนธิเชื่อม',
+    shortTitle: 'สมาสชน-สนธิเชื่อม',
+    subtitle: 'ภาษาไทย O-NET & ม.1 • การสร้างคำบาลี-สันสกฤต',
+    levelName: 'Thai Level 1: ปรมาจารย์หลอมคำ',
+    badgeEmoji: '💥',
+    minScore: 30,
+    targetModuleId: 'word_formation',
+    targetModuleName: 'การสร้างคำในภาษาไทย',
+    accentColor: 'border-purple-300 text-purple-900 bg-purple-50',
+    activeGrad: 'bg-purple-600 text-white shadow-purple-600/30 ring-purple-300',
+    desc: 'ท่องคาถาสมาสชน สนธิเชื่อม ทดลองนำคำมาชนและเชื่อมเสียงเพื่อจับจุดลวง สทศ.',
+    subject: 'thai'
+  }
 ]
 
 export default function VirtualLabPage() {
   const [activeTab, setActiveTab] = useState<LabId>('shadow')
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<SubjectFilter>('all')
   
   // Gamification Unlock State
   const [actualScienceScore, setActualScienceScore] = useState<number>(0)
@@ -186,6 +272,18 @@ export default function VirtualLabPage() {
   const [labVideoInput, setLabVideoInput] = useState<string>('')
   const [labSaveNotice, setLabSaveNotice] = useState<string | null>(null)
   const [labVideoVersion, setLabVideoVersion] = useState<number>(0)
+
+  const handleSelectSubject = (filter: SubjectFilter) => {
+    setSelectedSubjectFilter(filter)
+    const targets = filter === 'all' ? LAB_TIERS : LAB_TIERS.filter(t => t.subject === filter)
+    if (targets.length > 0 && !targets.some(t => t.id === activeTab)) {
+      setActiveTab(targets[0].id)
+    }
+  }
+
+  const visibleTiers = selectedSubjectFilter === 'all' 
+    ? LAB_TIERS 
+    : LAB_TIERS.filter(t => t.subject === selectedSubjectFilter)
 
   // State for Heat Simulator
   const [mHot, setMHot] = useState<number>(100) // g
@@ -425,20 +523,51 @@ export default function VirtualLabPage() {
           </div>
         </div>
 
-        {/* 7 Lab Buttons Navigation Grid */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <span>สถานีการทดลองทั้งหมด 7 สถานี (สสวท. ประถม & ม.1 Gifted):</span>
-            </span>
+        {/* Multi-Subject Filter and Lab Buttons Navigation Grid */}
+        <div className="space-y-4">
+          {/* Subject Filter Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <Trophy className="w-4 h-4 text-amber-500" />
+                <span>เลือกหมวดวิชา:</span>
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { id: 'all', label: '🌟 ทั้งหมด', count: LAB_TIERS.length },
+                  { id: 'science', label: '🔬 วิทย์', count: LAB_TIERS.filter(t => t.subject === 'science').length },
+                  { id: 'math', label: '🔢 คณิต', count: LAB_TIERS.filter(t => t.subject === 'math').length },
+                  { id: 'english', label: '🇬🇧 อังกฤษ', count: LAB_TIERS.filter(t => t.subject === 'english').length },
+                  { id: 'thai', label: '📖 ไทย', count: LAB_TIERS.filter(t => t.subject === 'thai').length }
+                ].map(sub => (
+                  <button
+                    key={sub.id}
+                    onClick={() => handleSelectSubject(sub.id as SubjectFilter)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      selectedSubjectFilter === sub.id
+                        ? 'bg-slate-900 text-white shadow-md'
+                        : 'bg-slate-100 hover:bg-slate-200/80 text-slate-600'
+                    }`}
+                  >
+                    <span>{sub.label}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      selectedSubjectFilter === sub.id ? 'bg-slate-700 text-amber-300' : 'bg-white text-slate-500'
+                    }`}>
+                      {sub.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <span className="text-xs text-slate-500 font-mono">
-              ปลดล็อกแล้ว <strong>{LAB_TIERS.filter(t => effectiveScore >= t.minScore).length} / 7</strong>
+              ปลดล็อกแล้ว <strong>{LAB_TIERS.filter(t => effectiveScore >= t.minScore).length} / {LAB_TIERS.length}</strong>
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5">
-            {LAB_TIERS.map(tier => {
+          {/* Station Buttons Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2.5">
+            {visibleTiers.map(tier => {
               const isUnlocked = effectiveScore >= tier.minScore
               const isSelected = activeTab === tier.id
 
@@ -446,7 +575,7 @@ export default function VirtualLabPage() {
                 <button
                   key={tier.id}
                   onClick={() => setActiveTab(tier.id)}
-                  className={`p-3 rounded-2xl border text-left transition-all relative flex flex-col justify-between min-h-[90px] ${
+                  className={`p-3 rounded-2xl border text-left transition-all relative flex flex-col justify-between min-h-[96px] ${
                     isSelected
                       ? `${tier.activeGrad} ring-2 scale-[1.02] shadow-md font-bold`
                       : isUnlocked
@@ -456,15 +585,25 @@ export default function VirtualLabPage() {
                 >
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span className="text-xl">{tier.badgeEmoji}</span>
-                    {isUnlocked ? (
-                      <span className="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                        <Unlock className="w-2.5 h-2.5" /> พร้อม
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase ${
+                        tier.subject === 'science' ? 'bg-emerald-100 text-emerald-800' :
+                        tier.subject === 'math' ? 'bg-amber-100 text-amber-800' :
+                        tier.subject === 'english' ? 'bg-sky-100 text-sky-800' :
+                        'bg-purple-100 text-purple-800'
+                      }`}>
+                        {tier.subject === 'science' ? 'วิทย์' : tier.subject === 'math' ? 'คณิต' : tier.subject === 'english' ? 'อังกฤษ' : 'ไทย'}
                       </span>
-                    ) : (
-                      <span className="text-[9px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 font-mono">
-                        <Lock className="w-2.5 h-2.5" /> {tier.minScore}%
-                      </span>
-                    )}
+                      {isUnlocked ? (
+                        <span className="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                          <Unlock className="w-2.5 h-2.5" />
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 font-mono">
+                          <Lock className="w-2.5 h-2.5" /> {tier.minScore}%
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div>
@@ -654,6 +793,10 @@ export default function VirtualLabPage() {
                 </div>
               </div>
             )}
+            {activeTab === 'math_3d_net' && <Math3DNetLab />}
+            {activeTab === 'math_scale' && <MathAlgebraScaleLab />}
+            {activeTab === 'eng_tenses' && <EnglishTensesLab />}
+            {activeTab === 'thai_samasa' && <ThaiSamasaLab />}
           </div>
         ) : (
           /* Locked Gate Screen */
