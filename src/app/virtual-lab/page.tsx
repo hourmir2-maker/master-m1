@@ -368,6 +368,45 @@ export default function VirtualLabPage() {
   const effectiveScore = demoScoreOverride !== null ? demoScoreOverride : actualScienceScore
   const currentTier = LAB_TIERS.slice().reverse().find(t => effectiveScore >= t.minScore) || LAB_TIERS[0]
   const currentActiveTier = LAB_TIERS.find(t => t.id === activeTab) || LAB_TIERS[0]
+const SUBJECT_METADATA: Record<'science' | 'math' | 'english' | 'thai', {
+  nameTh: string
+  label: string
+  color: string
+  btnColor: string
+  quizUrl: string
+}> = {
+  science: {
+    nameTh: 'วิทยาศาสตร์',
+    label: '🔬 วิทยาศาสตร์',
+    color: 'from-teal-400 to-emerald-400',
+    btnColor: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20',
+    quizUrl: '/subjects/science'
+  },
+  math: {
+    nameTh: 'คณิตศาสตร์',
+    label: '🔢 คณิตศาสตร์',
+    color: 'from-amber-400 to-orange-400',
+    btnColor: 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/20',
+    quizUrl: '/subjects/math'
+  },
+  english: {
+    nameTh: 'ภาษาอังกฤษ',
+    label: '🇬🇧 ภาษาอังกฤษ',
+    color: 'from-sky-400 to-blue-400',
+    btnColor: 'bg-sky-600 hover:bg-sky-700 shadow-sky-600/20',
+    quizUrl: '/subjects/english'
+  },
+  thai: {
+    nameTh: 'ภาษาไทย',
+    label: '📖 ภาษาไทย',
+    color: 'from-purple-400 to-fuchsia-400',
+    btnColor: 'bg-purple-600 hover:bg-purple-700 shadow-purple-600/20',
+    quizUrl: '/subjects/thai'
+  }
+}
+
+  const activeSubject = selectedSubjectFilter === 'all' ? currentActiveTier.subject : selectedSubjectFilter
+  const activeSubjectInfo = SUBJECT_METADATA[activeSubject]
   const isCurrentTabUnlocked = effectiveScore >= currentActiveTier.minScore
 
   return (
@@ -384,9 +423,9 @@ export default function VirtualLabPage() {
             </Link>
             <div className="h-4 w-px bg-slate-200" />
             <h1 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-              <span>🔬 Virtual Science Lab</span>
+              <span>🔬 Virtual Lab</span>
               <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                7 สถานีทดลอง สสวท. & Gifted
+                11 สถานีทดลอง 4 วิชา
               </span>
             </h1>
           </div>
@@ -398,12 +437,12 @@ export default function VirtualLabPage() {
               onClick={() => setShowVideoModal(true)}
               className="bg-red-50 text-red-700 hover:bg-red-100 border-red-200 font-bold rounded-xl text-xs sm:text-sm shadow-xs"
             >
-              <span>🎬 ดูคลิปเพลงแล็บวิทย์ 7 สถานี</span>
+              <span>🎬 ดูคลิปเพลงช่วยจำ</span>
             </Button>
 
-            <Link href="/subjects/science">
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 text-xs sm:text-sm">
-                <span>📚 ทำโจทย์เพิ่มคะแนนวิทย์</span>
+            <Link href={activeSubjectInfo.quizUrl}>
+              <Button size="sm" className={`${activeSubjectInfo.btnColor} text-white font-bold rounded-xl shadow-md text-xs sm:text-sm transition-all`}>
+                <span>📚 ทำโจทย์เพิ่มคะแนน{activeSubjectInfo.nameTh}</span>
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
@@ -414,29 +453,29 @@ export default function VirtualLabPage() {
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 py-6 sm:py-8 w-full flex-1 space-y-6">
         
-        {/* Gamification Science Mastery Hub Banner */}
+        {/* Gamification Subject Mastery Hub Banner */}
         <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-blue-500/20 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-cyan-400 flex items-center justify-center text-4xl shadow-lg shadow-emerald-500/20 shrink-0">
-                {currentTier.badgeEmoji}
+                {currentActiveTier.badgeEmoji}
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-bold bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded-full border border-blue-400/30 font-mono">
-                    {currentTier.levelName}
+                    {currentActiveTier.levelName}
                   </span>
                   <span className="text-xs text-slate-300">
                     • {studentName}
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-white">
-                  ระดับความพร้อมวิทยาศาสตร์: <span className="text-amber-400 font-mono">{effectiveScore}%</span>
+                  ระดับความพร้อม{activeSubjectInfo.nameTh}: <span className="text-amber-400 font-mono">{effectiveScore}%</span>
                 </h2>
                 <p className="text-slate-300 text-xs mt-0.5">
-                  ยิ่งทำแบบฝึกหัดวิทย์ได้คะแนนสูง ห้องแล็บขั้นสูงจะเปิดให้ทดลองเพิ่มขึ้นเรื่อยๆ
+                  ยิ่งทำแบบฝึกหัด{activeSubjectInfo.nameTh}ได้คะแนนสูง ห้องแล็บขั้นสูงจะเปิดให้ทดลองเพิ่มขึ้นเรื่อยๆ
                 </p>
               </div>
             </div>
@@ -481,10 +520,10 @@ export default function VirtualLabPage() {
             </div>
           </div>
 
-          {/* 7-Tier Unlock Progress Bar */}
+          {/* Tier Unlock Progress Bar (filtered by active subject) */}
           <div className="mt-6 pt-5 border-t border-white/10 relative z-10">
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-              {LAB_TIERS.map(tier => {
+              {visibleTiers.map(tier => {
                 const isUnlocked = effectiveScore >= tier.minScore
                 return (
                   <div 
