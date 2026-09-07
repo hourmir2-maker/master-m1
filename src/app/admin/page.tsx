@@ -25,6 +25,7 @@ import {
 import { LESSONS_DATA } from '@/lib/lessons-data'
 import { MEMORY_SONGS_DATA } from '@/lib/memory-songs-data'
 import { SAMPLE_CLASSROOMS, SAMPLE_SCHOOL } from '@/lib/school-portal-data'
+import PromotionStudioAdminTab from '@/components/admin/PromotionStudioAdminTab'
 import { 
   ShieldCheck, 
   Lock, 
@@ -71,8 +72,8 @@ export default function AdminPage() {
   const [passwordError, setPasswordError] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   
-  // Navigation Tabs: overview | telemetry | students | cms | media | school_mgr | broadcast | monetization | backup
-  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'students' | 'cms' | 'media' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
+  // Navigation Tabs: overview | telemetry | students | cms | media | promotion_studio | school_mgr | broadcast | monetization | backup
+  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'students' | 'cms' | 'media' | 'promotion_studio' | 'school_mgr' | 'broadcast' | 'monetization' | 'backup'>('overview')
 
   // Settings State
   const [settings, setSettings] = useState<AdminSettings>(getAdminSettings())
@@ -604,6 +605,7 @@ export default function AdminPage() {
             { id: 'students', label: '👥 ผู้เรียนรายคน', icon: Users },
             { id: 'cms', label: '📝 คลังข้อสอบ 560 ข้อ', icon: BookOpen },
             { id: 'media', label: '🎬 วิดีโอ YouTube & เพลง AI', icon: Video },
+            { id: 'promotion_studio', label: '🚀 ทีมโปรโมท & สตูดิโอ AI', icon: Sparkles },
             { id: 'school_mgr', label: '🏫 จัดการระบบโรงเรียน', icon: School },
             { id: 'broadcast', label: '📢 บรอดแคสต์ Telegram', icon: Megaphone },
             { id: 'monetization', label: '💰 โฆษณา AdSense', icon: DollarSign },
@@ -1635,6 +1637,13 @@ export default function AdminPage() {
             </div>
           )
         })()}
+
+        {/* =========================================================================
+            TAB: PROMOTION & EDUTAINMENT STUDIO HUB
+            ========================================================================= */}
+        {activeTab === 'promotion_studio' && (
+          <PromotionStudioAdminTab onTriggerToast={triggerToast} />
+        )}
 
         {/* =========================================================================
             TAB 4: MULTI-SCHOOL & ENTERPRISE MANAGEMENT
