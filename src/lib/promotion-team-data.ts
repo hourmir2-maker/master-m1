@@ -182,7 +182,9 @@ export const OPERATIONAL_PHASES: OperationalPhase[] = [
 ]
 
 export const CURRICULUM_PIPELINE_ITEMS: ContentPipelineItem[] = [
-  // 🔢 MATHEMATICS
+  // =========================================================================
+  // 🔢 1. MATHEMATICS (คณิตศาสตร์ - 4 คอนเทนต์ไฮไลต์)
+  // =========================================================================
   {
     id: 'pipe-math-01',
     subject: 'math',
@@ -247,8 +249,31 @@ export const CURRICULUM_PIPELINE_ITEMS: ContentPipelineItem[] = [
     seedanceVideoPrompt: 'Cute 3D red electric car zooming through a scenic mountain highway with floating speedometers and clock timers, Pixar style stylized scenery, golden hour lighting.',
     shorts9x16Script: '⚡ [Hook 0-3s]: ขับรถไป 60 ขากลับ 40 ทำไมความเร็วเฉลี่ยไม่ใช่ 50?\n💡 [Body 3-20s]: เพราะเวลาขาไปกับขากลับไม่เท่ากัน! ข้อนี้ต้องใช้สูตรลัดฮาร์มอนิก 2 คูณ v1 คูณ v2 หารด้วยผลบวก!\n📌 [Rule 20-25s]: 2 × 60 × 40 = 4800 หารด้วย 100 ตอบ 48 กม./ชม. เป๊ะปัง!\n🚀 [CTA 25-30s]: ตะลุยโจทย์หลอก สทศ. 560 ข้อ ฟรีที่ master-m1.vercel.app'
   },
+  {
+    id: 'pipe-math-04',
+    subject: 'math',
+    subjectLabel: 'คณิตศาสตร์',
+    badgeColor: 'bg-blue-600 text-white',
+    title: 'การเพิ่ม-ลดร้อยละไม่สมมาตร (Net Multiplier Formula)',
+    moduleKey: 'percentages',
+    trapCardId: 'math-percent-change',
+    hook3Sec: 'ลดราคา 20% แล้ววันถัดมาขึ้นราคา 20% กลับมาเท่าเดิมไหม? ทายดู!',
+    coreTechnique: 'ฐานร้อยละเปลี่ยนไป ➔ ตัวคูณสุทธิ: 0.80 × 1.20 = 0.96 (ลดลง 4% เสมอ)',
+    status: 'script_draft',
+    statusLabel: 'สตอรี่บอร์ดเสร็จ 📝',
+    statusColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    targetBpm: 118,
+    genre: 'Funky Groovy Pop',
+    viewsCount: 'เตรียมคิว',
+    retentionRate: 'คาดการณ์ 107%',
+    lyriaMusicPrompt: 'Funky Thai groove pop, 118 BPM, walking bass line, playful brass stabs, humorous Thai vocals explaining percentage traps in daily shopping.',
+    seedanceVideoPrompt: 'Cute 3D animated mall storefront with floating discount tags -20% and +20% spinning around a price calculator, Pixar aesthetic, bright cheerful lighting.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: เสื้อลด 20% แล้วขึ้น 20% ราคาเท่าเดิมจริงเหรอ? 95% ทายผิด!\n💡 [Body 3-20s]: ไม่เท่าเดิมเด็ดขาด! เพราะฐานเปลี่ยน ตอนลด 20% เหลือ 0.80 พอบวก 20% จากฐานใหม่ เอา 0.80 × 1.20 = 0.96 ขาดทุน 4% เสมอ!\n📌 [Rule 20-25s]: Net Multiplier = (1 - 0.2) × (1 + 0.2) = 0.96!\n🚀 [CTA 25-30s]: เตรียมสอบเข้า ม.1 ห้องเรียนพิเศษ เข้าเลยที่ MASTER ม.1'
+  },
 
-  // 🔬 SCIENCE
+  // =========================================================================
+  // 🔬 2. SCIENCE (วิทยาศาสตร์ - 4 คอนเทนต์ไฮไลต์)
+  // =========================================================================
   {
     id: 'pipe-sci-01',
     subject: 'science',
@@ -292,8 +317,52 @@ export const CURRICULUM_PIPELINE_ITEMS: ContentPipelineItem[] = [
     seedanceVideoPrompt: 'Glowing 3D animated circuit board with bright yellow energy pulses flowing through wires and light bulbs, split screen comparing series vs parallel loops, high-tech aesthetic.',
     shorts9x16Script: '⚡ [Hook 0-3s]: ไฟบ้านเราต่อแบบอนุกรมหรือขนาน? ถ้าต่อผิดไฟดับทั้งบ้านนะ!\n💡 [Body 3-20s]: อนุกรมคือกอดคอเดินแถวเดี่ยว หลอดหนึ่งขาด วงจรเปิด ดับทั้งบ้าน! แต่ไฟบ้านต่อแบบ "ขนาน" แยกทางใครทางมัน หลอดขาดดวงอื่นยังสว่างจ้า!\n📌 [Rule 20-25s]: อนุกรม I เท่ากัน, ขนาน V เท่ากัน!\n🚀 [CTA 25-30s]: ทดลองต่อวงจรใน Virtual Physics Lab ฟรีที่ MASTER ม.1!'
   },
+  {
+    id: 'pipe-sci-03',
+    subject: 'science',
+    subjectLabel: 'วิทยาศาสตร์',
+    badgeColor: 'bg-emerald-600 text-white',
+    title: 'เลือดดำ vs เลือดแดง ข้อยกเว้นหลอดเลือดปอดที่ สทศ. ชอบหลอก',
+    moduleKey: 'human_body',
+    trapCardId: 'sci-circulatory-system',
+    hook3Sec: 'เส้นเลือด Artery มีแต่เลือดแดงจริงเหรอ? กาแบบนี้ตกม้าตายมานับหมื่น!',
+    coreTechnique: 'Pulmonary Artery นำเลือดดำไปฟอกที่ปอด | Pulmonary Vein นำเลือดแดงกลับเข้าหัวใจ',
+    status: 'in_production',
+    statusLabel: 'กำลังผลิต 🎵',
+    statusColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    targetBpm: 114,
+    genre: 'Cinematic Pop',
+    viewsCount: 'กำลังแต่งเพลง',
+    retentionRate: 'คาดการณ์ 106%',
+    lyriaMusicPrompt: 'Cinematic emotional Thai pop, 114 BPM, gentle strings with modern pulse beat, crystal clear Thai narration on the circulatory system and pulmonary exception.',
+    seedanceVideoPrompt: 'A stylized glowing 3D human heart with blue deoxygenated blood and red oxygenated blood flowing through pulsating transparent vessels into lungs, medical Pixar style.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: Artery นำเลือดแดง Vein นำเลือดดำ... ท่องแบบนี้โดน สทศ. หลอก 0 คะแนน!\n💡 [Body 3-20s]: เพราะมีข้อยกเว้นระดับโลก! หลอดเลือด Pulmonary Artery ออกจากหัวใจห้องล่างขวา เป็น "เลือดดำ" ไปฟอกที่ปอด และ Pulmonary Vein นำ "เลือดแดง" เข้าหัวใจ!\n📌 [Rule 20-25s]: คำว่า Pulmonary เมื่อไหร่ สีเลือดจะกลับด้านทันที!\n🚀 [CTA 25-30s]: ติวระบบร่างกายมนุษย์ ม.1 ละเอียดยิบที่ MASTER ม.1'
+  },
+  {
+    id: 'pipe-sci-04',
+    subject: 'science',
+    subjectLabel: 'วิทยาศาสตร์',
+    badgeColor: 'bg-emerald-600 text-white',
+    title: 'การหายใจของพืช 24 ชั่วโมง ความเข้าใจผิดยอดฮิต O-NET',
+    moduleKey: 'plant_biology',
+    trapCardId: 'sci-plant-respiration',
+    hook3Sec: 'พืชหายใจเฉพาะตอนกลางคืนจริงเหรอ? วิทย์ ม.1 เฉลยความจริงสุดช็อก!',
+    coreTechnique: 'พืชหายใจ (ใช้ออกซิเจน) ตลอด 24 ชม. | การสังเคราะห์ด้วยแสงเกิดเฉพาะเมื่อมีแสง',
+    status: 'script_draft',
+    statusLabel: 'สตอรี่บอร์ดเสร็จ 📝',
+    statusColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    targetBpm: 112,
+    genre: 'Acoustic Nature Pop',
+    viewsCount: 'เตรียมคิว',
+    retentionRate: 'คาดการณ์ 104%',
+    lyriaMusicPrompt: 'Gentle acoustic Thai nature pop, 112 BPM, acoustic guitar and rain drop effects, sweet melodic vocals explaining plant cellular respiration and photosynthesis.',
+    seedanceVideoPrompt: 'Cute 3D animated green plant leaf under day and night sky transition, showing glowing O2 entering at night and CO2 exchanging under sunlight, Disney-Pixar nature style.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: พืชสังเคราะห์แสงตอนกลางวัน หายใจตอนกลางคืน... คิดแบบนี้ผิดมหันต์!\n💡 [Body 3-20s]: สิ่งมีชีวิตทุกชนิดต้องหายใจตลอด 24 ชั่วโมง! พืชก็หายใจเอา O2 เข้าไปสร้างพลังงานทั้งวันทั้งคืน แต่กลางวันพืชสร้าง O2 จากการสังเคราะห์แสงมากกว่าที่ใช้ จึงปล่อย O2 ส่วนเกินออกมา!\n📌 [Rule 20-25s]: กลดแสงพืชหยุด แต่การหายใจไม่มีวันหยุด!\n🚀 [CTA 25-30s]: ติววิทย์ สสวท. ให้เห็นภาพจริงที่ master-m1.vercel.app'
+  },
 
-  // 🇬🇧 ENGLISH
+  // =========================================================================
+  // 🇬🇧 3. ENGLISH (ภาษาอังกฤษ - 4 คอนเทนต์ไฮไลต์)
+  // =========================================================================
   {
     id: 'pipe-eng-01',
     subject: 'english',
@@ -337,8 +406,52 @@ export const CURRICULUM_PIPELINE_ITEMS: ContentPipelineItem[] = [
     seedanceVideoPrompt: 'Cute 3D animated detective magnifying glass highlighting subject nouns in floating glowing English sentences, crossing out prepositional brackets with cartoon pencil.',
     shorts9x16Script: '⚡ [Hook 0-3s]: The box of chocolates (is/are) sweet? ข้อนี้เด็ก ม.1 กาผิดเกินครึ่ง!\n💡 [Body 3-20s]: เทคนิคลับ 3 วินาที ให้ตัดคำว่า "of chocolates" ทิ้งไปเลย! เพราะมันเป็นแค่ส่วนขยาย ประธานตัวจริงคือ "The box" กล่องเดียวเอกพจน์ จึงต้องใช้ "is" เท่านั้น!\n📌 [Rule 20-25s]: เจอ Preposition ขีดฆ่าทิ้ง หาประธานแท้ตัวหน้าสุด!\n🚀 [CTA 25-30s]: ฝึกคลังคำศัพท์ Oxford 3000 คำและแกรมม่าร์ที่ MASTER ม.1!'
   },
+  {
+    id: 'pipe-eng-03',
+    subject: 'english',
+    subjectLabel: 'ภาษาอังกฤษ',
+    badgeColor: 'bg-indigo-600 text-white',
+    title: 'Past Simple vs Present Perfect ดู Time Marker ชนะขาด',
+    moduleKey: 'grammar_tenses',
+    trapCardId: 'eng-past-vs-perfect',
+    hook3Sec: 'I have seen him yesterday... ฝรั่งฟังแล้วสะดุ้ง! ผิดตรงไหนรู้ไหม?',
+    coreTechnique: 'มีจุดเวลาอดีต (yesterday, ago, last year) ใช้ V.2 ห้ามใช้ have + V.3 เด็ดขาด!',
+    status: 'in_production',
+    statusLabel: 'กำลังผลิต 🎵',
+    statusColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    targetBpm: 120,
+    genre: 'Indie Dance Pop',
+    viewsCount: 'กำลังแต่งเพลง',
+    retentionRate: 'คาดการณ์ 108%',
+    lyriaMusicPrompt: 'Upbeat indie dance pop in Thai-English, 120 BPM, groovy synth bass, vibrant guitar licks, sharp rhythmic contrast between past tense and present perfect.',
+    seedanceVideoPrompt: 'A glowing 3D timeline clock ticking backwards with glowing signposts: "Yesterday = V.2" and "Since/For = Has/Have + V.3", retro-futuristic style.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: I have seen him yesterday... ประโยคนี้ผิดไวยากรณ์ระดับชาติ!\n💡 [Body 3-20s]: จำกฎเหล็กข้อสอบ O-NET: ถ้าเห็นคำบอกเวลาอดีตชัดเจน เช่น yesterday, last night, 2 days ago ต้องใช้ Past Simple (V.2) เท่านั้น! ห้ามมี have/has เด็ดขาด! พูดว่า "I saw him yesterday" ถึงจะถูกเป๊ะ!\n📌 [Rule 20-25s]: มีเวลาในอดีตชัดเจน กา V.2 ได้คะแนนเต็ม!\n🚀 [CTA 25-30s]: อัปเลเวลภาษาอังกฤษ ม.1 ที่ master-m1.vercel.app'
+  },
+  {
+    id: 'pipe-eng-04',
+    subject: 'english',
+    subjectLabel: 'ภาษาอังกฤษ',
+    badgeColor: 'bg-indigo-600 text-white',
+    title: 'Neither... nor ยึดประธานตัวใกล้ (Proximity Rule)',
+    moduleKey: 'reading_vocab',
+    trapCardId: 'eng-neither-nor-rule',
+    hook3Sec: 'Neither the teacher nor the students (was/were) ready? กาอะไรดี?',
+    coreTechnique: 'Either... or / Neither... nor ➔ ผันกริยาตามประธานตัวที่อยู่ "ติดกริยาที่สุด"',
+    status: 'script_draft',
+    statusLabel: 'สตอรี่บอร์ดเสร็จ 📝',
+    statusColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    targetBpm: 116,
+    genre: 'Acoustic Folk Pop',
+    viewsCount: 'เตรียมคิว',
+    retentionRate: 'คาดการณ์ 105%',
+    lyriaMusicPrompt: 'Catchy acoustic folk pop in Thai, 116 BPM, rhythmic stomps and claps, playful dual-voice conversation about Neither...nor agreement rules.',
+    seedanceVideoPrompt: 'Cute 3D classroom scene where an arrow points from students directly to a glowing whiteboard verb box, emphasizing proximity, vibrant Pixar animation.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: Neither my brother nor my parents (is/are) coming? ตอบผิดสอบตกนะ!\n💡 [Body 3-20s]: จำเทคนิค 3 วินาที "คนข้างๆ สำคัญสุด!" เมื่อเจอ Neither... nor หรือ Either... or ให้ตัดประธานตัวหน้าทิ้ง แล้วดูกริยาผันตามประธานตัวที่อยู่ใกล้กริยาที่สุด! parents เติม s พหูพจน์ จึงตอบ "are" ทันที!\n📌 [Rule 20-25s]: Proximity Rule ยึดตัวใกล้กริยาที่สุด!\n🚀 [CTA 25-30s]: รวมข้อสอบอังกฤษสอบเข้า ม.1 ห้องเรียนพิเศษ ฟรีที่ MASTER ม.1!'
+  },
 
-  // 🇹🇭 THAI
+  // =========================================================================
+  // 🇹🇭 4. THAI (ภาษาไทย - 4 คอนเทนต์ไฮไลต์)
+  // =========================================================================
   {
     id: 'pipe-thai-01',
     subject: 'thai',
@@ -381,5 +494,47 @@ export const CURRICULUM_PIPELINE_ITEMS: ContentPipelineItem[] = [
     lyriaMusicPrompt: 'Warm acoustic guitar with gentle Thai pop vocal storytelling, 112 BPM, relaxed tempo, crystal clear Thai enunciation for reading comprehension techniques.',
     seedanceVideoPrompt: 'A 3D storybook opening with holographic Thai text paragraphs, glowing golden laser cutting out parenthetical phrases and examples, leaving the shining main sentence highlighted.',
     shorts9x16Script: '⚡ [Hook 0-3s]: ข้อสอบอ่านจับใจความ ให้บทความยาว 10 บรรทัด จะอ่านยังไงให้ทันเวลา?\n💡 [Body 3-20s]: เทคนิคลับ สทศ. กวาดสายตาตัดข้อความหลังคำว่า "เช่น", "ได้แก่", "อาทิเช่น" ทิ้งไปเลย! เพราะนั่นคือ "พลความ" หรือตัวอย่างขยายความ ใจความหลักจะอยู่ต้นหรือท้ายย่อหน้าเสมอ!\n📌 [Rule 20-25s]: ตัดตัวอย่างทิ้ง เหลือเฉพาะประโยคใจความสำคัญ ตอบได้ใน 5 วิ!\n🚀 [CTA 25-30s]: เตรียมสอบเข้า ม.1 ห้องเรียนพิเศษ ครบทุกวิชาที่ MASTER ม.1!'
+  },
+  {
+    id: 'pipe-thai-03',
+    subject: 'thai',
+    subjectLabel: 'ภาษาไทย',
+    badgeColor: 'bg-amber-700 text-white',
+    title: 'คำราชาศัพท์และการใช้ "ทรง" ห้ามใช้กับคำแบบไหน?',
+    moduleKey: 'thai_vocab',
+    trapCardId: 'thai-royal-words-rule',
+    hook3Sec: 'ทรงเสวย ทรงโปรด... พูดแบบนี้ผิดหลักภาษาไทยร้ายแรง!',
+    coreTechnique: '"ทรง" นำหน้ากริยาสามัญเท่านั้น (ทรงวิ่ง, ทรงม้า) ห้ามนำหน้ากริยาราชาศัพท์ในตัวเด็ดขาด',
+    status: 'in_production',
+    statusLabel: 'กำลังผลิต 🎵',
+    statusColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    targetBpm: 114,
+    genre: 'Thai Traditional Contemporary',
+    viewsCount: 'กำลังแต่งเพลง',
+    retentionRate: 'คาดการณ์ 106%',
+    lyriaMusicPrompt: 'Contemporary classical Thai fusion, 114 BPM, gentle Saw-U fiddle and acoustic piano, clear instructional singing on royal Thai vocabulary rules.',
+    seedanceVideoPrompt: 'A golden ancient Thai palace classroom with floating glowing Thai calligraphy, highlighting red cross on "ทรงเสวย" and green checkmark on "เสวย", Pixar aesthetic.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: ทรงเสวย หรือ เสวย? 80% ของคนไทยใช้คำว่า "ทรง" ผิดทุกวัน!\n💡 [Body 3-20s]: จำกฎเหล็ก สพฐ.: คำว่า "ทรง" นำหน้ากริยาสามัญเพื่อแปลงเป็นราชาศัพท์ เช่น ทรงวิ่ง, ทรงม้า แต่ถ้าคำนั้นเป็นกริยาราชาศัพท์ในตัวอยู่แล้ว เช่น เสวย, โปรด, กริ้ว ห้ามใส่ทรงเด็ดขาด!\n📌 [Rule 20-25s]: กริยาราชาศัพท์แท้ ห้ามมี "ทรง" ซ้ำซ้อน!\n🚀 [CTA 25-30s]: ตะลุยโจทย์ราชาศัพท์ O-NET 2570 ครบชุดที่ MASTER ม.1'
+  },
+  {
+    id: 'pipe-thai-04',
+    subject: 'thai',
+    subjectLabel: 'ภาษาไทย',
+    badgeColor: 'bg-amber-700 text-white',
+    title: 'โวหารภาพพจน์ อุปมา vs อุปลักษณ์ vs บุคลาธิษฐาน',
+    moduleKey: 'thai_literature',
+    trapCardId: 'thai-figures-of-speech',
+    hook3Sec: 'ครูคือเรือจ้าง... อุปมา หรือ อุปลักษณ์? กาผิดกันทั้งห้องสอบ!',
+    coreTechnique: 'อุปมา = ดุจ/เหมือน/ประดุจ | อุปลักษณ์ = เป็น/คือ | บุคลาธิษฐาน = ธรรมชาติมีกิริยาแบบมนุษย์',
+    status: 'script_draft',
+    statusLabel: 'สตอรี่บอร์ดเสร็จ 📝',
+    statusColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    targetBpm: 110,
+    genre: 'Melodic Ballad Pop',
+    viewsCount: 'เตรียมคิว',
+    retentionRate: 'คาดการณ์ 107%',
+    lyriaMusicPrompt: 'Gentle poetic Thai ballad pop, 110 BPM, soft piano and acoustic cello, expressive female Thai singing on poetic figures of speech.',
+    seedanceVideoPrompt: 'Cute 3D animated boat rowed under a golden moonlight river, transforming metaphorically into a classroom teacher guiding students, emotional Disney-Pixar style.',
+    shorts9x16Script: '⚡ [Hook 0-3s]: ครูคือเรือจ้าง เป็น "อุปมา" หรือ "อุปลักษณ์"? ออกสอบทุกสถาบัน!\n💡 [Body 3-20s]: ทริกลัด 3 วินาที: อุปมาเปรียบเหมือน ต้องมีคำว่า "ดุจ, เหมือน, คล้าย, ราวกับ" ส่วนอุปลักษณ์เปรียบเป็น ต้องมีคำว่า "เป็น, คือ" เปรียบเทียบสิ่งหนึ่งเป็นอีกสิ่งหนึ่งโดยตรง ดังนั้น "ครูคือเรือจ้าง" เป็น อุปลักษณ์ แน่นอน!\n📌 [Rule 20-25s]: อุปมา = เหมือน | อุปลักษณ์ = เป็น/คือ | บุคลาธิษฐาน = ลมหายใจมีชีวิต!\n🚀 [CTA 25-30s]: ติววรรณคดีและโวหารภาพพจน์ ม.1 ฟรีที่ master-m1.vercel.app'
   }
 ]

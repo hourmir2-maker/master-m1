@@ -1,16 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   PROMOTION_TEAM_MEMBERS, 
   OPERATIONAL_PHASES, 
   CURRICULUM_PIPELINE_ITEMS,
-  ContentPipelineItem,
-  PromotionTeamMember 
+  ContentPipelineItem 
 } from '@/lib/promotion-team-data'
+import { SAMPLE_TRAP_CARDS } from '@/lib/master-grow'
 import { 
   Sparkles, 
   Video, 
@@ -21,15 +21,14 @@ import {
   Zap, 
   Share2, 
   Send, 
-  ExternalLink, 
   Play, 
-  Layers, 
   Users, 
   Calendar, 
-  Clock, 
   TrendingUp,
   Cpu,
-  Tv
+  Download,
+  Flame,
+  AlertCircle
 } from 'lucide-react'
 
 interface PromotionStudioAdminTabProps {
@@ -41,17 +40,85 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
   const [selectedSubject, setSelectedSubject] = useState<'all' | 'math' | 'science' | 'english' | 'thai'>('all')
   const [expandedItemId, setExpandedItemId] = useState<string | null>('pipe-math-01')
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [isBroadcasting, setIsBroadcasting] = useState<string | null>(null)
+
+  // Interactive Generator State in View 4
+  const [generatorTrapId, setGeneratorTrapId] = useState<string>('math-fraction-add')
 
   const handleCopy = (text: string, key: string, label: string) => {
     navigator.clipboard.writeText(text)
     setCopiedKey(key)
-    onTriggerToast(`คัดลอก ${label} เรียบร้อยแล้ว! พร้อมนำไปวางใน AiPASS`)
+    onTriggerToast(`คัดลอก ${label} เรียบร้อยแล้ว! พร้อมนำไปใช้งานใน AiPASS`)
     setTimeout(() => setCopiedKey(null), 2500)
+  }
+
+  const handleBroadcastToTelegram = async (item: ContentPipelineItem) => {
+    setIsBroadcasting(item.id)
+    try {
+      const res = await fetch('/api/admin/studio/broadcast-clip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: item.title,
+          subjectLabel: item.subjectLabel,
+          hook3Sec: item.hook3Sec,
+          coreTechnique: item.coreTechnique,
+          youtubeUrl: item.youtubeUrl,
+          genre: item.genre,
+          targetBpm: item.targetBpm
+        })
+      })
+
+      if (res.ok) {
+        onTriggerToast(`🚀 ส่งคลิป "${item.title}" เข้า Telegram สำเร็จแล้ว!`)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        onTriggerToast(`⚠️ แจ้งเตือน: ${data.error || 'ส่งไม่สำเร็จ'}`)
+      }
+    } catch (e: any) {
+      onTriggerToast(`⚠️ เกิดข้อผิดพลาดในการส่ง: ${e.message}`)
+    } finally {
+      setIsBroadcasting(null)
+    }
+  }
+
+  const handleExportAllPrompts = () => {
+    const content = CURRICULUM_PIPELINE_ITEMS.map((item, idx) => {
+      return `================================================================================
+[${idx + 1}] ${item.subjectLabel.toUpperCase()} • ${item.title}
+สถานะ: ${item.statusLabel} | จังหวะ: ${item.targetBpm} BPM | แนว: ${item.genre}
+--------------------------------------------------------------------------------
+⚡ HOOK 3 วินาทีแรก:
+${item.hook3Sec}
+
+💡 เทคนิคสูตรลัด / จุดลวง สทศ.:
+${item.coreTechnique}
+
+📱 สคริปต์คลิปสั้น 9:16 (Shorts & Reels 30 วิ):
+${item.shorts9x16Script}
+
+🎵 LYRIA 3 PRO MUSIC PROMPT (AiPASS):
+${item.lyriaMusicPrompt}
+
+🎬 SEEDANCE 2.0 MINI 3D VIDEO PROMPT (AiPASS):
+${item.seedanceVideoPrompt}
+`
+    }).join('\n\n')
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `master-m1-studio-pipeline-prompts-${new Date().toISOString().slice(0, 10)}.txt`
+    a.click()
+    onTriggerToast('📥 ดาวน์โหลดแพ็กเกจสคริปต์และ Prompts ทั้ง 16 คลิปเรียบร้อยแล้ว!')
   }
 
   const filteredPipeline = selectedSubject === 'all' 
     ? CURRICULUM_PIPELINE_ITEMS 
     : CURRICULUM_PIPELINE_ITEMS.filter(item => item.subject === selectedSubject)
+
+  const selectedTrap = SAMPLE_TRAP_CARDS.find(t => t.id === generatorTrapId) || SAMPLE_TRAP_CARDS[0]
 
   return (
     <div className="space-y-6 animate-fade-in text-slate-100">
@@ -66,9 +133,16 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
               AiPASS Multi-Model Engine (10,000 Token-Free Credits/Day)
             </Badge>
           </div>
-          <span className="text-xs text-purple-200 font-mono">
-            สพฐ. 2551 (60) • 4 วิชา • 32 โมดูล • 24 Trap Cards
-          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleExportAllPrompts}
+              size="sm"
+              variant="outline"
+              className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-xs font-bold"
+            >
+              <Download className="w-3.5 h-3.5 mr-1" /> Export แผนงาน & Prompts ทั้งหมด (.txt)
+            </Button>
+          </div>
         </div>
 
         <div>
@@ -83,10 +157,10 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
         {/* Sub-Navigation Pills */}
         <div className="flex flex-wrap gap-2 pt-2 border-t border-purple-800/60">
           {[
-            { id: 'pipeline', label: '🚀 คลังคอนเทนต์ & คิวผลิตคลิป (4 วิชา)', icon: Video },
+            { id: 'pipeline', label: '🚀 คลังคอนเทนต์ & คิวผลิตคลิป 16 รายการ', icon: Video },
             { id: 'roster', label: '👥 โครงสร้าง 5 เสาหลักทีมงาน AI', icon: Users },
             { id: 'workflow', label: '📋 แผนงาน SOP 5 ขั้นตอน (From Trap to Reel)', icon: Calendar },
-            { id: 'prompts', label: '⚡ ห้องทดลอง Prompt เพลง & วิดีโอ 3D', icon: Cpu },
+            { id: 'prompts', label: '⚡ Interactive AI Prompt Generator', icon: Cpu },
           ].map((tab) => {
             const Icon = tab.icon
             const isActive = subView === tab.id
@@ -109,7 +183,7 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
       </div>
 
       {/* =========================================================================
-          VIEW 1: CONTENT PIPELINE (4 SUBJECTS)
+          VIEW 1: CONTENT PIPELINE (16 CURRICULUM ITEMS ACROSS 4 SUBJECTS)
           ========================================================================= */}
       {subView === 'pipeline' && (
         <div className="space-y-4">
@@ -117,11 +191,11 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
             <div className="flex flex-wrap gap-1.5">
               {[
-                { id: 'all', label: 'ทุกวิชา (8 โปรเจกต์)', icon: '🌟' },
-                { id: 'math', label: 'คณิตศาสตร์ (3)', icon: '📐' },
-                { id: 'science', label: 'วิทยาศาสตร์ (2)', icon: '🔬' },
-                { id: 'english', label: 'ภาษาอังกฤษ (2)', icon: '🇬🇧' },
-                { id: 'thai', label: 'ภาษาไทย (2)', icon: '🇹🇭' },
+                { id: 'all', label: 'ทุกวิชา (16 คอนเทนต์)', icon: '🌟' },
+                { id: 'math', label: 'คณิตศาสตร์ (4)', icon: '📐' },
+                { id: 'science', label: 'วิทยาศาสตร์ (4)', icon: '🔬' },
+                { id: 'english', label: 'ภาษาอังกฤษ (4)', icon: '🇬🇧' },
+                { id: 'thai', label: 'ภาษาไทย (4)', icon: '🇹🇭' },
               ].map((sub) => (
                 <button
                   key={sub.id}
@@ -152,6 +226,7 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
           <div className="grid grid-cols-1 gap-4">
             {filteredPipeline.map((item) => {
               const isExpanded = expandedItemId === item.id
+              const isCurrentlyBroadcasting = isBroadcasting === item.id
               return (
                 <Card 
                   key={item.id} 
@@ -307,10 +382,11 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
 
                           <Button
                             size="sm"
-                            onClick={() => onTriggerToast(`ส่งคลิปความรู้และสูตรลัด "${item.title}" เข้า Telegram ผู้ปกครองและกลุ่มนักเรียนแล้ว!`)}
+                            disabled={isCurrentlyBroadcasting}
+                            onClick={() => handleBroadcastToTelegram(item)}
                             className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold"
                           >
-                            <Send className="w-3 h-3 mr-1" /> บรอดแคสต์เข้า Telegram
+                            <Send className="w-3 h-3 mr-1" /> {isCurrentlyBroadcasting ? 'กำลังส่ง...' : 'บรอดแคสต์เข้า Telegram'}
                           </Button>
                         </div>
                       </div>
@@ -469,21 +545,70 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
       )}
 
       {/* =========================================================================
-          VIEW 4: INTERACTIVE PROMPT LAB
+          VIEW 4: INTERACTIVE AI PROMPT GENERATOR (24 O-NET TRAP CARDS ON DEMAND)
           ========================================================================= */}
       {subView === 'prompts' && (
         <div className="space-y-4">
           <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-amber-400" /> ห้องทดลอง Prompt เพลง & วิดีโอ 3D สำหรับ AiPASS
+              <Cpu className="w-4 h-4 text-amber-400" /> เครื่องกำเนิด Prompt สื่อ AI อัตโนมัติ (On-Demand Studio Generator)
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              คัดลอก Prompt สำเร็จรูปที่ผ่านการจูนสไตล์และโครงสร้างดนตรี เพื่อนำไปสร้างเพลงใน Lyria 3 Pro หรือวิดีโอ 3D ใน Seedance 2.0 ได้ทันที
+              เลือกหัวข้อจาก 24 การ์ดสกัดจุดลวง สทศ. เพื่อเจนสคริปต์ 9:16, Prompt เพลง Lyria 3 Pro และ Prompt วิดีโอ 3D Seedance 2.0 ได้ทันที
             </p>
           </div>
 
+          {/* Trap Card Selector */}
+          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2">
+            <label className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+              <Flame className="w-3.5 h-3.5 text-amber-400" /> เลือกจุดลวง สทศ. (24 O-NET Trap Cards) เพื่อสร้างชุดการผลิต:
+            </label>
+            <select
+              value={generatorTrapId}
+              onChange={(e) => setGeneratorTrapId(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white font-medium focus:outline-none focus:border-amber-400"
+            >
+              {SAMPLE_TRAP_CARDS.map((trap) => (
+                <option key={trap.id} value={trap.id}>
+                  [{trap.subject.toUpperCase()}] {trap.moduleTitle} — {trap.trapQuestion.slice(0, 45)}...
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dynamic Generated Prompts Result */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Lyria 3 Pro Card */}
+            {/* Generated 9:16 Script */}
+            <Card className="bg-slate-900/90 border-slate-800 rounded-2xl p-5 space-y-3 shadow-md md:col-span-2">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-amber-500 text-white text-xs">
+                    <Zap className="w-3 h-3 mr-1" /> สคริปต์ 9:16 สกัดจากจุดลวง: {selectedTrap.moduleTitle}
+                  </Badge>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleCopy(
+                    `⚡ [Hook 0-3s]: ${selectedTrap.trapQuestion}\n💡 [Body 3-20s]: ${selectedTrap.escapeMove3Sec}\n❌ [Red Flag 20-25s]: ${selectedTrap.redFlag}\n🚀 [CTA 25-30s]: ติวสอบเข้า ม.1 ห้องเรียนพิเศษ ครบ 4 วิชา ที่ master-m1.vercel.app`,
+                    'gen-script',
+                    'สคริปต์ 9:16'
+                  )}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl"
+                >
+                  {copiedKey === 'gen-script' ? <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-200" /> : <Copy className="w-3 h-3 mr-1" />}
+                  คัดลอกสคริปต์คลิปสั้น
+                </Button>
+              </div>
+
+              <pre className="text-xs text-slate-200 bg-slate-950 p-3.5 rounded-xl border border-slate-800 whitespace-pre-wrap font-sans leading-relaxed">
+{`⚡ [Hook 0-3 วินาที]: ${selectedTrap.trapQuestion}
+💡 [Body 3-20 วินาที]: ${selectedTrap.escapeMove3Sec}
+❌ [ระวังจุดลวง 20-25 วินาที]: ${selectedTrap.redFlag}
+${selectedTrap.exampleCodeOrFormula ? `📌 [สูตรจำ]: ${selectedTrap.exampleCodeOrFormula}\n` : ''}🚀 [CTA 25-30 วินาที]: ติวข้อสอบ ม.1 สพฐ. ฟรีทุกวิชาที่ https://master-m1.vercel.app`}
+              </pre>
+            </Card>
+
+            {/* Generated Lyria Music Prompt */}
             <Card className="bg-slate-900/90 border-slate-800 rounded-2xl p-5 space-y-4 shadow-md">
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2">
@@ -492,28 +617,30 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-sm">Lyria 3 Pro Music Prompt</h4>
-                    <span className="text-[10px] text-purple-300">สร้างเพลงเต็ม 3 นาที บน AiPASS</span>
+                    <span className="text-[10px] text-purple-300">เพลงจำสูตรลัด 120 BPM บน AiPASS</span>
                   </div>
                 </div>
                 <Badge className="bg-purple-600 text-white text-xs">Token-Free</Badge>
               </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-300">เทมเพลต Prompt เพลงสูตรลัด 4 วิชา:</span>
-                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-purple-200 leading-relaxed">
-                  "Upbeat energetic Thai educational synth-pop, 120 BPM, catchy rhythmic vocal cadence, bright synthesizers, punchy modern dance beat, enthusiastic Thai singing voice explaining [SUBJECT_SHORTCUT], crystal clear Thai enunciation, commercial grade master."
-                </div>
+              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-purple-200 leading-relaxed">
+                {`Upbeat energetic Thai educational synth-pop, 120 BPM, catchy rhythmic vocal cadence, bright synthesizers, punchy modern dance beat, enthusiastic Thai singing voice explaining "${selectedTrap.moduleTitle}" with shortcut technique: "${selectedTrap.escapeMove3Sec.slice(0, 70)}", commercial radio mix.`}
               </div>
 
               <Button
-                onClick={() => handleCopy("Upbeat energetic Thai educational synth-pop, 120 BPM, catchy rhythmic vocal cadence, bright synthesizers, punchy modern dance beat, enthusiastic Thai singing voice explaining speed math shortcuts, crystal clear Thai enunciation, commercial grade master.", 'master-lyria', 'Master Lyria Prompt')}
+                onClick={() => handleCopy(
+                  `Upbeat energetic Thai educational synth-pop, 120 BPM, catchy rhythmic vocal cadence, bright synthesizers, punchy modern dance beat, enthusiastic Thai singing voice explaining "${selectedTrap.moduleTitle}" with shortcut technique: "${selectedTrap.escapeMove3Sec.slice(0, 70)}", commercial radio mix.`,
+                  'gen-lyria',
+                  'Lyria Prompt'
+                )}
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl"
               >
-                <Copy className="w-3.5 h-3.5 mr-1" /> คัดลอก Master Prompt สำหรับ Lyria 3 Pro
+                {copiedKey === 'gen-lyria' ? <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-300" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
+                คัดลอก Prompt สำหรับ Lyria 3 Pro
               </Button>
             </Card>
 
-            {/* Seedance 2.0 Mini Card */}
+            {/* Generated Seedance 3D Video Prompt */}
             <Card className="bg-slate-900/90 border-slate-800 rounded-2xl p-5 space-y-4 shadow-md">
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2">
@@ -522,24 +649,26 @@ export default function PromotionStudioAdminTab({ onTriggerToast }: PromotionStu
                   </div>
                   <div>
                     <h4 className="font-bold text-white text-sm">Seedance 2.0 3D Video Prompt</h4>
-                    <span className="text-[10px] text-blue-300">สร้างคลิปแอนิเมชัน 3D บน AiPASS</span>
+                    <span className="text-[10px] text-blue-300">วิดีโอ 3D น้องฟอร์จูน บน AiPASS</span>
                   </div>
                 </div>
                 <Badge className="bg-blue-600 text-white text-xs">Token-Free</Badge>
               </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-300">เทมเพลต Prompt คลิป 3D น้องฟอร์จูน:</span>
-                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-blue-200 leading-relaxed">
-                  "Cute 3D animated Thai schoolboy solving glowing [SUBJECT_CONCEPT] equations in floating digital space, colorful neon formulas multiplying smoothly, Studio Ghibli meets Pixar futuristic high-tech classroom style, vibrant cinematic lighting, seamless 10-second loop, 4K."
-                </div>
+              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-blue-200 leading-relaxed">
+                {`Cute 3D animated Thai schoolboy solving glowing "${selectedTrap.moduleTitle}" concept in floating digital space, vibrant holographic equations resolving smoothly, Studio Ghibli meets Pixar futuristic high-tech classroom style, seamless 10-second loop, 4K resolution.`}
               </div>
 
               <Button
-                onClick={() => handleCopy("Cute 3D animated Thai schoolboy solving glowing math equations in floating digital space, colorful neon formulas multiplying smoothly, Studio Ghibli meets Pixar futuristic high-tech classroom style, vibrant cinematic lighting, seamless 10-second loop, 4K.", 'master-seedance', 'Master Seedance Prompt')}
+                onClick={() => handleCopy(
+                  `Cute 3D animated Thai schoolboy solving glowing "${selectedTrap.moduleTitle}" concept in floating digital space, vibrant holographic equations resolving smoothly, Studio Ghibli meets Pixar futuristic high-tech classroom style, seamless 10-second loop, 4K resolution.`,
+                  'gen-seedance',
+                  'Seedance Prompt'
+                )}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl"
               >
-                <Copy className="w-3.5 h-3.5 mr-1" /> คัดลอก Master Prompt สำหรับ Seedance 2.0
+                {copiedKey === 'gen-seedance' ? <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-300" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
+                คัดลอก Prompt สำหรับ Seedance 2.0
               </Button>
             </Card>
           </div>

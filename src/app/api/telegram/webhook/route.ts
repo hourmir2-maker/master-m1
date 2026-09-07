@@ -41,13 +41,16 @@ function buildParentKeyboard(studentName?: string) {
         { text: '📈 ประวัติคะแนน', callback_data: '/history' }
       ],
       [
+        { text: '🎬 คลิปสูตรลัด 3 วิ & เพลงจำ', callback_data: '/clips' },
+        { text: '🎯 O-NET 2570', callback_data: '/onet' }
+      ],
+      [
         { text: '🔢 คณิต', callback_data: '/math' },
         { text: '🔬 วิทย์', callback_data: '/science' },
         { text: '🗣️ อังกฤษ', callback_data: '/english' },
         { text: '🇹🇭 ไทย', callback_data: '/thai' }
       ],
       [
-        { text: '🎯 O-NET 2570', callback_data: '/onet' },
         { text: '🌐 หน้าเว็บ MASTER ม.1', url: 'https://master-m1.vercel.app' }
       ]
     ]
@@ -527,6 +530,57 @@ ${engPassed.map(p => `✅ ${LESSONS_DATA.english?.[p.module_id]?.title || p.modu
 💡 เทคนิค 3S: <b>Skim ➔ Scan ➔ Error</b> สแกนคำตอบได้ใน 30 วินาที
 🌐 เข้าเรียนอังกฤษได้ที่: https://master-m1.vercel.app/subjects/english`
       await sendReply(engMsg)
+      return NextResponse.json({ ok: true })
+    }
+
+    // Command: /clips หรือ /songs (คลังคลิปสั้นและเพลงจำสูตร 4 วิชา)
+    if (text.includes('/clip') || text.includes('/song') || text.includes('คลิป') || text.includes('เพลง')) {
+      const clipsMsg = `🎬 <b>คลังคลิปสั้นสูตรลัด 3 วิ & เพลงจำ 4 วิชาหลัก</b> 🎵
+━━━━━━━━━━━━━━━━━━━━
+👦 <b>สำหรับ:</b> ${studentName}
+
+สตูดิโอสื่อ AI โครงการ MASTER ม.1 รวบรวมคลิปสกัดจุดลวง สทศ. ที่เด็กมักโดนหลอกบ่อยที่สุด พร้อมวิธีแก้เกมใน 3 วินาที:
+
+📐 <b>คณิตศาสตร์:</b>
+1. ⚡ <b>เพลงสูตรลัด 3 วินาที</b> (ยกกำลังสองลงท้าย 5 & ใบไม้แรเงา 4/7 a²)
+   🔗 ดูคลิป: https://youtu.be/SLumB462LQU
+2. ⚡ <b>วนรอบหลักหน่วยเลขยกกำลัง mod 4</b> (7²⁵⁷⁰ ตอบลงท้าย 9 ใน 3 วิ)
+
+🔬 <b>วิทยาศาสตร์:</b>
+1. 🔥 <b>เพลงความร้อน Q = mcΔt & mL</b> (อุณหภูมิเปลี่ยน vs สถานะเปลี่ยน)
+   🔗 ดูคลิป: https://youtu.be/SLumB462LQU
+2. 💡 <b>วงจรไฟฟ้าอนุกรม vs ขนาน</b> (หลอดขาดดวงเดียวดับหมด vs ยังสว่าง)
+
+🇬🇧 <b>ภาษาอังกฤษ:</b>
+1. 🗣️ <b>เพลง If-Clause มัดใจ</b> (Type 2 สมมุติขัดจริงใช้ were ทุกตัว!)
+   🔗 ดูคลิป: https://youtu.be/SLumB462LQU
+2. 🎯 <b>Subject-Verb Agreement</b> (ตัดส่วนขยาย [of/with] หาประธานแท้)
+
+🇹🇭 <b>ภาษาไทย:</b>
+1. 📖 <b>เพลงคำสมาส-สนธิ</b> ("สมาสชน สนธิเชื่อม" จำง่ายนิดเดียว)
+   🔗 ดูคลิป: https://youtu.be/SLumB462LQU
+2. ✂️ <b>ตัดคำว่า 'เช่น/ได้แก่'</b> หาใจความสำคัญใน 5 วินาที
+━━━━━━━━━━━━━━━━━━━━
+💡 <i>ดูคลิปสั้นและฝึกทำโจทย์ดักทาง สทศ. ได้ที่เว็บไซต์:</i>
+🌐 https://master-m1.vercel.app/subjects/math`
+
+      await sendReply(clipsMsg, {
+        inline_keyboard: [
+          [
+            { text: '▶️ ดูคลิปบน YouTube', url: 'https://youtu.be/SLumB462LQU' },
+            { text: '🌐 ฝึกทำโจทย์บนเว็บ', url: 'https://master-m1.vercel.app' }
+          ],
+          [
+            { text: '🔢 คณิต', callback_data: '/math' },
+            { text: '🔬 วิทย์', callback_data: '/science' },
+            { text: '🗣️ อังกฤษ', callback_data: '/english' },
+            { text: '🇹🇭 ไทย', callback_data: '/thai' }
+          ],
+          [
+            { text: '🔙 กลับหน้าหลัก', callback_data: '/start' }
+          ]
+        ]
+      })
       return NextResponse.json({ ok: true })
     }
 
