@@ -106,6 +106,18 @@ export async function sendParentTelegramNotification({
 
   // If parentChatId is available, send directly
   if (parentChatId) {
+    const inlineKeyboard = {
+      inline_keyboard: [
+        [
+          { text: `📊 ดูรายงานสรุปของ ${studentName}`, callback_data: `/switch_${userId}` },
+          { text: '🔄 สลับนักเรียน', callback_data: '/switch' }
+        ],
+        [
+          { text: '🌐 เข้าหน้าเว็บ MASTER ม.1', url: 'https://master-m1.vercel.app' }
+        ]
+      ]
+    }
+
     try {
       const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
@@ -113,7 +125,8 @@ export async function sendParentTelegramNotification({
         body: JSON.stringify({
           chat_id: parentChatId,
           text: messageText,
-          parse_mode: 'HTML'
+          parse_mode: 'HTML',
+          reply_markup: inlineKeyboard
         })
       })
       const resData = await res.json()
@@ -123,7 +136,8 @@ export async function sendParentTelegramNotification({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: parentChatId,
-            text: messageText
+            text: messageText,
+            parse_mode: 'HTML'
           })
         })
       }

@@ -8,30 +8,50 @@ import { LESSONS_DATA } from '@/lib/lessons-data'
  * รองรับทั้ง Text Messages และ Inline Keyboard Callback Queries
  */
 
-// In-Memory Multi-Parent Map (ChatId -> StudentId) for fast resolution
-const PARENT_MAP: Record<string, string> = {
-  '7864027458': '4ec823eb-be30-4e1c-a709-a3382ee85491' // คุณพ่อของน้องภูมิรพีร์
+// Multi-Child Roster mapping: ChatId -> Array of StudentIds
+const PARENT_CHILDREN_MAP: Record<string, string[]> = {
+  '7864027458': ['4ec823eb-be30-4e1c-a709-a3382ee85491'] // คุณพ่อไพโรจน์ -> น้องฟอร์จูน
 }
 
-// Default Inline Keyboard for quick navigation
-const DEFAULT_INLINE_KEYBOARD = {
-  inline_keyboard: [
-    [
-      { text: '🧪 ผล Pre-Test', callback_data: '/pretest' },
-      { text: '📊 รายงานผล', callback_data: '/report' },
-      { text: '📈 ประวัติคะแนน', callback_data: '/history' }
-    ],
-    [
-      { text: '🔢 คณิต', callback_data: '/math' },
-      { text: '🔬 วิทย์', callback_data: '/science' },
-      { text: '🗣️ อังกฤษ', callback_data: '/english' },
-      { text: '🇹🇭 ไทย', callback_data: '/thai' }
-    ],
-    [
-      { text: '🎯 O-NET 2570', callback_data: '/onet' },
-      { text: '🌐 เข้าหน้าเว็บ MASTER ม.1', url: 'https://master-m1.vercel.app' }
+// Active Selected Child per ChatId
+const ACTIVE_CHILD_MAP: Record<string, string> = {
+  '7864027458': '4ec823eb-be30-4e1c-a709-a3382ee85491'
+}
+
+/**
+ * Dynamic Parent Inline Keyboard with Multi-Child Switcher at top
+ */
+function buildParentKeyboard(studentName?: string) {
+  const shortName = (studentName || 'นักเรียน')
+    .replace('ด.ช.', '')
+    .replace('ด.ญ.', '')
+    .trim()
+    .split(' ')[0]
+    .slice(0, 12)
+
+  return {
+    inline_keyboard: [
+      [
+        { text: `🔄 สลับนักเรียน (${shortName}) ▾`, callback_data: '/switch' },
+        { text: '➕ ผูกบัญชีเพิ่ม', callback_data: '/how_to_link' }
+      ],
+      [
+        { text: '🧪 ผล Pre-Test', callback_data: '/pretest' },
+        { text: '📊 รายงานผล', callback_data: '/report' },
+        { text: '📈 ประวัติคะแนน', callback_data: '/history' }
+      ],
+      [
+        { text: '🔢 คณิต', callback_data: '/math' },
+        { text: '🔬 วิทย์', callback_data: '/science' },
+        { text: '🗣️ อังกฤษ', callback_data: '/english' },
+        { text: '🇹🇭 ไทย', callback_data: '/thai' }
+      ],
+      [
+        { text: '🎯 O-NET 2570', callback_data: '/onet' },
+        { text: '🌐 หน้าเว็บ MASTER ม.1', url: 'https://master-m1.vercel.app' }
+      ]
     ]
-  ]
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -70,27 +90,150 @@ export async function POST(req: NextRequest) {
       }).catch(err => console.error('[Telegram Webhook] answerCallbackQuery error:', err))
     }
 
-    const sendReply = async (replyText: string, replyMarkup?: any) => {
+    const supabase = await createClient()
+
+    // Initialize Multi-Child mapping for chatId if not present
+    if (!PARENT_CHILDREN_MAP[chatId]) {
+      PARENT_CHILDREN_MAP[chatId] = chatId === '7864027458' ? ['4ec823eb-be30-4e1c-a709-a3382ee85491'] : []
+    }
+
+    // 1. Check if user tapped /how_to_link
+    if (text === '/how_to_link' || text.includes('วิธีผูก') || text.includes('ผูกเพิ่ม')) {
+      const linkGuide = `➕ <b>วิธีเชื่อมต่อและผูกบัญชีนักเรียนเพิ่ม (Multi-Child Support):</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\nผู้ปกครอง 1 บัญชี Telegram สามารถดูแลบุตรหลานได้ไม่จำกัดจำนวนคนครับ!\n\n📲 <b>วิธีใช้งาน:</b>\nพิมพ์คำสั่ง: <code>/link &lt;อีเมลของน้อง หรือ ชื่อของน้อง&gt;</code>\n\n📌 <b>ตัวอย่าง:</b>\n• <code>/link fortune@gmail.com</code>\n• <code>/link น้องภูมิรพีร์</code>\n\n🔔 <i>เมื่อผูกสำเร็จ รายชื่อน้องจะเข้าไปอยู่ในเมนู [🔄 สลับนักเรียน] ทันที และระบบจะส่งแจ้งเตือนผลสอบของน้องทุกคนเข้าแชทนี้อัตโนมัติครับ!</i>`
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
-          text: replyText,
+          text: linkGuide,
           parse_mode: 'HTML',
-          reply_markup: replyMarkup !== undefined ? replyMarkup : DEFAULT_INLINE_KEYBOARD
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '🔄 เปิดเมนูสลับนักเรียน', callback_data: '/switch' }],
+              [{ text: '🔙 หน้าหลัก', callback_data: '/start' }]
+            ]
+          }
         })
       })
+      return NextResponse.json({ ok: true })
     }
 
-    const supabase = await createClient()
+    // 2. Check if switching to a specific student via callback (/switch_<id>)
+    if (rawText.startsWith('/switch_')) {
+      const targetStudentId = rawText.replace('/switch_', '').trim()
+      if (targetStudentId) {
+        ACTIVE_CHILD_MAP[chatId] = targetStudentId
+        if (!PARENT_CHILDREN_MAP[chatId].includes(targetStudentId)) {
+          PARENT_CHILDREN_MAP[chatId].push(targetStudentId)
+        }
 
-    // 1. Check if user is linking a new student account (/link email_or_id or /start link_xxx)
+        const { data: newProfile } = await supabase.from('profiles').select('*').eq('id', targetStudentId).maybeSingle()
+        const newName = newProfile?.full_name || 'นักเรียน'
+        const newTarget = newProfile?.school_target || 'เตรียมสอบเข้า ม.1'
+        const newEmail = newProfile?.email || '-'
+
+        const { data: progList } = await supabase.from('progress').select('module_id, score, completed').eq('user_id', targetStudentId)
+        const completedCount = (progList || []).filter(p => p.completed).length
+
+        const switchSuccessMsg = `✅ <b>สลับมาติดตาม: ${newName} เรียบร้อยแล้ว!</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\n👦 <b>นักเรียน:</b> ${newName}\n🎯 <b>เป้าหมาย:</b> ${newTarget}\n📧 <b>อีเมล:</b> ${newEmail}\n📊 <b>ความคืบหน้ารวม:</b> ผ่านแบบฝึกหัดแล้ว ${completedCount}/56 บทเรียน\n━━━━━━━━━━━━━━━━━━━━\n💡 <i>ข้อมูลผลสอบ Pre-Test และรายงานคะแนนทั้งหมดในเมนูด้านล่างนี้ จะแสดงเป็นของ ${newName} ทันทีครับ</i>`
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: switchSuccessMsg,
+            parse_mode: 'HTML',
+            reply_markup: buildParentKeyboard(newName)
+          })
+        })
+        return NextResponse.json({ ok: true })
+      }
+    }
+
+    // 3. Check if user wants to see the Multi-Child Switcher Menu (/switch or /children)
+    if (text === '/switch' || text === '/children' || text === '/students' || text.includes('สลับนักเรียน') || text.includes('สลับลูก')) {
+      let studentList: any[] = []
+      
+      if (chatId === '7864027458') {
+        const { data: allProfiles } = await supabase.from('profiles').select('*').order('created_at', { ascending: false })
+        studentList = allProfiles || []
+      } else {
+        const childIds = PARENT_CHILDREN_MAP[chatId] || []
+        if (childIds.length > 0) {
+          const { data: matchedProfiles } = await supabase.from('profiles').select('*').in('id', childIds)
+          studentList = matchedProfiles || []
+        }
+      }
+
+      if (studentList.length === 0) {
+        studentList = [{
+          id: '4ec823eb-be30-4e1c-a709-a3382ee85491',
+          full_name: 'ด.ช.ภูมิรพีร์ มากแก้ว (น้องฟอร์จูน)',
+          email: 'phumrapeeft@gmail.com',
+          school_target: 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊'
+        }]
+      }
+
+      // Sort so Fortune is always #1
+      studentList.sort((a, b) => {
+        if (a.email === 'phumrapeeft@gmail.com' || a.full_name?.includes('ภูมิรพีร์')) return -1
+        if (b.email === 'phumrapeeft@gmail.com' || b.full_name?.includes('ภูมิรพีร์')) return 1
+        return 0
+      })
+
+      const currentActiveId = ACTIVE_CHILD_MAP[chatId] || studentList[0]?.id
+
+      const childButtons = studentList.map(st => {
+        const isCurrent = st.id === currentActiveId
+        const isFortune = st.email === 'phumrapeeft@gmail.com' || st.full_name?.includes('ภูมิรพีร์')
+        const icon = isFortune ? '⭐️ 👦' : '👦'
+        const badge = isCurrent ? ' (✅ กำลังดูอยู่)' : ''
+        return [{
+          text: `${icon} ${st.full_name}${badge}`,
+          callback_data: `/switch_${st.id}`
+        }]
+      })
+
+      childButtons.push([
+        { text: '➕ ผูกบัญชีนักเรียนเพิ่ม (/link)', callback_data: '/how_to_link' }
+      ])
+      childButtons.push([
+        { text: '🔙 หน้าหลัก', callback_data: '/start' }
+      ])
+
+      const activeStudent = studentList.find(s => s.id === currentActiveId) || studentList[0]
+
+      const switcherMsg = `👨‍👩‍👧‍👦 <b>เมนูสลับบัญชีนักเรียนในความดูแล (Multi-Child Switcher)</b>\n━━━━━━━━━━━━━━━━━━━━\n📌 <b>กำลังติดตาม:</b> ${activeStudent.full_name}\n🎯 <b>เป้าหมาย:</b> ${activeStudent.school_target || 'เตรียมสอบเข้า ม.1'}\n\n👇 <i>แตะเลือกชื่อน้องที่ต้องการสลับดูผลการเรียน หรือแตะปุ่มผูกบัญชีเพิ่มได้ทันที:</i>`
+
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: switcherMsg,
+          parse_mode: 'HTML',
+          reply_markup: { inline_keyboard: childButtons }
+        })
+      })
+      return NextResponse.json({ ok: true })
+    }
+
+    // 4. Check if user is linking a new student account (/link email_or_id or /start link_xxx)
     if (text.startsWith('/link') || text.startsWith('/start link_')) {
       let queryParam = rawText.replace(/\/link/i, '').replace(/\/start link_/i, '').trim()
       
       if (!queryParam) {
-        await sendReply(`ℹ️ <b>วิธีผูกบัญชีติดตามบุตรหลาน:</b>\nกรุณาพิมพ์: <code>/link &lt;อีเมลของน้อง&gt;</code>\nตัวอย่าง: <code>/link student@gmail.com</code>`)
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: `ℹ️ <b>วิธีผูกบัญชีติดตามบุตรหลาน:</b>\nกรุณาพิมพ์: <code>/link &lt;อีเมลของน้อง&gt;</code>\nตัวอย่าง: <code>/link student@gmail.com</code>`,
+            parse_mode: 'HTML',
+            reply_markup: buildParentKeyboard()
+          })
+        })
         return NextResponse.json({ ok: true })
       }
 
@@ -103,17 +246,44 @@ export async function POST(req: NextRequest) {
         .maybeSingle()
 
       if (matchedUser) {
-        PARENT_MAP[chatId] = matchedUser.id
-        await sendReply(`✅ <b>เชื่อมต่อบัญชีสำเร็จเรียบร้อยครับ!</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\n👦 <b>นักเรียน:</b> ${matchedUser.full_name}\n📧 <b>อีเมล:</b> ${matchedUser.email}\n🎯 <b>ระดับชั้น:</b> ${matchedUser.grade_target || 'ม.1'}\n━━━━━━━━━━━━━━━━━━━━\n🔔 <i>ระบบจะส่งแจ้งเตือนผลสอบและคะแนนแบบฝึกหัดของน้องเข้าแชทนี้อัตโนมัติทันทีที่น้องทำเสร็จครับ!</i>\n\nกดเลือกเมนูด้านล่าง หรือพิมพ์ <b>/pretest</b> เพื่อดูผลสอบก่อนเรียน ได้เลยครับ`)
+        ACTIVE_CHILD_MAP[chatId] = matchedUser.id
+        if (!PARENT_CHILDREN_MAP[chatId]) {
+          PARENT_CHILDREN_MAP[chatId] = []
+        }
+        if (!PARENT_CHILDREN_MAP[chatId].includes(matchedUser.id)) {
+          PARENT_CHILDREN_MAP[chatId].push(matchedUser.id)
+        }
+
+        const linkSuccessMsg = `✅ <b>เชื่อมต่อบัญชีสำเร็จและสลับมาติดตามเรียบร้อยครับ!</b> 🎓\n━━━━━━━━━━━━━━━━━━━━\n👦 <b>นักเรียน:</b> ${matchedUser.full_name}\n📧 <b>อีเมล:</b> ${matchedUser.email}\n🎯 <b>ระดับชั้น:</b> ${matchedUser.grade_target || 'ม.1'}\n━━━━━━━━━━━━━━━━━━━━\n🔔 <i>น้องถูกเพิ่มเข้าสู่เมนู [🔄 สลับนักเรียน] เรียบร้อยแล้ว ระบบจะส่งแจ้งเตือนผลสอบของน้องเข้าแชทนี้อัตโนมัติทันทีครับ!</i>\n\nกดเลือกเมนูด้านล่าง หรือพิมพ์ <b>/pretest</b> เพื่อดูผลสอบก่อนเรียน ได้เลยครับ`
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: linkSuccessMsg,
+            parse_mode: 'HTML',
+            reply_markup: buildParentKeyboard(matchedUser.full_name)
+          })
+        })
         return NextResponse.json({ ok: true })
       } else {
-        await sendReply(`⚠️ <b>ไม่พบข้อมูลนักเรียน:</b> "${queryParam}"\nกรุณาตรวจสอบอีเมลหรือชื่อที่น้องใช้สมัครในเว็บ https://master-m1.vercel.app อีกครั้งครับ`)
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: `⚠️ <b>ไม่พบข้อมูลนักเรียน:</b> "${queryParam}"\nกรุณาตรวจสอบอีเมลหรือชื่อที่น้องใช้สมัครในเว็บ https://master-m1.vercel.app อีกครั้งครับ`,
+            parse_mode: 'HTML',
+            reply_markup: buildParentKeyboard()
+          })
+        })
         return NextResponse.json({ ok: true })
       }
     }
 
-    // 2. Identify linked student for this Parent Chat ID
-    let currentStudentId = PARENT_MAP[chatId] || (chatId === '7864027458' ? '4ec823eb-be30-4e1c-a709-a3382ee85491' : null)
+    // 5. Identify active linked student for this Parent Chat ID
+    let currentStudentId = ACTIVE_CHILD_MAP[chatId] || PARENT_CHILDREN_MAP[chatId]?.[0] || (chatId === '7864027458' ? '4ec823eb-be30-4e1c-a709-a3382ee85491' : null)
 
     let studentProfile: any = null
     if (currentStudentId) {
@@ -138,6 +308,19 @@ export async function POST(req: NextRequest) {
       ? 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊'
       : (studentProfile?.school_target && studentProfile.school_target !== 'ไม่ระบุ' ? `ม.1 (${studentProfile.school_target})` : (isTest ? 'ทดสอบระบบการเรียน' : 'ม.1 เตรียมสอบเข้า ม.1'))
 
+    const sendReply = async (replyText: string, replyMarkup?: any) => {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: replyText,
+          parse_mode: 'HTML',
+          reply_markup: replyMarkup !== undefined ? replyMarkup : buildParentKeyboard(studentName)
+        })
+      })
+    }
+
     // Fetch Pre-Test Results
     const { data: preTestList } = await supabase.from('pre_test_results').select('*').eq('user_id', currentStudentId || '4ec823eb-be30-4e1c-a709-a3382ee85491')
     const preTests = preTestList || []
@@ -157,10 +340,11 @@ export async function POST(req: NextRequest) {
     if (text === '/start' || text === '/help') {
       const welcomeMsg = `👋 <b>สวัสดีครับคุณพ่อคุณแม่! ยินดีต้อนรับสู่ "ครูพี่ MASTER AI"</b> 🎓
 
-👦 <b>นักเรียนในความดูแล:</b> ${studentName}
+👦 <b>นักเรียนที่กำลังติดตาม:</b> ${studentName}
 🎯 <b>เป้าหมาย:</b> ${studentTarget}
 
 📲 <b>คำสั่งด่วนสำหรับผู้ปกครอง (แตะปุ่มกด หรือพิมพ์ได้ 24 ชม.):</b>
+• <b>/switch</b> — 🔄 <b>สลับดูผลการเรียนของลูกคนอื่น (Multi-Child Switcher)</b>
 • <b>/pretest</b> — 🧪 ดูผลการสอบวัดระดับก่อนเรียน (Pre-Test)
 • <b>/report</b> — 📊 ดูรายงานสรุปคะแนนและพัฒนาการทุกวิชา
 • <b>/history</b> — 📈 ดูประวัติและพัฒนาการคะแนนทุกบท
@@ -169,7 +353,7 @@ export async function POST(req: NextRequest) {
 • <b>/english</b> — 🗣️ ดูความก้าวหน้าวิชาภาษาอังกฤษ (3S Method)
 • <b>/thai</b> — 🇹🇭 ดูความก้าวหน้าวิชาภาษาไทย (8 โมดูล หลักสูตร 1000%)
 • <b>/onet</b> — 🎯 ดูผลสอบสนามสอบจำลอง O-NET 2570
-• <b>/link [อีเมล]</b> — 🔄 เปลี่ยนหรือผูกบัญชีนักเรียนคนอื่น
+• <b>/link [อีเมล/ชื่อ]</b> — ➕ ผูกบัญชีนักเรียนเพิ่ม
 
 ✨ <i>ระบบจะแจ้งเตือนเด้งเข้าแชทนี้อัตโนมัติทันทีที่น้องทำแบบฝึกหัดเสร็จครับ!</i>`
       await sendReply(welcomeMsg)
@@ -349,6 +533,7 @@ ${engPassed.map(p => `✅ ${LESSONS_DATA.english?.[p.module_id]?.title || p.modu
     // Default: แสดงเมนูคำสั่งทั้งหมดพร้อมปุ่มกด
     await sendReply(`📋 <b>คำสั่งที่ใช้ได้ทั้งหมดครับ (ครูพี่ MASTER AI):</b>
 ━━━━━━━━━━━━━━━━━━━━
+🔄 <b>/switch</b> — สลับบัญชีบุตรหลานในความดูแล (Multi-Child)
 🧪 <b>/pretest</b> — ดูผลสอบวัดระดับก่อนเรียน (Pre-Test)
 📊 <b>/report</b> — รายงานภาพรวมทุกวิชา
 📈 <b>/history</b> — ประวัติและพัฒนาการคะแนนทุกบท
@@ -359,7 +544,7 @@ ${engPassed.map(p => `✅ ${LESSONS_DATA.english?.[p.module_id]?.title || p.modu
 🇹🇭 <b>/thai</b> — ภาษาไทย (8 โมดูล หลักสูตร 1000%)
 🎯 <b>/onet</b> — สนามสอบจำลอง O-NET 2570
 ━━━━━━━━━━━━━━━━━━━━
-🔗 <b>/link อีเมลน้อง</b> — ผูกบัญชีติดตามบุตรหลาน
+🔗 <b>/link [อีเมล/ชื่อ]</b> — ผูกบัญชีนักเรียนเพิ่ม
 🌐 https://master-m1.vercel.app`)
     return NextResponse.json({ ok: true })
   } catch (err: unknown) {
