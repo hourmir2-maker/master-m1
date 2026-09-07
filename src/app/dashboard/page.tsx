@@ -38,12 +38,13 @@ import {
   FileText
 } from 'lucide-react'
 import VoiceCallModal from '@/components/VoiceCallModal'
+import MasterGrowCoachingHub from '@/components/MasterGrowCoachingHub'
 
 export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
   const [user, setUser] = useState<{ full_name: string; email?: string; school_target?: string } | null>(null)
-  const [progressData, setProgressData] = useState<{ subject: string; completed: boolean; score?: number }[]>([])
+  const [progressData, setProgressData] = useState<{ subject: string; module_id?: string; completed: boolean; score?: number }[]>([])
   const [gameState, setGameState] = useState<GamificationState>(getGamificationState())
   const [showAchievements, setShowAchievements] = useState(false)
   const [showVoiceCall, setShowVoiceCall] = useState(false)
@@ -380,6 +381,15 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+        {/* =========================================================================
+            MASTER-GROW COACHING HUB (Framework พัฒนาการเรียนรู้รอบด้านมาตรฐาน AiPASS)
+            ========================================================================= */}
+        <MasterGrowCoachingHub
+          studentName={user?.full_name || 'น้องฟอร์จูน'}
+          studentEmail={user?.email || ''}
+          studentTarget={user?.school_target}
+          progressList={progressData}
+        />
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

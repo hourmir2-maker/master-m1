@@ -84,6 +84,16 @@ export async function sendParentTelegramNotification({
   const targetLabel = studentTarget || (isFortune ? 'ม.1 Gifted วิทย์-คณิต สู่ เภสัชกร 💊' : 'ม.1 เตรียมสอบเข้า ม.1')
   const nameLabel = isTestUser ? `🧪 [บัญชีทดสอบ: ${studentName}]` : studentName
 
+  // Integrate MASTER-GROW Cognitive Reframing for Parent
+  let growTipText = ''
+  try {
+    const { getCognitiveReframingMessage } = await import('./master-grow')
+    const { parentCoachingTip } = getCognitiveReframingMessage(studentName, subject, moduleTitle, score)
+    if (parentCoachingTip) {
+      growTipText = `\n🌱 <b>MASTER-GROW โค้ชชิ่ง:</b>\n${parentCoachingTip}\n━━━━━━━━━━━━━━━━━━━━`
+    }
+  } catch {}
+
   const messageText = `🔔 <b>[รายงานผลการเรียน & พัฒนาการ] ${nameLabel}</b> 👦
 ━━━━━━━━━━━━━━━━━━━━
 🎯 <b>เป้าหมาย:</b> ${targetLabel}
@@ -91,7 +101,7 @@ export async function sendParentTelegramNotification({
 📖 <b>บทเรียน:</b> ${moduleTitle}
 🎯 <b>คะแนนครั้งนี้:</b> ${score}% (${passBadge})${growthText}
 ⏰ <b>เวลาทำเสร็จ:</b> ${thaiDateStr} | ${thaiTimeStr} น.
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━${growTipText}
 💡 <i>พิมพ์ <code>/history</code> หรือ <code>/report</code> เพื่อดูเส้นทางพัฒนาการทั้งหมดได้ตลอด 24 ชม. ครับ</i>`
 
   // If parentChatId is available, send directly
