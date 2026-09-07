@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
@@ -39,6 +39,7 @@ export default function MasterGrowCoachingHub({
   studentTarget,
   progressList
 }: MasterGrowHubProps) {
+  const [trapSubject, setTrapSubject] = useState<'math' | 'science' | 'english' | 'thai'>('math')
   const isFortune = studentEmail === 'phumrapeeft@gmail.com' || studentName.includes('ภูมิรพีร์') || studentName.includes('ฟอร์จูน')
   
   const targetGoal: GoalProfile = useMemo(() => {
@@ -61,7 +62,17 @@ export default function MasterGrowCoachingHub({
     return detectScoreLeakage(progressList)
   }, [progressList])
 
-  const featuredTrap = SAMPLE_TRAP_CARDS[0]
+  const currentTraps = useMemo(() => {
+    return SAMPLE_TRAP_CARDS.filter(t => t.subject === trapSubject)
+  }, [trapSubject])
+
+  const featuredTrap = useMemo(() => {
+    if (leakages.length > 0) {
+      const matched = SAMPLE_TRAP_CARDS.find(t => t.subject === leakages[0].subject)
+      if (matched) return matched
+    }
+    return SAMPLE_TRAP_CARDS[0]
+  }, [leakages])
 
   return (
     <div className="w-full space-y-4 mb-8">
@@ -187,6 +198,122 @@ export default function MasterGrowCoachingHub({
           </CardContent>
         </Card>
       </div>
+
+      {/* 24 O-NET High-Yield Trap Cards Explorer */}
+      <Card className="border-amber-200/60 dark:border-amber-900/40 bg-gradient-to-br from-amber-50/40 via-white to-orange-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-amber-950/20 shadow-md">
+        <CardHeader className="pb-3 border-b border-amber-100/80 dark:border-slate-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-amber-500 text-white font-bold text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 mr-1" /> คลังการ์ดสกัดจุดลวง สทศ. 24 รูปแบบ
+                </Badge>
+                <Badge variant="outline" className="text-amber-700 dark:text-amber-300 border-amber-300 text-xs">
+                  4 วิชาหลัก × 6 การ์ดทองคำ
+                </Badge>
+              </div>
+              <CardTitle className="text-base md:text-lg font-bold text-slate-800 dark:text-slate-100 mt-1.5 flex items-center gap-2">
+                O-NET & สสวท. Trap Buster Engine
+              </CardTitle>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                จุดที่นักเรียนกว่า 70% พลาดบ่อยที่สุดในสนามสอบจริง พร้อมสูตรลัดแก้เกมใน 3 วินาที
+              </p>
+            </div>
+
+            {/* Subject Selector Pills */}
+            <div className="flex flex-wrap gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+              {[
+                { id: 'math', label: 'คณิตศาสตร์ (6)', icon: '📐' },
+                { id: 'science', label: 'วิทยาศาสตร์ (6)', icon: '🔬' },
+                { id: 'english', label: 'ภาษาอังกฤษ (6)', icon: '🇬🇧' },
+                { id: 'thai', label: 'ภาษาไทย (6)', icon: '🇹🇭' },
+              ].map((sub) => (
+                <button
+                  key={sub.id}
+                  onClick={() => setTrapSubject(sub.id as any)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    trapSubject === sub.id
+                      ? 'bg-amber-500 text-white shadow-sm scale-102'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <span>{sub.icon}</span>
+                  <span>{sub.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentTraps.map((trap, idx) => (
+              <div
+                key={trap.id}
+                className="group relative rounded-xl border border-amber-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-900/90 p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="secondary" className="text-[10px] font-mono bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                      Trap #{idx + 1} • {trapSubject.toUpperCase()}
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px] text-rose-600 border-rose-200 bg-rose-50 dark:bg-rose-950/30">
+                      จุดลวงคะแนน
+                    </Badge>
+                  </div>
+
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                    {trap.moduleTitle}
+                  </h4>
+
+                  {/* Red Flag Box */}
+                  <div className="rounded-lg bg-rose-50/80 dark:bg-rose-950/20 border border-rose-200/70 dark:border-rose-900/30 p-2.5 space-y-1">
+                    <div className="text-[11px] font-semibold text-rose-800 dark:text-rose-300 flex items-center gap-1">
+                      <span>⚠️ กับดักที่เจอบ่อย:</span>
+                    </div>
+                    <p className="text-[11px] text-rose-900/80 dark:text-rose-200/90 leading-relaxed">
+                      {trap.trapQuestion}
+                    </p>
+                    <p className="text-[10px] text-rose-600 dark:text-rose-400 font-medium">
+                      ❌ {trap.redFlag}
+                    </p>
+                  </div>
+
+                  {/* 3-Second Escape Move */}
+                  <div className="rounded-lg bg-emerald-50/80 dark:bg-emerald-950/20 border border-emerald-200/70 dark:border-emerald-900/30 p-2.5 space-y-1">
+                    <div className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span>วิธีแก้เกมใน 3 วินาที:</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-950 dark:text-emerald-100 leading-relaxed">
+                      {trap.escapeMove3Sec}
+                    </p>
+                  </div>
+
+                  {/* Formula / Rule Box */}
+                  {trap.exampleCodeOrFormula && (
+                    <div className="rounded-lg bg-slate-900 text-amber-300 p-2 font-mono text-[10px] border border-slate-800 break-all">
+                      <span className="text-slate-400 select-none">📌 คีย์ลัด: </span>
+                      {trap.exampleCodeOrFormula}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-300">
+                    หลักสูตร สพฐ. 2551 (60)
+                  </span>
+                  <Link href={`/subjects/${trap.subject}`}>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs text-amber-700 dark:text-amber-300 hover:text-amber-800 hover:bg-amber-100/50 p-1 px-2.5 font-medium">
+                      ฝึกทำข้อสอบ <ChevronRight className="w-3 h-3 ml-0.5" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

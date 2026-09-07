@@ -88,6 +88,9 @@ export interface TrapCard {
 }
 
 export const SAMPLE_TRAP_CARDS: TrapCard[] = [
+  // =========================================================================
+  // 🔢 1. MATHEMATICS TRAP CARDS (คณิตศาสตร์ - 6 การ์ดดักคะแนน สทศ./สสวท.)
+  // =========================================================================
   {
     id: 'math-fraction-add',
     subject: 'math',
@@ -98,14 +101,170 @@ export const SAMPLE_TRAP_CARDS: TrapCard[] = [
     exampleCodeOrFormula: 'a/b + c/d = (ad + bc) / bd'
   },
   {
+    id: 'math-units-digit',
+    subject: 'math',
+    moduleTitle: 'วนรอบหลักหน่วยเลขยกกำลังสูง (Cyclicity)',
+    trapQuestion: 'เจอ 7²⁵⁷⁰ หรือ 3²⁰²⁶ แล้วคิดว่าต้องคูณเลขจริงจนตาลาย?',
+    redFlag: 'เลขโดดหลักหน่วยของ 2, 3, 7, 8 มีการวนรอบเป็นคาบละ 4 เสมอ!',
+    escapeMove3Sec: 'นำเลขชี้กำลังหาร 4 ดูเศษ: 2570 ÷ 4 เหลือเศษ 2 ➔ 7² = 49 ตอบลงท้าย 9 ใน 3 วิ!',
+    exampleCodeOrFormula: 'Exponent mod 4 ➔ Cycle Pattern: 7¹=7, 7²=9, 7³=3, 7⁴=1'
+  },
+  {
+    id: 'math-percent-change',
+    subject: 'math',
+    moduleTitle: 'การเพิ่ม-ลดร้อยละไม่สมมาตร',
+    trapQuestion: 'สินค้าลดราคา 20% แล้ววันต่อมาขึ้นราคา 20% คิดว่าราคากลับมาเท่าเดิม?',
+    redFlag: 'ฐานในการคิดร้อยละเปลี่ยนไป! เมื่อลด 20% ฐานใหม่กลายเป็น 80%',
+    escapeMove3Sec: 'คิดตัวคูณสุทธิ: 0.80 × 1.20 = 0.96 ➔ ราคาลดลงจากเดิม 4% เสมอ!',
+    exampleCodeOrFormula: 'Net Multiplier = (1 - r1) × (1 + r2) = 0.80 × 1.20 = 0.96'
+  },
+  {
+    id: 'math-circle-geometry',
+    subject: 'math',
+    moduleTitle: 'พื้นที่ vs ความยาวรอบรูปวงกลม',
+    trapQuestion: 'สับสนระหว่าง 2πr กับ πr² และลืมว่าโจทย์ให้เส้นผ่านศูนย์กลาง (d) มา?',
+    redFlag: 'โจทย์ให้ "เส้นผ่านศูนย์กลาง" ต้องนำมาหาร 2 เพื่อหารัศมี (r) ก่อนเสมอ!',
+    escapeMove3Sec: 'จำหน่วย: ความยาวรอบรูป = ซม. (2πr) | พื้นที่ = ตร.ซม. ยกกำลังสอง (πr²)',
+    exampleCodeOrFormula: 'Area = πr² | Perimeter = 2πr | r = d / 2'
+  },
+  {
+    id: 'math-average-speed',
+    subject: 'math',
+    moduleTitle: 'ความเร็วเฉลี่ยไป-กลับ (Harmonic Mean)',
+    trapQuestion: 'ขับรถไป 60 กม./ชม. ขากลับ 40 กม./ชม. แล้วเผลอตอบความเร็วเฉลี่ย 50 กม./ชม.?',
+    redFlag: 'ความเร็วเฉลี่ยไม่ใช่ค่าเฉลี่ยเลขคณิต เพราะเวลาที่ใช้ในแต่ละขาไม่เท่ากัน!',
+    escapeMove3Sec: 'ใช้สูตรลัดฮาร์มอนิก: 2v₁v₂ / (v₁ + v₂) = (2×60×40) / 100 = 48 กม./ชม. ทันที!',
+    exampleCodeOrFormula: 'v_avg = 2 × v1 × v2 / (v1 + v2)'
+  },
+  {
+    id: 'math-pythagoras-triples',
+    subject: 'math',
+    moduleTitle: 'ทฤษฎีบทพิทาโกรัส & สามเหลี่ยมมุมฉาก',
+    trapQuestion: 'มัวแต่ตั้งคูณคำนวณ c² = a² + b² เสียเวลา 2 นาทีในห้องสอบ?',
+    redFlag: 'ด้านตรงข้ามมุมฉากคือด้านที่ยาวที่สุดเสมอ',
+    escapeMove3Sec: 'ท่องจำชุดตัวเลขพิทาโกรัสยอดนิยม: (3, 4, 5), (5, 12, 13), (7, 24, 25), (8, 15, 17) กาช้อยส์ได้ใน 3 วิ!',
+    exampleCodeOrFormula: 'Pythagorean Triples: (3k, 4k, 5k), (5k, 12k, 13k)'
+  },
+
+  // =========================================================================
+  // 🔬 2. SCIENCE TRAP CARDS (วิทยาศาสตร์ - 6 การ์ดดักคะแนน สทศ./สสวท.)
+  // =========================================================================
+  {
     id: 'science-series-parallel',
     subject: 'science',
-    moduleTitle: 'วงจรไฟฟ้าเบื้องต้น',
+    moduleTitle: 'วงจรไฟฟ้าอนุกรม vs ขนาน',
     trapQuestion: 'ถอดหลอดไฟ 1 หลอดในวงจรขนาน แล้วคิดว่าหลอดอื่นจะดับตาม?',
-    redFlag: 'วงจรขนานกระแสไฟฟ้าแยกไหลคนละสาย!',
+    redFlag: 'วงจรขนานกระแสไฟฟ้าแยกไหลคนละสาย มีทางเดินอิสระ!',
     escapeMove3Sec: 'ท่องจำ: อนุกรมสายเดียวขาดดับหมด | ขนานแยกสายขาดหลอดยังติด',
-    exampleCodeOrFormula: 'Parallel Circuit: Independent Branches'
+    exampleCodeOrFormula: 'Parallel: Independent branches | Series: Single loop'
   },
+  {
+    id: 'science-solution-dilution',
+    subject: 'science',
+    moduleTitle: 'การเจือจางสารละลาย (Dilution Law)',
+    trapQuestion: 'คิดว่าเมื่อเติมน้ำลงไปในสารละลาย ปริมาณเนื้อสารจะลดลงไปด้วย?',
+    redFlag: 'การเติมน้ำทำให้ความเข้มข้นลดลง แต่ "มวลเนื้อสารบริสุทธิ์เท่าเดิม"!',
+    escapeMove3Sec: 'ใช้สูตรลัดเภสัช: C₁V₁ = C₂V₂ แทนค่าตัวเลขแล้วตัดศูนย์ได้คำตอบใน 5 วินาที',
+    exampleCodeOrFormula: 'C1 × V1 = C2 × V2 (Concentration × Volume = Constant)'
+  },
+  {
+    id: 'science-plant-respiration',
+    subject: 'science',
+    moduleTitle: 'การหายใจของพืช (Plant Respiration)',
+    trapQuestion: 'คิดว่าพืชหายใจเอา CO₂ เข้าไป และหายใจเฉพาะเวลากลางคืนเท่านั้น?',
+    redFlag: 'การสังเคราะห์ด้วยแสงเกิดเฉพาะตอนมีแสง แต่ "การหายใจของพืชเกิดตลอด 24 ชม."!',
+    escapeMove3Sec: 'ท่องจำ: พืชเป็นสิ่งมีชีวิต หายใจเอา O₂ คาย CO₂ ตลอดเวลาเหมือนมนุษย์!',
+    exampleCodeOrFormula: 'Respiration: Glucose + O2 ➔ CO2 + H2O + Energy (All 24 hrs)'
+  },
+  {
+    id: 'science-pulmonary-vessels',
+    subject: 'science',
+    moduleTitle: 'ระบบหมุนเวียนโลหิต (Pulmonary Circulation)',
+    trapQuestion: 'คิดว่าเส้นเลือดดำ (Vein) ทุกเส้นในร่างกายต้องมีเลือดดำ (ออกซิเจนต่ำ)?',
+    redFlag: 'เส้นเลือดออกจากหัวใจ = Artery, เส้นเลือดเข้าหัวใจ = Vein',
+    escapeMove3Sec: 'ข้อยกเว้นสำคัญของ สทศ.: Pulmonary Vein นำเลือดแดง (ออกซิเจนสูง) จากปอดเข้าหัวใจห้องบนซ้าย!',
+    exampleCodeOrFormula: 'Lungs ➔ Pulmonary Vein (High O2) ➔ Left Atrium'
+  },
+  {
+    id: 'science-newtons-first-law',
+    subject: 'science',
+    moduleTitle: 'กฎการเคลื่อนที่ข้อ 1 ของนิวตัน (Inertia)',
+    trapQuestion: 'เห็นวัตถุเคลื่อนที่ด้วยความเร็วคงที่ แล้วคิดว่าต้องมีแรงลัพธ์กระทำในทิศทางนั้น?',
+    redFlag: 'ความเร็วคงที่ แปลว่า ความเร่ง a = 0 แรงลัพธ์ ΣF = 0!',
+    escapeMove3Sec: 'จำกฎข้อ 1: ความเร็วคงที่ = แรงลัพธ์เป็นศูนย์ (ไม่มีแรงลัพธ์มากระทำ วัตถุจะรักษาสภาพเดิม)',
+    exampleCodeOrFormula: 'ΣF = 0 ⟺ v = constant (Zero Net Force)'
+  },
+  {
+    id: 'science-acids-bases-metals',
+    subject: 'science',
+    moduleTitle: 'ปฏิกิริยากรด-เบสกับโลหะ',
+    trapQuestion: 'สับสนระหว่างก๊าซที่ได้จากกรดทดสอบหินปูน กับกรดทำปฏิกิริยากับโลหะ?',
+    redFlag: 'กรด + หินปูนได้ก๊าซ CO₂ | แต่ กรด + โลหะ (สังกะสี/แมกนีเซียม) ได้ก๊าซ H₂!',
+    escapeMove3Sec: 'ท่องจำ: "กรด+โลหะได้ไฮโดรเจน (H₂) เสียงป๊อป | กรด+หินปูนได้คาร์บอนไดออกไซด์ (CO₂) น้ำปูนขุ่น"',
+    exampleCodeOrFormula: 'Acid + Metal ➔ Salt + H2 ↑ | Acid + Carbonate ➔ Salt + H2O + CO2 ↑'
+  },
+
+  // =========================================================================
+  // 🗣️ 3. ENGLISH TRAP CARDS (ภาษาอังกฤษ - 6 การ์ดดักคะแนน O-NET/Gifted)
+  // =========================================================================
+  {
+    id: 'english-part-of-speech',
+    subject: 'english',
+    moduleTitle: 'Subject-Verb Agreement with Prep Phrase',
+    trapQuestion: 'เห็นประโยค The quality of these apples (is/are) good แล้วเลือก are เพราะตามหลัง apples?',
+    redFlag: 'คำนามหน้า of คือประธานแท้ (The quality เป็นเอกพจน์)!',
+    escapeMove3Sec: 'มองข้าม [of preposition phrase] ➔ The quality [of apples] IS good',
+    exampleCodeOrFormula: 'Singular Subject + [of phrase] + Singular Verb (is)'
+  },
+  {
+    id: 'english-neither-nor-either-or',
+    subject: 'english',
+    moduleTitle: 'Neither... nor / Either... or Agreement',
+    trapQuestion: 'เห็นประโยค Neither John nor his friends (is/are) ready แล้วคิดว่ามีหลายคนต้องตอบ are?',
+    redFlag: 'Neither...nor กริยาต้องผันตาม "ประธานตัวหลังสุดที่อยู่ติดกับกริยา" (Proximity Rule)!',
+    escapeMove3Sec: 'ดูตัวหลังสุด: Neither the teacher nor the students ARE | Neither the students nor the teacher IS',
+    exampleCodeOrFormula: 'Neither A nor B + Verb (matches B)'
+  },
+  {
+    id: 'english-past-vs-present-perfect',
+    subject: 'english',
+    moduleTitle: 'Past Simple vs Present Perfect',
+    trapQuestion: 'ใช้ have/has + V.3 กับประโยคที่มีคำบอกเวลาในอดีตชัดเจน เช่น yesterday หรือ in 2021?',
+    redFlag: 'เมื่อมี Time Markers อดีตเฉพาะเจาะจง (yesterday, ago, last night, in 2020)',
+    escapeMove3Sec: 'กฎเหล็ก: ระบุเวลาอดีตชัดเจน บังคับใช้ Past Simple (V.2) เท่านั้น ห้ามใช้ Present Perfect เด็ดขาด!',
+    exampleCodeOrFormula: 'Specific Past Time ➔ Past Simple (V.2) only'
+  },
+  {
+    id: 'english-if-clause-types',
+    subject: 'english',
+    moduleTitle: 'If-Clause Type 1 vs Type 2',
+    trapQuestion: 'สับสนระหว่างประโยคสมมติที่เป็นจริงได้ กับการสมมติตรงข้ามความจริงในปัจจุบัน?',
+    redFlag: 'สังเกตรูปกริยาในประโยคเงื่อนไข If',
+    escapeMove3Sec: 'ท่องจำ: Type 1: If + V.1, will + V.inf (จริงได้) | Type 2: If + V.2/were, would + V.inf (สมมติ)',
+    exampleCodeOrFormula: 'Type 1: If + V.1, will + V.inf | Type 2: If + were/V.2, would + V.inf'
+  },
+  {
+    id: 'english-passive-modals',
+    subject: 'english',
+    moduleTitle: 'Passive Voice with Modal Verbs',
+    trapQuestion: 'แปลไม่ออกว่าประธานเป็นผู้กระทำหรือถูกกระทำในประโยค Passive?',
+    redFlag: 'เมื่อประธานเป็นสิ่งของ (The homework, The letter, The car) สิ่งของทำตัวเองไม่ได้!',
+    escapeMove3Sec: 'ท่องสูตรโครงสร้าง: Modal (can/must/should) + be + V.3 เช่น The task must be completed today',
+    exampleCodeOrFormula: 'Modal + be + V.3 (Passive form)'
+  },
+  {
+    id: 'english-word-formation-suffixes',
+    subject: 'english',
+    moduleTitle: 'Word Formation & Suffix Clues',
+    trapQuestion: 'ไม่รู้ความหมายคำศัพท์ ทำให้ตอบชนิดของคำ (Part of Speech) ไม่ถูก?',
+    redFlag: 'ไม่จำเป็นต้องรู้ความหมาย แค่ดูหางคำ (Suffix) ก็รู้ชนิดของคำทันที!',
+    escapeMove3Sec: 'สแกนหางคำ: -tion, -ment, -ness = Noun | -ful, -able, -ous = Adj | -ly = Adverb',
+    exampleCodeOrFormula: 'Suffix ➔ Part of Speech in 3 seconds'
+  },
+
+  // =========================================================================
+  // 🇹🇭 4. THAI TRAP CARDS (ภาษาไทย - 6 การ์ดดักคะแนน สพฐ./สทศ.)
+  // =========================================================================
   {
     id: 'thai-topic-sentence',
     subject: 'thai',
@@ -116,13 +275,49 @@ export const SAMPLE_TRAP_CARDS: TrapCard[] = [
     exampleCodeOrFormula: 'ใจความหลัก = ประโยคสรุปที่ไม่มีคำขยายตัวอย่าง'
   },
   {
-    id: 'english-part-of-speech',
-    subject: 'english',
-    moduleTitle: 'Subject-Verb Agreement',
-    trapQuestion: 'เห็นประโยค The quality of these apples (is/are) good แล้วเลือก are เพราะตามหลัง apples?',
-    redFlag: 'คำนามหน้า of คือประธานแท้ (The quality เป็นเอกพจน์)!',
-    escapeMove3Sec: 'มองข้าม [of preposition phrase] ➔ The quality [of apples] IS good',
-    exampleCodeOrFormula: 'Singular Subject + Singular Verb (is)'
+    id: 'thai-samasa-sandhi',
+    subject: 'thai',
+    moduleTitle: 'คำสมาส vs คำสนธิ (บาลี-สันสกฤต)',
+    trapQuestion: 'แยกไม่ออกว่าคำไหนเป็นสมาส หรือสนธิ?',
+    redFlag: 'คำสองคำนำมาชนกัน หรือมีเสียงสระกลืนเชื่อมกัน?',
+    escapeMove3Sec: 'ท่องจำ 3 วิ: "สมาสชน สนธิเชื่อม" ➔ ชนกันเฉยๆ = สมาส (พระโอวาท, วาตภัย) | เสียงสระกลืนเชื่อม = สนธิ (มหัศจรรย์, ชลาลัย)',
+    exampleCodeOrFormula: 'สมาสชน (พระ+โอวาท=พระโอวาท) vs สนธิเชื่อม (มหา+อัศจรรย์=มหัศจรรย์)'
+  },
+  {
+    id: 'thai-pali-sanskrit',
+    subject: 'thai',
+    moduleTitle: 'คำยืมภาษาบาลี vs สันสกฤต',
+    trapQuestion: 'สับสนตัวสะกดพยัญชนะวรรคของบาลีและสันสกฤต?',
+    redFlag: 'ตรวจสอบพยัญชนะพิเศษ 3 วินาที',
+    escapeMove3Sec: 'ท่องจำตัดช้อยส์: เจอ ศ, ษ, ฤ, ฤๅ, ฦ, ฦๅ, รร (หัน), ไอ, เอา = สันสกฤตทันที! ถ้าพยัญชนะวรรคตรงแถวและ ฬ = บาลี',
+    exampleCodeOrFormula: 'ศ ษ ฤ รร ควบกล้ำ = สันสกฤต | ฬ และพยัญชนะวรรค = บาลี'
+  },
+  {
+    id: 'thai-sentence-structures',
+    subject: 'thai',
+    moduleTitle: 'ประโยคความเดียว ความรวม ความซ้อน',
+    trapQuestion: 'เห็นประโยคยาวแล้วคิดว่าเป็นประโยคความซ้อนเสมอ?',
+    redFlag: 'ดู "คำสันธานเชื่อม" อย่าดูแค่ความยาวประโยค!',
+    escapeMove3Sec: 'ท่องจำ: สันธาน "และ, แต่, หรือ, เพราะ...จึง" = ความรวม | สันธาน "ที่, ซึ่ง, อัน, ผู้, ว่า, เพื่อ, ให้" = ความซ้อนแน่นอน!',
+    exampleCodeOrFormula: 'ความรวม (และ/แต่/หรือ) vs ความซ้อน (ที่/ซึ่ง/อัน/ว่า/ให้)'
+  },
+  {
+    id: 'thai-royal-words-rules',
+    subject: 'thai',
+    moduleTitle: 'กฎการใช้คำราชาศัพท์ "ทรง"',
+    trapQuestion: 'นำคำว่า "ทรง" ไปวางหน้าคำกริยาราชาศัพท์ เช่น ใช้ "ทรงเสวย", "ทรงโปรด", "ทรงตรัส"?',
+    redFlag: 'ข้อสอบ สทศ. หลอกเรื่องนี้อันดับ 1 ทุกปี!',
+    escapeMove3Sec: 'กฎเหล็ก: "ทรง" นำหน้ากริยาสามัญเท่านั้น (ทรงม้า, ทรงยินดี) | ห้ามใช้ "ทรง" นำหน้ากริยาราชาศัพท์เด็ดขาด (ใช้ เสวย, โปรด, ตรัส ทันที!)',
+    exampleCodeOrFormula: 'ทรง + กริยาสามัญ = ถูก | ทรง + กริยาราชาศัพท์ = ผิดทันที!'
+  },
+  {
+    id: 'thai-figurative-language',
+    subject: 'thai',
+    moduleTitle: 'โวหารภาพพจน์วรรณศิลป์',
+    trapQuestion: 'สับสนระหว่าง "อุปมา" (Simile) กับ "อุปลักษณ์" (Metaphor)?',
+    redFlag: 'ดูคำเชื่อมเปรียบเทียบในบทประพันธ์',
+    escapeMove3Sec: 'ท่องจำ: "อุปมา = เหมือน คล้าย ดุจ ประดุจ ปาน" | "อุปลักษณ์ = เป็น คือ (ครูคือเรือจ้าง)" | "บุคลาธิษฐาน = กริยาคนใส่สิ่งไม่มีชีวิต (คลื่นกระซิบ สายลมปลอบโยน)"',
+    exampleCodeOrFormula: 'อุปมา (เหมือน) vs อุปลักษณ์ (เป็น/คือ) vs บุคลาธิษฐาน (คนกระทำ)'
   }
 ]
 
@@ -221,7 +416,11 @@ export function detectScoreLeakage(
       if (score < 50) leakageType = 'concept_gap'
       else if (score < 70) leakageType = 'time_pressure'
 
-      const matchedTrap = SAMPLE_TRAP_CARDS.find(t => t.subject === p.subject)
+      const matchedTrap = SAMPLE_TRAP_CARDS.find(t => 
+        (p.module_id && t.id.toLowerCase().includes(p.module_id.toLowerCase())) || 
+        (p.module_id && t.moduleTitle.toLowerCase().includes(p.module_id.toLowerCase())) ||
+        t.subject === p.subject
+      )
 
       leakages.push({
         moduleId: p.module_id || p.subject,
